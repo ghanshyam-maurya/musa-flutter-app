@@ -1,0 +1,178 @@
+import 'dart:io';
+import 'package:musa_app/Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
+import 'package:musa_app/Utility/packages.dart';
+import '../../../Utility/musa_widgets.dart';
+import '../../profile/my_profile.dart';
+import 'home_myfeed_carousel.dart';
+import 'home_socia_musa_list.dart';
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  HomeCubit homeCubit = HomeCubit();
+  late ScrollController _mainScrollController;
+  ValueNotifier<bool> isMainScrolling =
+      ValueNotifier(true); // Control scrolling
+
+  @override
+  void initState() {
+    super.initState();
+    homeCubit.setUserData();
+    // Load cached posts first
+    homeCubit.loadCachedPosts();
+
+    // Ensure myUserId is available before calling getMyFeeds
+    Future.delayed(Duration.zero, () {
+      final userId = homeCubit.myUserId;
+      if (userId != null && userId.isNotEmpty) {
+        homeCubit.getMyFeeds(userId: userId, page: 1);
+      }
+      homeCubit.getSocialFeeds(page: 1);
+    });
+    _mainScrollController = ScrollController();
+    _mainScrollController.addListener(_scrollListener);
+
+    _loadDataAndRefresh();
+  }
+
+  @override
+  void didUpdateWidget(covariant Home oldWidget) {
+    // TODO: implement didUpdateWidget
+    homeCubit.setUserData();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _scrollListener() {
+    if (_mainScrollController.position.pixels <= 0) {
+      isMainScrolling.value = true; // Main scroll is at the top
+    } else if (_mainScrollController.position.pixels >=
+        _mainScrollController.position.maxScrollExtent) {
+      isMainScrolling.value = false;
+    }
+  }
+
+  Future<void> _loadDataAndRefresh() async {
+    await homeCubit.setUserData(); // Make sure user data is fully loaded
+
+    final userId = homeCubit.myUserId;
+
+    if (userId != null && userId.isNotEmpty) {
+      await homeCubit.getMyFeeds(userId: userId, page: 1);
+    }
+
+    await homeCubit.getSocialFeeds(page: 1);
+
+    setState(() {}); // Triggers rebuild once data is loaded
+  }
+
+  Future<void> onRefresh() async {
+    homeCubit.homePageNumber = 1;
+    homeCubit.getMyFeeds(userId: homeCubit.myUserId.toString(), page: 1);
+    homeCubit.getSocialFeeds(page: 1);
+  }
+
+  @override
+  void dispose() {
+    _mainScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: NestedScrollView(
+          controller: _mainScrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _headerWidget(),
+                ],
+              ),
+            ),
+          ],
+          body: HomeSocialMusaList(
+            scrollController: _mainScrollController,
+            isMainScrolling: isMainScrolling,
+            homeCubit: homeCubit,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _headerWidget() {
+    print('hasFeeds: ${homeCubit.hasFeeds}');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppBarDashboard(
+          leading: const SizedBox.shrink(),
+          title: Text(
+            'MUSA',
+            style: const TextStyle(
+              color: Color(0xFF222222),
+              fontFamily: 'Manrope',
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              height: 42 / 24,
+              letterSpacing: -0.5,
+            ),
+          ),
+          end: Row(
+            children: [
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.searchIcon_1,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.dashboardSearch);
+                },
+              ),
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.settings,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.settings);
+                },
+              ),
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.notification,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.notificationView);
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10), // <-- Add space after common app bar
+        if (homeCubit.hasFeeds) HomeMyFeedCarousel(homeCubit: homeCubit)
+      ],
+    );
+  }
+}

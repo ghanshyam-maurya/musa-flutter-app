@@ -1,0 +1,134 @@
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
+
+class FullGalleryPicker extends StatefulWidget {
+  final List<AssetEntity> selectedAssets;
+
+  const FullGalleryPicker({super.key, required this.selectedAssets});
+
+  @override
+  State<FullGalleryPicker> createState() => _FullGalleryPickerState();
+}
+
+class _FullGalleryPickerState extends State<FullGalleryPicker> {
+  List<AssetEntity> _allAssets = [];
+  Map<AssetEntity, Uint8List> thumbnails = {};
+  List<AssetEntity> _selectedAssets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAssets = List.from(widget.selectedAssets);
+    fetchAllMedia();
+  }
+
+  /// Fetch all media from the gallery
+  Future<void> fetchAllMedia() async {
+    final PermissionState permission =
+        await PhotoManager.requestPermissionExtend();
+    if (!permission.isAuth) return;
+
+    List<AssetPathEntity> paths =
+        await PhotoManager.getAssetPathList(type: RequestType.common);
+    if (paths.isNotEmpty) {
+      _allAssets = await paths.first.getAssetListRange(start: 0, end: 600);
+      for (var asset in _allAssets) {
+        if (!thumbnails.containsKey(asset)) {
+          thumbnails[asset] = await asset
+                  .thumbnailDataWithSize(const ThumbnailSize(200, 200)) ??
+              Uint8List(0);
+        }
+      }
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.9, // Almost full screen
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel", style: TextStyle(color: Colors.red)),
+              ),
+              Text(
+                "Select Media",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, _selectedAssets);
+                },
+                child: Text("Done", style: TextStyle(color: Colors.blue)),
+              ),
+            ],
+          ),
+          const Divider(),
+          Expanded(
+            child: _allAssets.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
+                    ),
+                    itemCount: _allAssets.length,
+                    itemBuilder: (_, index) {
+                      final asset = _allAssets[index];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_selectedAssets.contains(asset)) {
+                              _selectedAssets.remove(asset);
+                            } else {
+                              _selectedAssets.add(asset);
+                            }
+                          });
+                        },
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  8), // Optional: rounded corners
+                              child: Image.memory(
+                                thumbnails[asset]!,
+                                fit: BoxFit.cover, // Ensure it scales properly
+                                width: 100, // Set fixed width
+                                height: 100, // Set fixed height
+                              ),
+                            ),
+                            if (asset.type == AssetType.video)
+                              const Positioned(
+                                bottom: 5,
+                                right: 5,
+                                child: Icon(Icons.videocam,
+                                    color: Colors.white, size: 20),
+                              ),
+                            if (_selectedAssets.contains(asset))
+                              const Positioned(
+                                top: 5,
+                                right: 5,
+                                child: Icon(Icons.check_circle,
+                                    color: Colors.green, size: 24),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}

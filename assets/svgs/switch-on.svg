@@ -1,0 +1,19 @@
+<svg width="47" height="38" viewBox="0 0 47 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Switch">
+<path id="Track" fill-rule="evenodd" clip-rule="evenodd" d="M27.6914 4.07134C26.3443 3.99392 24.9987 4.00012 23.6516 4.00012C23.6423 4.00012 16.8255 4.00012 16.8255 4.00012C15.4521 4.00012 14.1066 3.99392 12.7603 4.07134C11.5362 4.14102 10.344 4.28967 9.15715 4.6218C6.65882 5.32012 4.47714 6.7787 2.9001 8.84658C1.33236 10.9013 0.483845 13.4166 0.483845 15.9994C0.483845 18.5852 1.33236 21.099 2.9001 23.1537C4.47714 25.2208 6.65882 26.6802 9.15715 27.3785C10.344 27.7106 11.5362 27.8585 12.7603 27.9289C14.1066 28.0063 15.4521 27.9994 16.7992 27.9994C16.8085 27.9994 23.6268 28.0002 23.6268 28.0002C24.9987 27.9994 26.3443 28.0063 27.6914 27.9289C28.9146 27.8585 30.1069 27.7106 31.2937 27.3785C33.792 26.6802 35.9737 25.2208 37.5507 23.1537C39.1185 21.099 39.9678 18.5852 39.9678 16.0001C39.9678 13.4166 39.1185 10.9013 37.5507 8.84658C35.9737 6.7787 33.792 5.32012 31.2937 4.6218C30.1069 4.28967 28.9146 4.14102 27.6914 4.07134Z" fill="#00674E"/>
+<g id="Knob" filter="url(#filter0_d_346_1345)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M27.9678 26.4516C22.1955 26.4516 17.5162 21.7722 17.5162 16C17.5162 10.2277 22.1955 5.54834 27.9678 5.54834C33.7401 5.54834 38.4194 10.2277 38.4194 16C38.4194 21.7722 33.7401 26.4516 27.9678 26.4516Z" fill="white"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_346_1345" x="9.51611" y="0.54834" width="36.9033" height="36.9033" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="3"/>
+<feGaussianBlur stdDeviation="4"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_346_1345"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_346_1345" result="shape"/>
+</filter>
+</defs>
+</svg>

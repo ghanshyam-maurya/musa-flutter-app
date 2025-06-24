@@ -1,0 +1,179 @@
+import 'package:musa_app/Cubit/art/art_cubit.dart';
+import 'package:musa_app/Utility/packages.dart';
+import 'art_musa_list.dart';
+
+class Art extends StatefulWidget {
+  const Art({super.key});
+
+  @override
+  State<Art> createState() => _ArtState();
+}
+
+class _ArtState extends State<Art> {
+  ArtCubit artCubit = ArtCubit();
+  late ScrollController _mainScrollController;
+  ValueNotifier<bool> isMainScrolling =
+      ValueNotifier(true); // Control scrolling
+
+  @override
+  void initState() {
+    super.initState();
+    artCubit.setUserData();
+    // Load cached posts first
+    artCubit.loadCachedPosts();
+
+    // Ensure myUserId is available before calling getMyFeeds
+    Future.delayed(Duration.zero, () {
+      final userId = artCubit.myUserId;
+      if (userId != null && userId.isNotEmpty) {
+        // artCubit.getMyFeeds(userId: userId, page: 1);
+      }
+      artCubit.getSocialFeeds(page: 1);
+    });
+    _mainScrollController = ScrollController();
+    _mainScrollController.addListener(_scrollListener);
+
+    _loadDataAndRefresh();
+  }
+
+  @override
+  void didUpdateWidget(covariant Art oldWidget) {
+    // TODO: implement didUpdateWidget
+    artCubit.setUserData();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _scrollListener() {
+    if (_mainScrollController.position.pixels <= 0) {
+      isMainScrolling.value = true; // Main scroll is at the top
+    } else if (_mainScrollController.position.pixels >=
+        _mainScrollController.position.maxScrollExtent) {
+      isMainScrolling.value = false;
+    }
+  }
+
+  Future<void> _loadDataAndRefresh() async {
+    await artCubit.setUserData(); // Make sure user data is fully loaded
+
+    final userId = artCubit.myUserId;
+
+    if (userId != null && userId.isNotEmpty) {
+      await artCubit.getMyFeeds(userId: userId, page: 1);
+    }
+
+    await artCubit.getSocialFeeds(page: 1);
+
+    setState(() {}); // Triggers rebuild once data is loaded
+  }
+
+  Future<void> onRefresh() async {
+    artCubit.homePageNumber = 1;
+    artCubit.getMyFeeds(userId: artCubit.myUserId.toString(), page: 1);
+    artCubit.getSocialFeeds(page: 1);
+  }
+
+  @override
+  void dispose() {
+    _mainScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: NestedScrollView(
+          controller: _mainScrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _headerWidget(),
+                ],
+              ),
+            ),
+          ],
+          body: ArtMusaList(
+            scrollController: _mainScrollController,
+            isMainScrolling: isMainScrolling,
+            artCubit: artCubit,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _headerWidget() {
+    print('hasFeeds: ${artCubit.hasFeeds}');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppBarDashboard(
+          leading: const SizedBox.shrink(),
+          title: Text(
+            'Popular Art',
+            style: const TextStyle(
+              color: Color(0xFF222222),
+              fontFamily: 'Manrope',
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              height: 42 / 24,
+              letterSpacing: -0.5,
+            ),
+          ),
+          end: Row(
+            children: [
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.searchIcon_1,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.dashboardSearch);
+                },
+              ),
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.settings,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.settings);
+                },
+              ),
+              IconButton(
+                padding: EdgeInsets.all(8),
+                iconSize: 24,
+                icon: SvgPicture.asset(
+                  Assets.notification,
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  context.push(RouteTo.notificationView);
+                },
+              ),
+            ],
+          ),
+        ),
+        // const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+          child: Text('Top 5 "Popular Public Art" within the last week.',
+              style: AppTextStyle.mediumTextStyle(
+                  color: AppColor.greenDark, size: 16)),
+        ),
+      ],
+    );
+  }
+}

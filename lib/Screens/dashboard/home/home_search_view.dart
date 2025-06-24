@@ -1,0 +1,288 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:musa_app/Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
+import 'package:musa_app/Cubit/dashboard/home_dashboard_cubit/home_state.dart';
+import 'package:musa_app/Resources/CommonWidgets/comment_view.dart';
+import 'package:musa_app/Screens/dashboard/home/display_feed_widgets.dart';
+import 'package:musa_app/Screens/profile/my_profile.dart';
+import 'package:musa_app/Utility/musa_widgets.dart';
+import 'package:musa_app/Utility/packages.dart';
+
+class DashboardSearch extends StatefulWidget {
+  const DashboardSearch({super.key});
+
+  @override
+  State<DashboardSearch> createState() => _DashboardSearchState();
+}
+
+class _DashboardSearchState extends State<DashboardSearch> {
+  TextEditingController searchController = TextEditingController();
+  HomeCubit cubit = HomeCubit();
+  Timer? _debounce;
+  late double screenHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    // cubit.getSearchMusaList('', cubit.isSelectedIndex);
+    // cubit.getSocialSearchFeeds(page: 1);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(Duration(milliseconds: 500), () {
+      if (query.length >= 2) {
+        cubit.getSearchMusaList(query, cubit.isSelectedIndex);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height - 300;
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: MusaWidgets.searchAppBar(
+          context: context,
+          backgroundColor: AppColor.white,
+          searchController: searchController,
+          onChangedSearch: _onSearchChanged,
+          body: BlocConsumer<HomeCubit, HomeSocialState>(
+            bloc: cubit,
+            listener: (context, state) {
+              if (state is SearchMusaSearchLoaded) {
+                setState(() {
+                  cubit.socialSearchMusaList = state.myMusaList.data ?? [];
+                });
+              }
+              if (state is HomeMusaSearchError) {
+                MusaPopup.popUpDialouge(
+                    context: context,
+                    onPressed: () => context.pop(true),
+                    buttonText: 'Okay',
+                    title: 'Error',
+                    description: state.errorMessage);
+              }
+            },
+            builder: (context, state) {
+              return Stack(
+                children: [
+                  state is HomeMusaSearchLoading
+                      ? MusaWidgets.loader(
+                          context: context, isForFullHeight: true)
+                      : buildSearchScreen(),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  buildSearchScreen() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: cubit.searchItem.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          cubit.itemSelection(index);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                              color: cubit.isSelectedIndex == index
+                                  ? AppColor.green
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  width: 1, color: AppColor.hintTextColor)),
+                          child: Text(
+                            cubit.searchItem[index],
+                            style: TextStyle(
+                                color: cubit.isSelectedIndex == index
+                                    ? Colors.white
+                                    : AppColor.primaryTextColor),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+            SizedBox(height: 15),
+            cubit.isSelectedIndex == 0
+                ? cubit.socialSearchMusaList.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: cubit.socialSearchMusaList.length,
+                        itemBuilder: (context, index) {
+                          return CommonSubWidgets(
+                            isMyMUSA: false,
+                            isContributed: false,
+                            isHomeMUSA: true,
+                            musaData: cubit.socialSearchMusaList[index],
+                            commentCount: cubit
+                                    .socialSearchMusaList[index].commentCount ??
+                                0,
+                            commentBtn: () async {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20)),
+                                ),
+                                builder: (context) {
+                                  return DraggableScrollableSheet(
+                                    initialChildSize: 0.8,
+                                    minChildSize: 0.5,
+                                    expand: false,
+                                    builder: (context, scrollController) {
+                                      return Container(
+                                        padding: EdgeInsets.all(16),
+                                        child: CommentView(
+                                          musaId: cubit
+                                              .socialSearchMusaList[index].id
+                                              .toString(),
+                                          commentCountBtn: (int count) {
+                                            setState(() {
+                                              cubit.socialSearchMusaList[index]
+                                                  .commentCount = count;
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                            deleteBtn: () {},
+                          );
+                        })
+                    : cubit.isFirstComeMusa
+                        ? SizedBox(
+                            height: screenHeight,
+                            child:
+                                Center(child: Text("Search by Musa Here...")),
+                          )
+                        : SizedBox(
+                            height: screenHeight,
+                            child: Center(child: Text("No Musa Available")),
+                          )
+                : cubit.searchUser.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: cubit.searchUser.length,
+                        itemBuilder: (_, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyProfile(
+                                        userId: cubit.searchUser[index].sId),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 25,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(60.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: (cubit.searchUser[index]
+                                                        .photo !=
+                                                    null &&
+                                                cubit.searchUser[index].photo!
+                                                    .isNotEmpty &&
+                                                cubit.searchUser[index].photo !=
+                                                    "null")
+                                            ? '${cubit.searchUser[index].photo}'
+                                            : 'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png',
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) =>
+                                            Image.network(
+                                                "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png"),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 15),
+                                    child: Text(
+                                      "${cubit.searchUser[index].firstName} ${cubit.searchUser[index].lastName}",
+                                      style: AppTextStyle.normalBoldTextStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : cubit.isFirstComeUser
+                        ? SizedBox(
+                            height: screenHeight,
+                            child:
+                                Center(child: Text("Search by User Here...")),
+                          )
+                        : SizedBox(
+                            height: screenHeight,
+                            child: Center(child: Text("No User Available")),
+                          ),
+          ],
+        ),
+      ),
+    );
+  }
+}

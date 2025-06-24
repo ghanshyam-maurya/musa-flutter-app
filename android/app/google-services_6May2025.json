@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "154296186840",
+    "project_id": "musa-app-7987b",
+    "storage_bucket": "musa-app-7987b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154296186840:android:03dd45015bb7e5373764ad",
+        "android_client_info": {
+          "package_name": "com.musaapp.musa_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154296186840-g83hl87d7hhe9rciud57nf4ldk6qjdbb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.musaapp.musa_app",
+            "certificate_hash": "630387b84ab36e7f9b5ca451b2194d4ffd542eae"
+          }
+        },
+        {
+          "client_id": "154296186840-vrdl39iv4ul7ntcmgluh3g874scsv58i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAavVAx3vQno3U6EC0ZlluJYUM3B4VBPMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154296186840-vrdl39iv4ul7ntcmgluh3g874scsv58i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

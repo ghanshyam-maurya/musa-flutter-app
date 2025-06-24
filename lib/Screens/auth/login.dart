@@ -1,0 +1,311 @@
+// Login with Email Page
+import 'package:flutter/gestures.dart';
+import 'package:musa_app/Cubit/auth/Login/login_cubit.dart';
+import 'package:musa_app/Cubit/auth/Login/login_state.dart';
+import 'package:musa_app/Utility/app_validations.dart';
+import 'package:musa_app/Utility/packages.dart';
+import '../../Utility/musa_widgets.dart';
+
+class Login extends StatefulWidget {
+  const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool obsecureText = true;
+  LoginCubit loginCubit = LoginCubit();
+  var fcm;
+  @override
+  void initState() {
+    fcm = Prefs.getString(PrefKeys.fcmToken);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close), // Cross icon
+          onPressed: () {
+            Navigator.pop(context); // <- Navigate to Get Started screen
+          },
+        ),
+        title: Text(
+          StringConst.pleaseSignIn,
+          style: AppTextStyle.normalTextStyleNew(
+            size: 18,
+            color: AppColor.black,
+            fontweight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Container(
+        color: Colors.white,
+        child: BlocConsumer<LoginCubit, LoginState>(
+          bloc: loginCubit,
+          listener: (context, state) {
+            if (state is LoginAuthorizedState || state is LoginPlateFormState) {
+              context.go(RouteTo.bottomNavBar);
+            }
+            if (state is UserLoginIncomplete) {
+              // context.push(RouteTo.signup);
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => Signup()));
+            }
+            if (state is LoginFailureState) {
+              MusaPopup.popUpDialouge(
+                  context: context,
+                  onPressed: () => context.pop(true),
+                  buttonText: 'Okay',
+                  title: 'Error',
+                  description: state.errorMessage);
+            }
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                buildLoginSection(context),
+                state is LoggedInLoadingState
+                    ? MusaWidgets.loader(
+                        context: context, isForFullHeight: true)
+                    : Container()
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  buildLoginSection(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        // image: DecorationImage(
+        //   image: AssetImage(Assets.backgound),
+        //   fit: BoxFit.cover,
+        // ),
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 23.0),
+            child: buildLoginForm(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  buildLoginForm(BuildContext context) {
+    return Form(
+      key: loginCubit.loginKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Text(
+          //   StringConst.pleaseSignIn,
+          //   style: AppTextStyle.mediumTextStyle(
+          //     color: AppColor.black,
+          //     size: 24,
+          //   ),
+          // ),
+          const SizedBox(height: 15),
+          Text(
+            StringConst.enterYourRegisteredAccountDetail,
+            // style: AppTextStyle.normalTextStyle(
+            //   color: AppColor.secondaryTextColor,
+            //   size: 14,
+            // ),
+            style: AppTextStyle.normalTextStyleNew(
+              size: 14,
+              color: AppColor.black,
+              fontweight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Email TextField with dynamic border
+          CommonTextField(
+            controller: loginCubit.emailController,
+            hintText: StringConst.email,
+            prefixIconPath: Assets.emailInboxGreen,
+            validator: MusaValidator.validatorEmail,
+          ),
+          const SizedBox(height: 16),
+          // Password TextField with dynamic border
+          CommonTextField(
+            controller: loginCubit.passwordController,
+            hintText: StringConst.password,
+            prefixIconPath: Assets.passKey,
+            isPassword: true,
+            validator: MusaValidator.validatorLoginPass,
+            // obscureText: loginCubit.obsecureText,
+            // onToggleObscure: () {
+            //   loginCubit.showPassword();
+            // },
+            obscureText: obsecureText,
+            onToggleObscure: () {
+              setState(() {
+                obsecureText = !obsecureText;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () {
+                context.push(RouteTo.forgotPassword);
+              },
+              child: Text(
+                StringConst.forgotPasswordQ,
+                style: AppTextStyle.normalTextStyleNew(
+                  size: 13,
+                  color: AppColor.greenDark,
+                  fontweight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          CommonButton(
+            title: StringConst.signIn,
+            onTap: () {
+              loginCubit.loginFormValidate();
+            },
+            color: AppColor.greenDark,
+          ),
+          SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                StringConst.dontHaveAcc,
+                style: AppTextStyle.normalTextStyleNew(
+                  size: 16,
+                  color: AppColor.black,
+                  fontweight: FontWeight.w400,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // context.go(RouteTo.signup);
+                  context.go(RouteTo.getStartSignUp);
+                },
+                child: Text(
+                  StringConst.signUp,
+                  style: AppTextStyle.normalTextStyleNew(
+                    size: 16,
+                    color: AppColor.black,
+                    fontweight: FontWeight.w400,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  buildTermsAndConditions(BuildContext context) {
+    return Column(
+      children: [
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: StringConst.termsText,
+                style: AppTextStyle.semiMediumTextStyle(
+                  color: AppColor.black,
+                  size: 12,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // Handle Terms & Condition tap
+                    print("terms");
+                  },
+              ),
+              TextSpan(
+                text: ' and ',
+                style: AppTextStyle.semiTextStyle(
+                  color: AppColor.black,
+                  size: 12,
+                ),
+              ),
+              TextSpan(
+                text: StringConst.privacyText,
+                style: AppTextStyle.semiMediumTextStyle(
+                  color: AppColor.black,
+                  size: 12,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // Handle Privacy Policy tap
+                    print("Privacy");
+                  },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              StringConst.dontHaveAcc,
+              style: AppTextStyle.semiTextStyle(
+                color: AppColor.black,
+                size: 12,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // context.go(RouteTo.signup);
+                context.go(RouteTo.getStartSignUp);
+              },
+              child: Text(
+                StringConst.createAccount,
+                style: AppTextStyle.mediumTextStyle(
+                  color: AppColor.primaryColor,
+                  size: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _buildSocialButton({
+    required VoidCallback onTap,
+    required String icon,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        child: SvgPicture.asset(
+          icon,
+          height: 50,
+          width: 50,
+        ),
+      ),
+    );
+  }
+}

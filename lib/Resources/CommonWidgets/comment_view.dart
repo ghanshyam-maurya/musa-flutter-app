@@ -1,0 +1,409 @@
+import 'package:musa_app/Cubit/Comment/comment_cubit.dart';
+import 'package:musa_app/Cubit/Comment/comment_state.dart';
+import 'package:musa_app/Resources/CommonWidgets/audio_recoder.dart';
+import 'package:musa_app/Resources/component/comment_audio_player.dart';
+import 'package:musa_app/Utility/musa_widgets.dart';
+import 'package:musa_app/Utility/packages.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:dotted_border/dotted_border.dart';
+
+class CommentView extends StatefulWidget {
+  final String musaId;
+  final Function(int count) commentCountBtn;
+
+  const CommentView({
+    super.key,
+    required this.musaId,
+    required this.commentCountBtn,
+  });
+
+  @override
+  State<CommentView> createState() => _CommentViewState();
+}
+
+class _CommentViewState extends State<CommentView> {
+  CommentCubit cubit = CommentCubit();
+  TextEditingController commentController = TextEditingController();
+  String? audioFilePath;
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    cubit.getCommentApi(
+        musaId: widget.musaId); // Fetch comments when screen loads
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context)
+              .unfocus(), // Close keyboard when tapping outside
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              // Row(
+              //   children: [
+              //     Spacer(),
+              //     // Container(
+              //     //   height: 4,
+              //     //   width: 30,
+              //     //   color: AppColor.grey,
+              //     // ),
+              //     //Spacer(),
+              //     GestureDetector(
+              //       onTap: () {
+              //         context.pop();
+              //       },
+              //       child: Icon(Icons.close),
+              //     ),
+              //   ],
+              // ),
+              Row(
+                children: [
+                  // Comment count on the left
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: BlocBuilder<CommentCubit, CommentState>(
+                      bloc: cubit,
+                      builder: (context, state) {
+                        int count = cubit.commentList.length;
+                        return Text(
+                          "$count comment${count == 1 ? '' : 's'}",
+                          style: AppTextStyle.normalBoldTextStyle
+                              .copyWith(fontSize: 14),
+                        );
+                      },
+                    ),
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context, true);
+                    },
+                    child: Icon(Icons.close),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: BlocBuilder<CommentCubit, CommentState>(
+                  bloc: cubit,
+                  builder: (context, state) {
+                    if (state is CommentLoading) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: AppColor.primaryColor,
+                      )); // Show loading indicator
+                    } else if (state is CommentSuccess) {
+                      if (cubit.commentList.isEmpty) {
+                        return Center(child: Text("No comments available"));
+                      }
+                      return ListView.builder(
+                          padding:
+                              EdgeInsets.only(bottom: 60), // Prevents overlap
+                          itemCount: cubit.commentList.length,
+                          itemBuilder: (context, index) {
+                            String userName = "",
+                                userProfileImage = "",
+                                timeStatus = "",
+                                comment = "";
+                            if (cubit.commentList[index].userDetail != null &&
+                                cubit.commentList[index].userDetail!
+                                    .isNotEmpty) {
+                              userName =
+                                  '${cubit.commentList[index].userDetail![0].firstName} ${cubit.commentList[index].userDetail![0].lastName}';
+                              userProfileImage = cubit.commentList[index]
+                                      .userDetail![0].photo ??
+                                  "";
+                            }
+                            if (cubit.commentList[index].createdAt != null) {
+                              timeStatus = timeago.format(DateTime.parse(
+                                  '${cubit.commentList[index].createdAt}'));
+                            }
+                            if (cubit.commentList[index].text != null) {
+                              comment = cubit.commentList[index].text ?? "";
+                            }
+                            return DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: Radius.circular(0),
+                              color: Color(0xFFE9E9E9),
+                              dashPattern: [4, 4],
+                              strokeWidth: 1,
+                              customPath: (size) => Path()
+                                ..moveTo(0, size.height)
+                                ..lineTo(size.width, size.height),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                //padding: MusaPadding.horizontalPadding,
+                                padding: EdgeInsets.zero,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          MusaWidgets.userProfileAvatar(
+                                            imageUrl: userProfileImage,
+                                            radius: 20.sp,
+                                            borderWidth: 2.sp,
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    userName,
+                                                    style: AppTextStyle
+                                                        .normalBoldTextStyle
+                                                        .copyWith(fontSize: 14),
+                                                  ),
+                                                  // SizedBox(width: 5.sp),
+                                                  // Text(
+                                                  //   timeStatus,
+                                                  //   style: AppTextStyle
+                                                  //       .normalBoldTextStyle
+                                                  //       .copyWith(
+                                                  //           color: Colors.grey,
+                                                  //           fontSize: 10),
+                                                  // ),
+                                                ],
+                                              ),
+                                              cubit.commentList[index]
+                                                          .fileLink !=
+                                                      null
+                                                  ? CommentAudioPlayer(
+                                                      fileLink: cubit
+                                                          .commentList[index]
+                                                          .fileLink!,
+                                                    )
+                                                  : Text(
+                                                      comment,
+                                                      style: AppTextStyle
+                                                          .normalBoldTextStyle
+                                                          .copyWith(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 14.sp),
+                                                    ),
+                                            ],
+                                          ))
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 48.0,
+                                            top: 2), // aligns with text
+                                        child: Text(
+                                          timeStatus,
+                                          style: AppTextStyle
+                                              .normalBoldTextStyle
+                                              .copyWith(
+                                            color: Colors.grey,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                    } else {
+                      return Center(child: Text("Failed to load comments"));
+                    }
+                  },
+                ),
+              ),
+              _buildCommentInputField(), // Fixed input field at the bottom
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCommentInputField() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      color: Colors.white,
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 40, // Match the height of the icon buttons
+              child: TextField(
+                focusNode: _focusNode,
+                controller: commentController,
+                style: TextStyle(fontSize: 14), // Optional: adjust font size
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 12), // Reduce vertical padding
+                  hintText: "Write a comment...",
+                  filled: true,
+                  fillColor: Color(0xFFF8FDFA),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color(0xFFB4C7B9),
+                      width: 1.5,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color(0xFFB4C7B9),
+                      width: 1.5,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color(0xFFB4C7B9),
+                      width: 2,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+          SizedBox(width: 4),
+          GestureDetector(
+            onTap: () {
+              onRecordButtonPressed();
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xFFB4C7B9),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white,
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/svgs/musa-comment-record.svg',
+                width: 18,
+                height: 18,
+              ),
+            ),
+          ),
+          SizedBox(width: 4),
+          GestureDetector(
+            onTap: () {
+              if (commentController.text.trim().isNotEmpty) {
+                cubit
+                    .postMusaComment(
+                  musaId: widget.musaId,
+                  musaComment: commentController.text,
+                )
+                    .then((_) {
+                  int newCount = cubit.commentCont + 1;
+                  widget.commentCountBtn(newCount);
+                  cubit.getCommentApi(musaId: widget.musaId);
+                  commentController.clear();
+                });
+              }
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xFFB4C7B9),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(6),
+                color: Color(0xFF00674E),
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/svgs/musa-comment-send-arrow.svg',
+                width: 18,
+                height: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  onRecordButtonPressed() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  height: 350,
+                  child: AudioCommentPopup(
+                    onRecordingComplete: (selectedRecordPath) {
+                      print('Recording Complete: $selectedRecordPath');
+                      if (mounted) {
+                        setState(() {
+                          audioFilePath = selectedRecordPath;
+                        });
+                      }
+                    },
+                    recordUploadBtn: () {
+                      cubit
+                          .postMusaComment(
+                              musaId: widget.musaId,
+                              musaComment: '',
+                              recordeAudio: audioFilePath.toString())
+                          .then((value) {
+                        int count = cubit.commentCont + 1;
+                        widget.commentCountBtn(count);
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
