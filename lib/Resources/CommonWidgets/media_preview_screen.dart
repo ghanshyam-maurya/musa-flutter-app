@@ -9,7 +9,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
 class MediaPreviewScreen extends StatefulWidget {
-  final CreateMusaCubit cubit;
+  final dynamic cubit;
   final List<AssetEntity> selectedAssets;
 
   const MediaPreviewScreen(
