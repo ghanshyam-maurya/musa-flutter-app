@@ -48,6 +48,10 @@ class MusaData {
   String? albumId;
   String? subAlbumId;
   String? musaType;
+  bool? recurringDisplay;
+  String? recurringInterval;
+  DateTime? recurringDate;
+  List<String>? audioComments;
   DateTime? createdAt;
   List<FileElement>? file;
   List<UserDetail>? userDetail;
@@ -71,6 +75,10 @@ class MusaData {
     this.albumId,
     this.subAlbumId,
     this.musaType,
+    this.recurringDisplay,
+    this.recurringInterval,
+    this.recurringDate,
+    this.audioComments,
     this.createdAt,
     this.file,
     this.userDetail,
@@ -95,6 +103,14 @@ class MusaData {
         albumId: json["album_id"],
         subAlbumId: json["sub_album_id"],
         musaType: json["musa_type"],
+        recurringDisplay: json["recurring_display"],
+        recurringInterval: json["recurring_interval"],
+        recurringDate: json["recurring_date"] == null
+            ? null
+            : DateTime.parse(json["recurring_date"]),
+        audioComments: json["audio_comments"] == null
+            ? []
+            : List<String>.from(json["audio_comments"]!),
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -135,6 +151,10 @@ class MusaData {
         "album_id": albumId,
         "sub_album_id": subAlbumId,
         "musa_type": musaType,
+        "recurring_display": recurringDisplay,
+        "recurring_interval": recurringInterval,
+        "recurring_date": recurringDate?.toIso8601String(),
+        "audio_comments": audioComments,
         "created_at": createdAt?.toIso8601String(),
         "file": file == null
             ? []

@@ -4,6 +4,7 @@ import '../../../../Resources/CommonWidgets/comment_view.dart';
 import '../../../../Utility/musa_widgets.dart';
 import '../../../../Utility/packages.dart';
 import 'musa_post_detail_with_comment.dart';
+import 'package:musa_app/Screens/dashboard/my_section/my_album/edit_musa.dart';
 
 class MusaPostDetailView extends StatefulWidget {
   final MusaData musaData;
@@ -508,32 +509,53 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 10),
+                            // margin: EdgeInsets.only(left: 10),
                             height: 28,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 0),
-                            decoration: BoxDecoration(
-                                color: AppColor.white,
-                                borderRadius: BorderRadius.circular(6.sp),
-                                border: Border.all(
-                                    width: 1.sp, color: AppColor.white)),
-                            child: Center(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/svgs/edit_icon.svg',
-                                    width: 14,
-                                    height: 14,
-                                    color: AppColor.greenDark,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: AppColor.white,
+                                padding: EdgeInsets.all(1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6.sp),
+                                  side: BorderSide(
+                                    color: AppColor.white,
+                                    width: 1.sp,
                                   ),
-                                  SizedBox(width: 6.sp),
-                                  Text('Edit MUSA',
+                                ),
+                                minimumSize: Size(0, 28), // height: 28
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditMusa(
+                                      musaData: musaData,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Center(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svgs/edit_icon.svg',
+                                      width: 14,
+                                      height: 14,
+                                    ),
+                                    SizedBox(width: 6.sp),
+                                    Text(
+                                      'Edit MUSA',
                                       style: AppTextStyle.normalTextStyle1
                                           .copyWith(
-                                              fontSize: 14,
-                                              color: AppColor.greenDark)),
-                                ],
+                                        fontSize: 14,
+                                        color: AppColor.greenDark,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

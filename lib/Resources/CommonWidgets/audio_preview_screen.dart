@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:musa_app/Cubit/dashboard/CreateMusa/create_musa_cubit.dart';
 
 class AudioPreviewScreen extends StatefulWidget {
-  final CreateMusaCubit cubit;
+  final dynamic cubit;
 
   const AudioPreviewScreen({super.key, required this.cubit});
 
