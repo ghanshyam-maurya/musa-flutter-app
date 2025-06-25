@@ -30,6 +30,7 @@ abstract class ApiUrl {
   static const String getMusaAlbum = '$baseUrl/users/musa/category/list';
   static const String getMusaSubAlbum = '$baseUrl/users/musa/sub-category/list';
   static const String addMusa = '$baseUrl/users/musa/create';
+  static const String updateMusa = '$baseUrl/users/musa/update';
   static const String getLibrary = '$baseUrl/users/library/images_files';
   static const String getAllLibrary = '$baseUrl/users/library/all_files';
   static const String createAlbum = '$baseUrl/users/musa/category/create';

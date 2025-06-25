@@ -1,5 +1,5 @@
 import 'package:musa_app/Cubit/dashboard/CreateMusa/create_musa_cubit.dart';
-import 'package:musa_app/Cubit/dashboard/CreateMusa/create_musa_state.dart';
+// import 'package:musa_app/Cubit/dashboard/CreateMusa/create_musa_state.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_recoder.dart';
 import 'package:musa_app/Resources/CommonWidgets/gallery_picker.dart';
 import 'package:musa_app/Utility/musa_widgets.dart';
@@ -9,7 +9,7 @@ import 'package:video_player/video_player.dart';
 import '../my_section/my_library/my_library_from_create_musa.dart';
 
 class MediaPickerBottomSheet extends StatefulWidget {
-  final CreateMusaCubit? cubit;
+  final dynamic cubit;
   const MediaPickerBottomSheet({super.key, this.cubit});
 
   @override

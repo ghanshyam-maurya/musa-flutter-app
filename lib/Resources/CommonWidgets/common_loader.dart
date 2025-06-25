@@ -21,7 +21,7 @@ class MusaLoader {
             )));
   }
 
-  static showCreateAlbumDialog(BuildContext context, CreateMusaCubit cubit,
+  static showCreateAlbumDialog(BuildContext context, dynamic cubit,
       {bool isSubAlbum = false}) {
     TextEditingController albumController = TextEditingController();
     String? selectedParentAlbumId =
