@@ -616,7 +616,7 @@ class MediaPickerBottomSheetState extends State<MediaPickerBottomSheet> {
     );
   }
 
-  buildUploadMediaSection(CreateMusaCubit? cubit) {
+  buildUploadMediaSection(dynamic cubit) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

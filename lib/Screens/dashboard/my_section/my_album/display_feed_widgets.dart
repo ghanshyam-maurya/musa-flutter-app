@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import '../../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
 import '../../../../Repository/AppResponse/social_musa_list_response.dart';
-import '../../../../Resources/component/musa_image_video_container.dart';
+import 'musa_image_video_container.dart';
 import '../../../../Utility/musa_widgets.dart';
 import '../../../../Utility/packages.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -487,8 +487,12 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                       )));
                           audioPlayer.stop();
                         },
-                        child: MusaImageVideoContainer(
-                            fileList: musaData.file ?? [])),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          // height: MediaQuery.of(context).size.height,
+                          child: MusaImageVideoContainer(
+                              fileList: musaData.file ?? []),
+                        )),
                     SizedBox(height: 10),
                     if (audioFileUrl != null)
                       Container(
