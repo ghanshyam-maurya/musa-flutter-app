@@ -3,7 +3,7 @@ abstract class ApiUrl {
   static const String token =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NzNlYTA5MTliMTgxZTI5ZWNmYmJkNCIsImVtYWlsIjoic2hha3RpMDJAeW9wbWFpbC5jb20iLCJpYXQiOjE3Mzc5NjgyOTh9.2cuygyccmpDIkmKzOYW-ufmlfggxfhQqse7cw_cgfIY';
 
-  // static const String baseUrl = 'http://192.168.66.208:8080/api';
+  // static const String baseUrl = 'http://192.168.70.208:8080/api';
   static const String baseUrl = 'https://dev.musa.art/api';
   // static const String baseUrl = 'http://localhost:8080/api';
 
@@ -82,4 +82,5 @@ abstract class ApiUrl {
       '$baseUrl/users/my-musa/contributors';
   static const String getArtMusaListApi =
       '$baseUrl/users/musa/art/list?page&limit';
+  static const String removeFileFromMusa = '$baseUrl/users/musa/files/remove';
 }

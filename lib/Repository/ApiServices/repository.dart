@@ -1126,4 +1126,38 @@ class Repository implements RepositoryImpl {
     }
     return Right(Failure(message: StringConst.somethingWentWrong));
   }
+
+  @override
+  Future removeFileFromMusa(
+      {String? fileId, String? audioComments, required String musaId}) async {
+    Uri url = Uri.parse(ApiUrl.removeFileFromMusa);
+    var token = Prefs.getString(PrefKeys.token);
+    try {
+      var bodydata;
+      if (fileId != null && fileId.isNotEmpty) {
+        bodydata = {'file_id': fileId, 'musa_id': musaId};
+      }
+      if (audioComments != null && audioComments.isNotEmpty) {
+        bodydata = {'audio_comments': audioComments, 'musa_id': musaId};
+      }
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(bodydata),
+      );
+
+      if (response.statusCode == 200) {
+        return Left(SocialMusaListResponse.fromJson(jsonDecode(response.body)));
+      } else if (response.statusCode == 401) {
+        return Right(Failure.fromJson(jsonDecode(response.body)));
+      }
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    } catch (e) {
+      debugPrint("error : $e");
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    }
+  }
 }

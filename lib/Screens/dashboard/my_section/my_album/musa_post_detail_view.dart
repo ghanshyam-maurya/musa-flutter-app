@@ -13,6 +13,7 @@ class MusaPostDetailView extends StatefulWidget {
   final bool? isHomeMusa;
   final bool? isOtherUserMusa;
   final Function()? deleteBtn;
+  final bool isComeFromCarosel;
 
   final String? flowType;
   const MusaPostDetailView({
@@ -24,6 +25,7 @@ class MusaPostDetailView extends StatefulWidget {
     this.isHomeMusa,
     this.isOtherUserMusa,
     this.deleteBtn,
+    this.isComeFromCarosel = false,
   });
 
   @override
@@ -532,6 +534,8 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                   MaterialPageRoute(
                                     builder: (context) => EditMusa(
                                       musaData: musaData,
+                                      isComeFromCarosel:
+                                          widget.isComeFromCarosel,
                                     ),
                                   ),
                                 );

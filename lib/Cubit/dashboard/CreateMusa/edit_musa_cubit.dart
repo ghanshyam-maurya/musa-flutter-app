@@ -180,10 +180,20 @@ class EditMusaCubit extends Cubit<EditMusaState> {
     emit(EditMusaInitial());
     emit(EditMusaLoading());
     try {
+      // 1. Filter the lists to get ONLY NEW, LOCAL files for upload.
+      // Existing remote files have IDs/paths that start with 'http'.
+      final newLocalMediaAssets = selectedAssets.value
+          .where((asset) => !asset.id.startsWith('http'))
+          .toList();
+
+      final newLocalAudioPaths = selectedAudio.value
+          .where((path) => !path.startsWith('http'))
+          .toList();
+
       List<dynamic> mediaFiles =
-          await processSelectedAssets(selectedAssets.value);
+          await processSelectedAssets(newLocalMediaAssets);
       List<dynamic> audioFiles =
-          await processSelectedAudios(selectedAudio.value);
+          await processSelectedAudios(newLocalAudioPaths);
       var mediaUrl = [];
       var mediaFile = [];
       var audioUrl = [];
@@ -682,5 +692,42 @@ class EditMusaCubit extends Cubit<EditMusaState> {
         ),
       ),
     );
+  }
+
+  Future<void> removeMusaFile({String? fileId, String? audioComments}) async {
+    emit(EditMusaLoading()); // Optional: show a loading state
+
+    try {
+      print("Attempting to remove file: $fileId for MUSA: $musaId");
+      // EXAMPLE REPOSITORY CALL:
+      var response;
+      if (fileId != null && fileId.isNotEmpty) {
+        response =
+            await repository.removeFileFromMusa(fileId: fileId, musaId: musaId);
+      } else if (audioComments != null && audioComments.isNotEmpty) {
+        response = await repository.removeFileFromMusa(
+            audioComments: audioComments, musaId: musaId);
+      } else {
+        emit(EditMusaError(errorMessage: 'No file specified for removal.'));
+      }
+      // Handle Either<Success, Failure> response
+      response.fold(
+        (success) {
+          // Left side - Success
+          emit(EditMusaFileRemove());
+          print("Successfully removed file");
+        },
+        (failure) {
+          // Right side - Failure
+          String errorMessage = failure.message ?? 'Failed to remove file.';
+          print("API Error: $errorMessage");
+          emit(EditMusaError(errorMessage: errorMessage));
+        },
+      );
+    } catch (e) {
+      print("Exception when removing file: $e");
+      emit(EditMusaError(
+          errorMessage: 'An error occurred while removing the file.'));
+    }
   }
 }

@@ -89,6 +89,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
                                 flowType: '',
                                 isMyMusa: true,
                                 likeUpdateCallBack: (likeByMe, likeCount) {},
+                                isComeFromCarosel: true,
                               ),
                             ),
                           );
