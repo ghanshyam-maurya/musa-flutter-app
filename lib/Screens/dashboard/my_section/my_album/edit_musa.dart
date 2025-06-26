@@ -16,13 +16,11 @@ import 'dart:io';
 
 class EditMusa extends StatefulWidget {
   final MusaData musaData;
-  // final MySectionAlbumData? albumName;
-  // final MySectionSubAlbumData? subAlbumName;
+  final bool isComeFromCarosel;
   const EditMusa({
     super.key,
-    // this.albumName,
-    // this.subAlbumName,
     required this.musaData,
+    this.isComeFromCarosel = false,
   });
 
   @override
@@ -35,12 +33,34 @@ class _EditMusaState extends State<EditMusa> {
   bool isPlaying = false;
   int? currentPlayingIndex;
   String? audioFilePath;
+  Map<String, String> remoteFileUrlToIdMap = {};
   @override
   void initState() {
     cubit = EditMusaCubit(
       musaId: widget.musaData.id!, // or int.parse(...) if you want int
     );
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.musaData.file != null && widget.musaData.file!.isNotEmpty) {
+        List<AssetEntity> existingAssets = [];
+        for (var fileData in widget.musaData.file!) {
+          if (fileData.fileLink != null && fileData.id != null) {
+            final isVideo = ['.mp4', '.mov', '.avi']
+                .any((ext) => fileData.fileLink!.toLowerCase().endsWith(ext));
+
+            final mockAsset = AssetEntity(
+              id: fileData.fileLink!,
+              typeInt: isVideo ? AssetType.video.index : AssetType.image.index,
+              width: 100,
+              height: 100,
+            );
+            existingAssets.add(mockAsset);
+            // Map the URL (asset.id) to the backend file ID for deletion
+            remoteFileUrlToIdMap[fileData.fileLink!] = fileData.id!;
+          }
+        }
+        // Initialize the cubit's selectedAssets with the existing media
+        cubit.selectedAssets.value = existingAssets;
+      }
       if (mounted) {
         print("musa data--------------------->: ${widget.musaData.toJson()}");
         // 1. Set text controllers and simple fields
@@ -197,7 +217,11 @@ class _EditMusaState extends State<EditMusa> {
       List<AssetEntity> assetEntities =
           await convertIdsToAssetEntities(selectedAssets);
 
-      cubit.selectedAssets.value = assetEntities;
+      // cubit.selectedAssets.value = assetEntities;
+      cubit.selectedAssets.value = [
+        ...cubit.selectedAssets.value,
+        ...assetEntities
+      ];
       setState(() {}); // Ensure UI updates
     }
   }
@@ -242,7 +266,15 @@ class _EditMusaState extends State<EditMusa> {
               // so the user returns to the page they were on before opening the editor.
               Navigator.of(context).pop(); // pop EditMusa
               Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              if (!widget.isComeFromCarosel) {
+                Navigator.of(context).pop();
+              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Musa updated successfully'),
+                  backgroundColor: AppColor.greenDark,
+                ),
+              );
             }
             if (state is EditMusaError) {
               MusaPopup.popUpDialouge(
@@ -251,6 +283,19 @@ class _EditMusaState extends State<EditMusa> {
                   buttonText: 'Okay',
                   title: 'Error',
                   description: state.errorMessage);
+            }
+            if (state is EditMusaFileRemove) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Musa updated successfully'),
+                  backgroundColor: AppColor.greenDark,
+                ),
+              );
+              Navigator.of(context).pop(); // pop EditMusa
+              Navigator.of(context).pop();
+              if (!widget.isComeFromCarosel) {
+                Navigator.of(context).pop();
+              }
             }
           },
           builder: (context, state) {
@@ -949,21 +994,7 @@ class _EditMusaState extends State<EditMusa> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if ((widget.musaData.audioComments?.isNotEmpty ?? false) &&
-            widget.musaData.audioComments!.first != '') ...[
-          const SizedBox(height: 12),
-          AudioPlayerPopup(
-            filePath: widget.musaData.audioComments!.first,
-            onRemove: () {
-              // setState(() {
-              //   audioFilePath = null;
-              //   cubit.audioFilePath = null;
-              // });
-              showRemoveConfirmationDialogForVoiceFile();
-            },
-          ),
-        ],
-        const SizedBox(height: 12),
+        // const SizedBox(height: 12),
         const Text(
           "Audio Comment",
           style: TextStyle(
@@ -986,6 +1017,21 @@ class _EditMusaState extends State<EditMusa> {
             // Apply opacity using RGBA or withAlpha if needed
           ),
         ),
+        const SizedBox(height: 12),
+        if ((widget.musaData.audioComments?.isNotEmpty ?? false) &&
+            widget.musaData.audioComments!.first != '') ...[
+          const SizedBox(height: 12),
+          AudioPlayerPopup(
+            filePath: widget.musaData.audioComments!.first,
+            onRemove: () {
+              // setState(() {
+              //   audioFilePath = null;
+              //   cubit.audioFilePath = null;
+              // });
+              showRemoveConfirmationDialogForVoiceFile();
+            },
+          ),
+        ],
         const SizedBox(height: 12),
         // Row(
         //   children: [
@@ -1792,86 +1838,205 @@ class _EditMusaState extends State<EditMusa> {
     );
   }
 
+  // Widget _buildMediaItem(
+  //     AssetEntity asset, int index, List<AssetEntity> selectedAssets) {
+  //   return AspectRatio(
+  //     aspectRatio: 1.0, // Square aspect ratio
+  //     child: FutureBuilder<Uint8List?>(
+  //       future: asset.thumbnailDataWithSize(const ThumbnailSize(200, 200)),
+  //       builder: (context, snapshot) {
+  //         if (!snapshot.hasData) {
+  //           return Container(
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(12),
+  //               color: Colors.grey[300],
+  //             ),
+  //             child: const Center(
+  //               child: CircularProgressIndicator(strokeWidth: 2),
+  //             ),
+  //           );
+  //         }
+
+  //         return Stack(
+  //           children: [
+  //             Container(
+  //               width: double.infinity,
+  //               height: double.infinity,
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 border: Border.all(color: Colors.grey.shade300),
+  //                 image: DecorationImage(
+  //                   image: MemoryImage(snapshot.data!),
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+
+  //             // Play icon for videos
+  //             if (asset.type == AssetType.video)
+  //               Positioned.fill(
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(12),
+  //                     color: Colors.black.withOpacity(0.3),
+  //                   ),
+  //                   child: const Center(
+  //                     child: Icon(
+  //                       Icons.play_circle_fill,
+  //                       color: Colors.white,
+  //                       size: 32,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+
+  //             // Remove button
+  //             Positioned(
+  //               top: 4,
+  //               right: 4,
+  //               child: GestureDetector(
+  //                 onTap: () {
+  //                   setState(() {
+  //                     selectedAssets.removeAt(index);
+  //                     cubit.selectedAssets.value = List.from(selectedAssets);
+  //                   });
+  //                 },
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(4),
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.white.withOpacity(1),
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.close,
+  //                     color: Colors.black,
+  //                     size: 16,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
   Widget _buildMediaItem(
       AssetEntity asset, int index, List<AssetEntity> selectedAssets) {
+    // Check if the asset ID is a remote URL
+    final bool isRemote = asset.id.startsWith('http');
+
     return AspectRatio(
       aspectRatio: 1.0, // Square aspect ratio
-      child: FutureBuilder<Uint8List?>(
-        future: asset.thumbnailDataWithSize(const ThumbnailSize(200, 200)),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.grey[300],
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            );
-          }
-
-          return Stack(
-            children: [
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                  image: DecorationImage(
-                    image: MemoryImage(snapshot.data!),
-                    fit: BoxFit.cover,
+      child: Stack(
+        children: [
+          // Display Logic: Use CachedNetworkImage for remote, FutureBuilder for local
+          isRemote
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
-                ),
-              ),
-
-              // Play icon for videos
-              if (asset.type == AssetType.video)
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.black.withOpacity(0.3),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_circle_fill,
-                        color: Colors.white,
-                        size: 32,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      imageUrl: asset.id,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey[300],
+                        child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2)),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.error),
                       ),
                     ),
                   ),
+                )
+              : FutureBuilder<Uint8List?>(
+                  future: asset
+                      .thumbnailDataWithSize(const ThumbnailSize(200, 200)),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey[300],
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      );
+                    }
+                    return Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                        image: DecorationImage(
+                          image: MemoryImage(snapshot.data!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
                 ),
 
-              // Remove button
-              Positioned(
-                top: 4,
-                right: 4,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedAssets.removeAt(index);
-                      cubit.selectedAssets.value = List.from(selectedAssets);
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.black,
-                      size: 16,
-                    ),
-                  ),
+          // Play icon for videos
+          if (asset.type == AssetType.video)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.3),
+                ),
+                child: const Center(
+                  child: Icon(Icons.play_circle_fill,
+                      color: Colors.white, size: 32),
                 ),
               ),
-            ],
-          );
-        },
+            ),
+
+          // Remove button
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: () {
+                if (isRemote) {
+                  // For remote files, show confirmation dialog
+                  final remoteFileId = remoteFileUrlToIdMap[asset.id];
+                  if (remoteFileId != null) {
+                    showRemoveConfirmationDialogForRemoteFile(
+                        remoteFileId, asset.id);
+                  }
+                } else {
+                  // For local files, just remove from the list
+                  setState(() {
+                    selectedAssets.removeAt(index);
+                    cubit.selectedAssets.value = List.from(selectedAssets);
+                  });
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isRemote ? Icons.delete : Icons.close,
+                  color: isRemote ? Colors.red.shade700 : Colors.black,
+                  size: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1887,12 +2052,8 @@ class _EditMusaState extends State<EditMusa> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Text(
-                'Alert',
-                style: AppTextStyle.mediumTextStyle(
-                  color: AppColor.black,
-                  size: 20,
-                ),
+              title: const Text(
+                'Confirm Deletion',
                 textAlign: TextAlign.center,
               ),
               content: Column(
@@ -1907,28 +2068,6 @@ class _EditMusaState extends State<EditMusa> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  // Row(
-                  //   children: [
-                  //     Checkbox(
-                  //       value: removeText,
-                  //       activeColor: Color(0xFF00674E),
-                  //       onChanged: (value) {
-                  //         setState(() {
-                  //           removeText = value ?? false;
-                  //         });
-                  //       },
-                  //     ),
-                  //     Expanded(
-                  //       child: Text(
-                  //         'Also remove bio text',
-                  //         style: AppTextStyle.normalTextStyle(
-                  //           color: AppColor.black,
-                  //           size: 14,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
               actions: [
@@ -1947,18 +2086,14 @@ class _EditMusaState extends State<EditMusa> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    // var userId = Prefs.getString(PrefKeys.uId);
-
-                    // Make API calls
-                    // await editProfileCubit.removePrfilePicBio();
-                    // await editProfileCubit.getUserDetails(userId: userId);
+                    await cubit.removeMusaFile(audioComments: 'remove');
 
                     Navigator.of(context).pop();
                   },
                   child: Text(
                     'Yes, Remove',
                     style: TextStyle(
-                      color: Color(0xFF00674E),
+                      color: Colors.red,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1967,6 +2102,59 @@ class _EditMusaState extends State<EditMusa> {
               ],
             );
           },
+        );
+      },
+    );
+  }
+
+  void showRemoveConfirmationDialogForRemoteFile(
+      String fileId, String fileUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text(
+            'Confirm Deletion',
+            textAlign: TextAlign.center,
+          ),
+          content: const Text(
+            'Are you sure you want to remove this media file from your MUSA?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Call the cubit method to delete the file via API
+                await cubit.removeMusaFile(fileId: fileId);
+
+                // // Update the UI by removing the item from the state
+                // setState(() {
+                //   var updatedAssets =
+                //       List<AssetEntity>.from(cubit.selectedAssets.value)
+                //         ..removeWhere((asset) => asset.id == fileUrl);
+                //   cubit.selectedAssets.value = updatedAssets;
+                //   remoteFileUrlToIdMap.remove(fileUrl);
+                // });
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Yes, Remove',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
         );
       },
     );

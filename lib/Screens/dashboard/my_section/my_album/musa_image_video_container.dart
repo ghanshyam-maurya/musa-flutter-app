@@ -91,22 +91,25 @@ class _CollageContainerState extends State<MusaImageVideoContainer> {
                 ),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: imageView(getBestLink(fileList[1]),
-                            imageHeight: double.infinity,
-                            imageWidth: double.infinity,
-                            file: fileList[1]),
-                      ),
-                      const SizedBox(height: 5),
-                      Expanded(
-                        child: imageView(getBestLink(fileList[2]),
-                            imageHeight: double.infinity,
-                            imageWidth: double.infinity,
-                            file: fileList[2]),
-                      ),
-                    ],
+                  child: SizedBox(
+                    height: screenHeight * 0.25,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: imageView(getBestLink(fileList[1]),
+                              imageHeight: double.infinity,
+                              imageWidth: double.infinity,
+                              file: fileList[1]),
+                        ),
+                        const SizedBox(height: 5),
+                        Expanded(
+                          child: imageView(getBestLink(fileList[2]),
+                              imageHeight: double.infinity,
+                              imageWidth: double.infinity,
+                              file: fileList[2]),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],
