@@ -350,7 +350,7 @@ class _MyScreenState extends State<MyScreen> {
       {
         'label': StringConst.displayMusa,
         'icon': Assets.displayMusa,
-        'onTap': () => print("Videos tapped"),
+        'onTap': () => context.push(RouteTo.displayMusa),
       },
       {
         'label': StringConst.contributors,

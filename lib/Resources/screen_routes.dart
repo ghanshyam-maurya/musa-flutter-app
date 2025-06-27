@@ -13,6 +13,7 @@ import '../Screens/profile/settings_view/contact_us_view.dart';
 import '../Screens/profile/settings_view/settings_view.dart';
 import '../Screens/profile/settings_view/terms_n_privacy_view.dart';
 import '../Screens/profile/my_musa_contributors.dart';
+import 'package:musa_app/Screens/display_musa/display_musa.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -118,6 +119,12 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: RouteTo.displayMusa,
+      builder: (BuildContext context, GoRouterState state) {
+        return DisplayMusa();
+      },
+    ),
+    GoRoute(
         path: RouteTo.chatView,
         builder: (BuildContext context, GoRouterState state) {
           return ChatView(chatListData: state.extra as ChatListData);
@@ -218,4 +225,5 @@ abstract class RouteTo {
   static const String dashboardSearch = '/dashboard_search';
   static const String myMusaContributorList = '/my_musa_contributor_list';
   static const String myMusaCollection = '/myMusaCollection';
+  static const String displayMusa = '/displayMusa';
 }

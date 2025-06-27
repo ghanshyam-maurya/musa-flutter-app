@@ -859,7 +859,8 @@ class Repository implements RepositoryImpl {
   Future<Either<SocialMusaListResponse, Failure>> getMyFeedsList(
       {required int page, required String userId}) async {
     // TODO: implement getMyFeedsList
-    Uri url = Uri.parse(ApiUrl.getProfileMusaListApi);
+    Uri url = Uri.parse('${ApiUrl.getProfileMusaListApi}?page=$page');
+    // Uri url = Uri.parse(ApiUrl.getProfileMusaListApi);
     var token = Prefs.getString(PrefKeys.token);
     try {
       http.Response response = await http.post(url,
