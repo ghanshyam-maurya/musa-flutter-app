@@ -10,6 +10,10 @@ final class EditMusaLoading extends DisplayState {}
 
 final class EditMusaLoaded extends DisplayState {}
 
+final class DeletMusaLoading extends DisplayState {}
+
+final class DeleteMusaSuccess extends DisplayState {}
+
 final class EditMusaError extends DisplayState {
   final String? errorMessage;
   EditMusaError({required this.errorMessage});

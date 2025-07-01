@@ -153,42 +153,44 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                 fontweight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 6.h),
+                            if (musaData.description != null &&
+                                musaData.description!.isNotEmpty)
+                              SizedBox(height: 6.h),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '$albumName  / ',
+                                  albumName,
                                   style: AppTextStyle.normalTextStyleNew(
                                     size: 14,
                                     color: Color(0xFFABABAB),
                                     fontweight: FontWeight.w500,
                                   ),
                                 ),
-                                // Container(
-                                //   margin: EdgeInsets.only(
-                                //       top: 5.sp, left: 4.sp, right: 4.sp),
-                                //   child: Icon(Icons.circle,
-                                //       color: AppColor.primaryColor, size: 6.sp),
-                                // ),
-                                Text(
-                                  subAlbumName,
-                                  style: AppTextStyle.normalTextStyleNew(
-                                    size: 14,
-                                    color: Color(0xFFABABAB),
-                                    fontweight: FontWeight.w500,
+                                if (subAlbumName.isNotEmpty) ...[
+                                  Text(
+                                    ' / ',
+                                    style: AppTextStyle.normalTextStyleNew(
+                                      size: 14,
+                                      color: Color(0xFFABABAB),
+                                      fontweight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
+                                  Text(
+                                    subAlbumName,
+                                    style: AppTextStyle.normalTextStyleNew(
+                                      size: 14,
+                                      color: Color(0xFFABABAB),
+                                      fontweight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
-                            // Text(
-                            //   musaData.description ?? "",
-                            //   style: AppTextStyle.normalTextStyle1
-                            //       .copyWith(fontSize: 12),
-                            // ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
+                            if (albumName.isNotEmpty || subAlbumName.isNotEmpty)
+                              SizedBox(
+                                height: 15.h,
+                              ),
                             Divider(color: Color(0xFFE9E9E9)),
                             Row(
                               children: [

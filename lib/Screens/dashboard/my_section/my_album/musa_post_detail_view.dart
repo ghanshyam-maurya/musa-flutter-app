@@ -159,7 +159,9 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                 fontweight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 6.h),
+                            if (musaData.description != null &&
+                                musaData.description!.isNotEmpty)
+                              SizedBox(height: 6.h),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -171,12 +173,6 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                     fontweight: FontWeight.w500,
                                   ),
                                 ),
-                                // Container(
-                                //   margin: EdgeInsets.only(
-                                //       top: 5.sp, left: 4.sp, right: 4.sp),
-                                //   child: Icon(Icons.circle,
-                                //       color: AppColor.primaryColor, size: 6.sp),
-                                // ),
                                 if (subAlbumName.isNotEmpty) ...[
                                   Text(
                                     ' / ',
@@ -197,14 +193,10 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                 ],
                               ],
                             ),
-                            // Text(
-                            //   musaData.description ?? "",
-                            //   style: AppTextStyle.normalTextStyle1
-                            //       .copyWith(fontSize: 12),
-                            // ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
+                            if (albumName.isNotEmpty || subAlbumName.isNotEmpty)
+                              SizedBox(
+                                height: 15.h,
+                              ),
                             Divider(color: Color(0xFFE9E9E9)),
                             Row(
                               children: [

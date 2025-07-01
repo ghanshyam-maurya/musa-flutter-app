@@ -124,6 +124,25 @@ class _SocialMusaListState extends State<DisplayMusaList> {
                     margin: EdgeInsets.all(10),
                   ),
                 );
+              } else if (state is DeleteMusaSuccess) {
+                displayCubit.getMyFeeds(
+                    page: displayCubit.homePageNumber,
+                    userId: widget.displayCubit.myUserId.toString());
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'MUSA deleted successfully',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: AppColor.primaryColor,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.all(10),
+                  ),
+                );
               }
             },
             builder: (context, state) {

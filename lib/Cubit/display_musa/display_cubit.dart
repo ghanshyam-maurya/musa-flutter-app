@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:musa_app/Cubit/display_musa/display_state.dart';
+import 'package:musa_app/Repository/ApiServices/api_client.dart';
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Utility/packages.dart';
 import 'package:musa_app/Resources/api_url.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DisplayCubit extends Cubit<DisplayState> {
   DisplayCubit() : super(MyListInitial());
@@ -20,7 +22,7 @@ class DisplayCubit extends Cubit<DisplayState> {
   bool hasFeeds = false;
 
   List<MusaData> myMusaList = [];
-
+  final ApiClient _apiClient = ApiClient();
   //Set user data
   setUserData() {
     var userData = Utilities.getUserData();
@@ -129,5 +131,30 @@ class DisplayCubit extends Cubit<DisplayState> {
       print("Error111: $e");
       emit(EditMusaError(errorMessage: 'Something went wrong.'));
     }
+  }
+
+  void deleteMusa(MusaData musaData) {
+    deleteMusaApi(musaId: musaData.id.toString(), userId: musaData.userId);
+  }
+
+  //Event for delete musa api
+  Future<void> deleteMusaApi({required String musaId, userId}) async {
+    emit(DeletMusaLoading());
+    await Connectivity().checkConnectivity().then((value) async {
+      if (value != ConnectivityResult.none) {
+        try {
+          final token = Prefs.getString(PrefKeys.token);
+          final response = await _apiClient.post(ApiUrl.deleteMusa,
+              headers: {'Authorization': 'Bearer $token'},
+              body: {'musa_id': musaId});
+          if (response['status'] == 200) {
+            print("DELETED SSSSSSSSSSS");
+            emit(DeleteMusaSuccess());
+          } else {}
+        } catch (e) {
+          print(e);
+        }
+      }
+    });
   }
 }

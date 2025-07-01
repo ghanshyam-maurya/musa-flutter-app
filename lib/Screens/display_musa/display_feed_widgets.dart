@@ -321,6 +321,9 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                   builder: (_) => MusaPostDetailView(
                                         musaData: musaData,
                                         flowType: '',
+                                        deleteBtn: () {
+                                          displayCubit.deleteMusa(musaData);
+                                        },
                                       )));
                           audioPlayer.stop();
                         },

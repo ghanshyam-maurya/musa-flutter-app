@@ -18,7 +18,7 @@ class CarouselSliderWidget extends StatefulWidget {
 class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
   List<MusaData>? musaList;
   List<MusaData>? tempMusaList = [];
-
+  CarouselCubit carouselCubit = CarouselCubit();
   @override
   // void initState() {
   //   musaList = widget.musaList;
@@ -90,6 +90,9 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
                                 isMyMusa: true,
                                 likeUpdateCallBack: (likeByMe, likeCount) {},
                                 isComeFromCarosel: true,
+                                deleteBtn: () {
+                                  carouselCubit.deleteMusa(item);
+                                },
                               ),
                             ),
                           );
