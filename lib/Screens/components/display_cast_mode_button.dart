@@ -5,12 +5,16 @@ class DisplayCastModeWidget extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final List<dynamic> fileList; // Use the correct type for your file list
   final VoidCallback? onPressed;
+  double? height = 20.sp;
+  double? fontSize = 10.sp;
 
-  const DisplayCastModeWidget({
+  DisplayCastModeWidget({
     Key? key,
     required this.padding,
     required this.fileList,
     this.onPressed,
+    this.height = 20,
+    this.fontSize = 10,
   }) : super(key: key);
 
   @override
@@ -23,7 +27,7 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
     return Padding(
       padding: widget.padding,
       child: SizedBox(
-        height: 20.sp,
+        height: widget.height,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -34,8 +38,8 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
               borderColor: AppColor.primaryColor,
               borderWidth: 1.sp,
               borderRadius: 5.sp,
-              fontWeight: FontWeight.w400,
-              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              fontSize: widget.fontSize!,
               textcolor: AppColor.primaryColor,
             ),
             // You can add the MusaImageVideoContainer here if needed
