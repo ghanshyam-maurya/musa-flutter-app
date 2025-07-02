@@ -48,6 +48,7 @@ class MusaData {
   String? albumId;
   String? subAlbumId;
   String? musaType;
+  bool? amIContributorInThisMusa;
   bool? recurringDisplay;
   String? recurringInterval;
   DateTime? recurringDate;
@@ -75,6 +76,7 @@ class MusaData {
     this.albumId,
     this.subAlbumId,
     this.musaType,
+    this.amIContributorInThisMusa,
     this.recurringDisplay,
     this.recurringInterval,
     this.recurringDate,
@@ -103,6 +105,7 @@ class MusaData {
         albumId: json["album_id"],
         subAlbumId: json["sub_album_id"],
         musaType: json["musa_type"],
+        amIContributorInThisMusa: json["amIContributorInThisMusa"],
         recurringDisplay: json["recurring_display"],
         recurringInterval: json["recurring_interval"],
         recurringDate: json["recurring_date"] == null
@@ -151,6 +154,7 @@ class MusaData {
         "album_id": albumId,
         "sub_album_id": subAlbumId,
         "musa_type": musaType,
+        "amIContributorInThisMusa": amIContributorInThisMusa,
         "recurring_display": recurringDisplay,
         "recurring_interval": recurringInterval,
         "recurring_date": recurringDate?.toIso8601String(),

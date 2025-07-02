@@ -1,11 +1,12 @@
 import 'package:musa_app/Screens/components/display_cast_mode_button.dart';
 
-import '../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
+// import '../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Resources/CommonWidgets/comment_view.dart';
 import '../../../Utility/musa_widgets.dart';
 import '../../../Utility/packages.dart';
 import 'musa_post_detail_with_comment.dart';
+import 'package:musa_app/Screens/dashboard/my_section/my_album/edit_musa.dart';
 
 class MusaPostDetailView extends StatefulWidget {
   final MusaData musaData;
@@ -13,16 +14,19 @@ class MusaPostDetailView extends StatefulWidget {
   final bool? isMyMusa;
   final bool? isHomeMusa;
   final bool? isOtherUserMusa;
+  final bool isComeFromCarosel;
 
   final String? flowType;
-  const MusaPostDetailView(
-      {super.key,
-      required this.musaData,
-      required this.flowType,
-      this.likeUpdateCallBack,
-      this.isMyMusa,
-      this.isHomeMusa,
-      this.isOtherUserMusa});
+  const MusaPostDetailView({
+    super.key,
+    required this.musaData,
+    required this.flowType,
+    this.likeUpdateCallBack,
+    this.isMyMusa,
+    this.isHomeMusa,
+    this.isOtherUserMusa,
+    this.isComeFromCarosel = true,
+  });
 
   @override
   State<MusaPostDetailView> createState() => _MusaPostDetailViewState(musaData);
@@ -423,6 +427,62 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          if (musaData.amIContributorInThisMusa == true)
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              height: 28,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: AppColor.white,
+                                  padding: EdgeInsets.all(1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6.sp),
+                                    side: BorderSide(
+                                      color: AppColor.white,
+                                      width: 1.sp,
+                                    ),
+                                  ),
+                                  minimumSize: Size(0, 28), // height: 28
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditMusa(
+                                        musaData: musaData,
+                                        isComeFromCarosel:
+                                            widget.isComeFromCarosel,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/svgs/edit_icon.svg',
+                                        width: 14,
+                                        height: 14,
+                                      ),
+                                      SizedBox(width: 6.sp),
+                                      Text(
+                                        'Edit MUSA',
+                                        style: AppTextStyle.normalTextStyle1
+                                            .copyWith(
+                                          fontSize: 14,
+                                          color: AppColor.greenDark,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          Spacer(),
                           DisplayCastModeWidget(
                             padding: EdgeInsets.only(right: 10.sp),
                             fileList: musaData.file ?? [],
