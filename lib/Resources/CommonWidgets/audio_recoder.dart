@@ -229,8 +229,8 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
                             !_isRecording && !_isPaused
                                 ? Icons.record_voice_over
                                 : _isRecording
-                                    ? Icons.stop
-                                    : Icons.play_arrow,
+                                    ? Icons.pause
+                                    : Icons.record_voice_over,
                             color: Colors.white,
                             size: 40,
                           ),
