@@ -146,162 +146,197 @@ class _MyScreenSubAlbumViewState extends State<MyScreenSubAlbumView> {
                                             mySectionCubit.subAlbumList![index];
 
                                         return SizedBox(
-                                          width: itemWidth,
-                                          child:
-                                              subAlbumData.file?.isEmpty ?? true
-                                                  ? _noMusaCardWidget(
-                                                      subAlbumData)
-                                                  : Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        InkWell(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        SubAlbumMusaList(
-                                                                  subAlbumId:
-                                                                      subAlbumData
-                                                                              .id ??
-                                                                          '',
-                                                                  subAlbumName:
-                                                                      subAlbumData
-                                                                              .title ??
-                                                                          '',
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                          child: SizedBox(
-                                                            height: 150,
-                                                            child: Card(
-                                                              elevation: 0.0,
-                                                              color: AppColor
-                                                                  .white,
-                                                              shadowColor:
-                                                                  AppColor.grey,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15.sp),
-                                                              ),
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15),
-                                                                child: GridView
-                                                                    .builder(
-                                                                  // Use GridView.builder instead of GridView.count for better control over item count
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .zero, // Remove any padding in GridView
-                                                                  shrinkWrap:
-                                                                      true, // Make sure the grid is wrapped to its content size
-                                                                  physics:
-                                                                      NeverScrollableScrollPhysics(), // Disable scroll in GridView
-                                                                  gridDelegate:
-                                                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                                                    crossAxisCount:
-                                                                        2,
-                                                                    crossAxisSpacing:
-                                                                        8, // Optional: Adjust horizontal spacing
-                                                                    mainAxisSpacing:
-                                                                        8, // Optional: Adjust vertical spacing
-                                                                  ),
-                                                                  itemCount: subAlbumData
-                                                                          .file
-                                                                          ?.length ??
-                                                                      0,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          imgIndex) {
-                                                                    return CachedNetworkImage(
-                                                                      imageUrl:
-                                                                          subAlbumData.file?[imgIndex].fileLink ??
-                                                                              '',
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                      placeholder:
-                                                                          (context, url) =>
-                                                                              Container(
-                                                                        color: Colors
-                                                                            .grey[200],
-                                                                        height:
-                                                                            10,
-                                                                        width:
-                                                                            10,
-                                                                        child:
-                                                                            Center(
-                                                                          child:
-                                                                              CircularProgressIndicator(
-                                                                            color:
-                                                                                AppColor.primaryColor,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      errorWidget: (context,
-                                                                              url,
-                                                                              error) =>
-                                                                          Container(
-                                                                        color: Colors
-                                                                            .grey[200],
-                                                                        child: Icon(
-                                                                            Icons.error),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 13.w,
-                                                                  top: 8.h),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
+                                            width: itemWidth,
+                                            child: subAlbumData.file?.isEmpty ??
+                                                    true
+                                                ? _noMusaCardWidget(
+                                                    subAlbumData)
+                                                : MusaWidgets
+                                                    .commonAlbumFolderGridContainer(
+                                                    context,
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SubAlbumMusaList(
+                                                            subAlbumId:
+                                                                subAlbumData
+                                                                        .id ??
+                                                                    '',
+                                                            subAlbumName:
                                                                 subAlbumData
                                                                         .title ??
-                                                                    "",
-                                                                style: AppTextStyle
-                                                                    .normalBoldTextStyle
-                                                                    .copyWith(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              // Text(
-                                                              //   '${subAlbumData.file?.length ?? 0} Media',
-                                                              //   style: AppTextStyle.normalTextStyle(
-                                                              //     color: AppColor.grey,
-                                                              //     size: 14,
-                                                              //   ),
-                                                              // ),
-                                                            ],
+                                                                    '',
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                        );
+                                                      );
+                                                    },
+                                                    images: subAlbumData.file
+                                                        as List,
+                                                    bgColor: Colors.white,
+                                                    albumName: subAlbumData
+                                                        .title
+                                                        .toString(),
+                                                    flowType: "MyMusa",
+                                                    folderId: subAlbumData.id
+                                                        .toString(),
+                                                    showSubAlbum: false,
+                                                    subAlbumCount: subAlbumData
+                                                        .file!.length
+                                                        .toString(),
+                                                  )
+                                            // Column(
+                                            //     crossAxisAlignment:
+                                            //         CrossAxisAlignment
+                                            //             .start,
+                                            //     children: [
+                                            //       InkWell(
+                                            //         onTap: () {
+                                            //           Navigator.push(
+                                            //             context,
+                                            //             MaterialPageRoute(
+                                            //               builder:
+                                            //                   (context) =>
+                                            //                       SubAlbumMusaList(
+                                            //                 subAlbumId:
+                                            //                     subAlbumData
+                                            //                             .id ??
+                                            //                         '',
+                                            //                 subAlbumName:
+                                            //                     subAlbumData
+                                            //                             .title ??
+                                            //                         '',
+                                            //               ),
+                                            //             ),
+                                            //           );
+                                            //         },
+                                            //         child: SizedBox(
+                                            //           height: 150,
+                                            //           child: Card(
+                                            //             elevation: 0.0,
+                                            //             color: AppColor
+                                            //                 .white,
+                                            //             shadowColor:
+                                            //                 AppColor.grey,
+                                            //             shape:
+                                            //                 RoundedRectangleBorder(
+                                            //               borderRadius:
+                                            //                   BorderRadius
+                                            //                       .circular(
+                                            //                           15.sp),
+                                            //             ),
+                                            //             child: ClipRRect(
+                                            //               borderRadius:
+                                            //                   BorderRadius
+                                            //                       .circular(
+                                            //                           15),
+                                            //               child: GridView
+                                            //                   .builder(
+                                            //                 // Use GridView.builder instead of GridView.count for better control over item count
+                                            //                 padding:
+                                            //                     EdgeInsets
+                                            //                         .zero, // Remove any padding in GridView
+                                            //                 shrinkWrap:
+                                            //                     true, // Make sure the grid is wrapped to its content size
+                                            //                 physics:
+                                            //                     NeverScrollableScrollPhysics(), // Disable scroll in GridView
+                                            //                 gridDelegate:
+                                            //                     SliverGridDelegateWithFixedCrossAxisCount(
+                                            //                   crossAxisCount:
+                                            //                       2,
+                                            //                   crossAxisSpacing:
+                                            //                       8, // Optional: Adjust horizontal spacing
+                                            //                   mainAxisSpacing:
+                                            //                       8, // Optional: Adjust vertical spacing
+                                            //                 ),
+                                            //                 itemCount: subAlbumData
+                                            //                         .file
+                                            //                         ?.length ??
+                                            //                     0,
+                                            //                 itemBuilder:
+                                            //                     (context,
+                                            //                         imgIndex) {
+                                            //                   return CachedNetworkImage(
+                                            //                     imageUrl:
+                                            //                         subAlbumData.file?[imgIndex].fileLink ??
+                                            //                             '',
+                                            //                     fit: BoxFit
+                                            //                         .cover,
+                                            //                     placeholder:
+                                            //                         (context, url) =>
+                                            //                             Container(
+                                            //                       color: Colors
+                                            //                           .grey[200],
+                                            //                       height:
+                                            //                           10,
+                                            //                       width:
+                                            //                           10,
+                                            //                       child:
+                                            //                           Center(
+                                            //                         child:
+                                            //                             CircularProgressIndicator(
+                                            //                           color:
+                                            //                               AppColor.primaryColor,
+                                            //                         ),
+                                            //                       ),
+                                            //                     ),
+                                            //                     errorWidget: (context,
+                                            //                             url,
+                                            //                             error) =>
+                                            //                         Container(
+                                            //                       color: Colors
+                                            //                           .grey[200],
+                                            //                       child: Icon(
+                                            //                           Icons.error),
+                                            //                     ),
+                                            //                   );
+                                            //                 },
+                                            //               ),
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            //       Padding(
+                                            //         padding:
+                                            //             EdgeInsets.only(
+                                            //                 left: 13.w,
+                                            //                 top: 8.h),
+                                            //         child: Column(
+                                            //           crossAxisAlignment:
+                                            //               CrossAxisAlignment
+                                            //                   .start,
+                                            //           children: [
+                                            //             Text(
+                                            //               subAlbumData
+                                            //                       .title ??
+                                            //                   "",
+                                            //               style: AppTextStyle
+                                            //                   .normalBoldTextStyle
+                                            //                   .copyWith(
+                                            //                 fontSize: 15,
+                                            //                 fontWeight:
+                                            //                     FontWeight
+                                            //                         .w500,
+                                            //               ),
+                                            //               maxLines: 1,
+                                            //               overflow:
+                                            //                   TextOverflow
+                                            //                       .ellipsis,
+                                            //             ),
+                                            //             // Text(
+                                            //             //   '${subAlbumData.file?.length ?? 0} Media',
+                                            //             //   style: AppTextStyle.normalTextStyle(
+                                            //             //     color: AppColor.grey,
+                                            //             //     size: 14,
+                                            //             //   ),
+                                            //             // ),
+                                            //           ],
+                                            //         ),
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            );
                                       },
                                     ),
                                     // Add Sub Album Container at the end
