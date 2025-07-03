@@ -53,4 +53,10 @@ class AddContributorCubit extends Cubit<AddContributorState> {
       });
     });
   }
+
+  void resetState() {
+    contributorList.clear();
+    selectedContributors.clear();
+    emit(AddContributorInitial());
+  }
 }
