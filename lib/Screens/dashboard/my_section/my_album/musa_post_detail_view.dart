@@ -1,6 +1,7 @@
+import 'package:musa_app/Resources/CommonWidgets/audio_player.dart';
 import 'package:musa_app/Screens/components/display_cast_mode_button.dart';
 
-import '../../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
+// import '../../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
 import '../../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../../Resources/CommonWidgets/comment_view.dart';
 import '../../../../Utility/musa_widgets.dart';
@@ -402,6 +403,15 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if ((musaData.audioComments?.isNotEmpty ?? false) &&
+                          musaData.audioComments!.first != '') ...[
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8),
+                          child: AudioPlayerPopup(
+                            filePath: musaData.audioComments!.first,
+                          ),
+                        ),
+                      ],
                       Divider(color: Color(0xFFE9E9E9)),
                       //=============uncomment for previous view==========
                       // (widget.flowType.toString() == "Album")

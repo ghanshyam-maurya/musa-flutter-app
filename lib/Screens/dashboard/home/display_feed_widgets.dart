@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:musa_app/Screens/components/display_cast_mode_button.dart';
-import '../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
+// import '../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Resources/component/musa_image_video_container.dart';
 import '../../../Utility/musa_widgets.dart';
@@ -9,6 +9,7 @@ import 'package:timeago/timeago.dart' as timeago;
 // import '../profile/my_profile.dart';
 import 'contributors_in_musa.dart';
 import 'package:musa_app/Screens/components/musa_post_detail_view.dart';
+import 'package:musa_app/Resources/CommonWidgets/audio_player.dart';
 
 class CommonSubWidgets extends StatefulWidget {
   final bool isMyMUSA;
@@ -428,50 +429,12 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                         child: MusaImageVideoContainer(
                             fileList: musaData.file ?? [])),
                     SizedBox(height: 10),
-                    if (audioFileUrl != null)
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.purple),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.mic, color: Colors.black),
-                            SizedBox(width: 5),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: LinearProgressIndicator(
-                                  borderRadius: BorderRadius.circular(10),
-                                  minHeight: 10,
-                                  value: duration.inSeconds > 0
-                                      ? position.inSeconds / duration.inSeconds
-                                      : 0,
-                                  backgroundColor: Colors.grey[300],
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                          Colors.blue),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                                isPlaying
-                                    ? "-${formatDuration(remainingTime)}"
-                                    : formatDuration(duration),
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            IconButton(
-                              icon: Icon(
-                                  isPlaying ? Icons.pause : Icons.play_arrow,
-                                  color: Colors.green),
-                              onPressed: playPauseAudio,
-                            ),
-                          ],
-                        ),
+                    if ((widget.musaData.audioComments?.isNotEmpty ?? false) &&
+                        widget.musaData.audioComments!.first != '') ...[
+                      AudioPlayerPopup(
+                        filePath: widget.musaData.audioComments!.first,
                       ),
+                    ],
                     SizedBox(height: 10),
                     Padding(
                       padding: EdgeInsets.only(
