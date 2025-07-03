@@ -38,6 +38,10 @@ class EditMusaCubit extends Cubit<EditMusaState> {
   bool shouldAutoSelectNewAlbum = false;
   bool shouldAutoSelectNewSubAlbum = false;
   String? audioFilePath;
+  List<String>? remoteMediaFilesTodelete = []; // List of remote media file URLs
+  int? initialTotalRemoteFiles = 0; // ID of remote audio file to delete
+  String? remoteAudioComments = '';
+
   final ImagePicker _picker = ImagePicker();
 
   // Method to update description field state
@@ -177,6 +181,16 @@ class EditMusaCubit extends Cubit<EditMusaState> {
   }
 
   updateMusa(BuildContext context) async {
+    // validation check for minimum one media file is required
+    if (selectedAssets.value.isEmpty) {
+      if ((initialTotalRemoteFiles! - remoteMediaFilesTodelete!.length) <= 0) {
+        emit(EditMusaInitial());
+        emit(EditMusaError(
+            errorMessage: 'At least one media file is required.'));
+      }
+      return;
+    }
+
     emit(EditMusaInitial());
     emit(EditMusaLoading());
     try {
@@ -329,6 +343,20 @@ class EditMusaCubit extends Cubit<EditMusaState> {
         }
       } catch (e) {
         print("audioUrl: $e");
+      }
+
+      // api call to delete remote audio comments
+      if (remoteAudioComments != null && remoteAudioComments!.isNotEmpty) {
+        await repository.removeFileFromMusa(
+          audioComments: remoteAudioComments,
+          musaId: musaId,
+        );
+      }
+      // api call to delete remote media files
+      if ((remoteMediaFilesTodelete != null &&
+          remoteMediaFilesTodelete!.isNotEmpty)) {
+        await repository.removeFileFromMusa(
+            musaId: musaId, mediaFiles: remoteMediaFilesTodelete);
       }
 
       Response response = await dio.post(
@@ -706,7 +734,9 @@ class EditMusaCubit extends Cubit<EditMusaState> {
             await repository.removeFileFromMusa(fileId: fileId, musaId: musaId);
       } else if (audioComments != null && audioComments.isNotEmpty) {
         response = await repository.removeFileFromMusa(
-            audioComments: audioComments, musaId: musaId);
+          audioComments: audioComments,
+          musaId: musaId,
+        );
       } else {
         emit(EditMusaError(errorMessage: 'No file specified for removal.'));
       }

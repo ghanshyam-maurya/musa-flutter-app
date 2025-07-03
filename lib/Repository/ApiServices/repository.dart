@@ -1130,7 +1130,10 @@ class Repository implements RepositoryImpl {
 
   @override
   Future removeFileFromMusa(
-      {String? fileId, String? audioComments, required String musaId}) async {
+      {String? fileId,
+      String? audioComments,
+      required String musaId,
+      List<String>? mediaFiles}) async {
     Uri url = Uri.parse(ApiUrl.removeFileFromMusa);
     var token = Prefs.getString(PrefKeys.token);
     try {
@@ -1139,7 +1142,13 @@ class Repository implements RepositoryImpl {
         bodydata = {'file_id': fileId, 'musa_id': musaId};
       }
       if (audioComments != null && audioComments.isNotEmpty) {
-        bodydata = {'audio_comments': audioComments, 'musa_id': musaId};
+        bodydata = {
+          'audio_comments': audioComments,
+          'musa_id': musaId,
+        };
+      }
+      if (mediaFiles != null && mediaFiles.isNotEmpty) {
+        bodydata = {'musa_id': musaId, 'media_files': mediaFiles};
       }
       http.Response response = await http.post(
         url,

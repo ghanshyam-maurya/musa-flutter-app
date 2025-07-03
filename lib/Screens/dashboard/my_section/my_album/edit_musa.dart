@@ -54,6 +54,10 @@ class _EditMusaState extends State<EditMusa> {
               height: 100,
             );
             existingAssets.add(mockAsset);
+            cubit.initialTotalRemoteFiles =
+                (cubit.initialTotalRemoteFiles ?? 0) + 1;
+            print(
+                "initialTotalRemoteFiles--------->: ${cubit.initialTotalRemoteFiles}");
             // Map the URL (asset.id) to the backend file ID for deletion
             remoteFileUrlToIdMap[fileData.fileLink!] = fileData.id!;
           }
@@ -1021,16 +1025,17 @@ class _EditMusaState extends State<EditMusa> {
         if ((widget.musaData.audioComments?.isNotEmpty ?? false) &&
             widget.musaData.audioComments!.first != '') ...[
           const SizedBox(height: 12),
-          AudioPlayerPopup(
-            filePath: widget.musaData.audioComments!.first,
-            onRemove: () {
-              // setState(() {
-              //   audioFilePath = null;
-              //   cubit.audioFilePath = null;
-              // });
-              showRemoveConfirmationDialogForVoiceFile();
-            },
-          ),
+          if (cubit.remoteAudioComments != 'remove')
+            AudioPlayerPopup(
+              filePath: widget.musaData.audioComments!.first,
+              onRemove: () {
+                // setState(() {
+                //   audioFilePath = null;
+                //   cubit.audioFilePath = null;
+                // });
+                showRemoveConfirmationDialogForVoiceFile();
+              },
+            ),
         ],
         const SizedBox(height: 12),
         // Row(
@@ -2029,8 +2034,8 @@ class _EditMusaState extends State<EditMusa> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isRemote ? Icons.delete : Icons.close,
-                  color: isRemote ? Colors.red.shade700 : Colors.black,
+                  isRemote ? Icons.close : Icons.close,
+                  color: isRemote ? Colors.black : Colors.black,
                   size: 18,
                 ),
               ),
@@ -2086,8 +2091,8 @@ class _EditMusaState extends State<EditMusa> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await cubit.removeMusaFile(audioComments: 'remove');
-
+                    // await cubit.removeMusaFile(audioComments: 'remove');
+                    cubit.remoteAudioComments = 'remove';
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -2136,17 +2141,22 @@ class _EditMusaState extends State<EditMusa> {
             TextButton(
               onPressed: () async {
                 // Call the cubit method to delete the file via API
-                await cubit.removeMusaFile(fileId: fileId);
+                // await cubit.removeMusaFile(fileId: fileId);
 
                 // // Update the UI by removing the item from the state
-                // setState(() {
-                //   var updatedAssets =
-                //       List<AssetEntity>.from(cubit.selectedAssets.value)
-                //         ..removeWhere((asset) => asset.id == fileUrl);
-                //   cubit.selectedAssets.value = updatedAssets;
-                //   remoteFileUrlToIdMap.remove(fileUrl);
-                // });
-
+                setState(() {
+                  var updatedAssets =
+                      List<AssetEntity>.from(cubit.selectedAssets.value)
+                        ..removeWhere((asset) => asset.id == fileUrl);
+                  cubit.selectedAssets.value = updatedAssets;
+                  remoteFileUrlToIdMap.remove(fileUrl);
+                });
+                // add this file to the remote media files to delete list
+                cubit.remoteMediaFilesTodelete!.add(fileId);
+                print(
+                    "initialTotalRemoteFiles in confirmation dialog--------->: ${cubit.initialTotalRemoteFiles}");
+                print(
+                    "remoteMediaFilesTodelete in confirmation dialog--------->: ${cubit.remoteMediaFilesTodelete}");
                 Navigator.of(context).pop();
               },
               child: const Text(
