@@ -110,6 +110,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> loginWithApple(BuildContext context) async {
+    emit(LoginInitialState());
     emit(LoggedInLoadingState());
 
     try {
@@ -120,7 +121,8 @@ class LoginCubit extends Cubit<LoginState> {
         ],
       );
 
-      print("Apple Sign-In Success");
+      print(
+          "Apple Sign-In Success , response apple creds---------> $appleCredential");
       print("Email: ${appleCredential.email}");
       print(
           "Full Name: ${appleCredential.givenName} ${appleCredential.familyName}");
@@ -151,7 +153,7 @@ class LoginCubit extends Cubit<LoginState> {
       // String userEmail = user.email ?? appleCredential.email ?? "No email";
 
       // Call your API for social login
-      await socialLogin(
+      await appleSocialLogin(
         appleCredential.email ?? "No email",
         appleCredential.identityToken ?? "",
         'apple',
@@ -246,6 +248,88 @@ class LoginCubit extends Cubit<LoginState> {
           // 'login_source': loginSource,
           'token': socialToken,
           // 'email': email
+        },
+      );
+      print("API response: $response");
+
+      final statusCode = response['status'];
+      if (statusCode == 200) {
+        String userId = response['user']['id'];
+        String userEmail = response['user']['email'];
+        Prefs.setString(PrefKeys.email, userEmail);
+        Prefs.setString(PrefKeys.userType, "social");
+        bool isCompleteUserInfo = response['user']['is_signup_complete'];
+        // print("isCompleteUserInfo : $isCompleteUserInfo");
+        if (isCompleteUserInfo == false) {
+          try {
+            final nameParts = user.displayName?.split(' ') ?? [];
+            if (nameParts.isNotEmpty) {
+              Prefs.setString(PrefKeys.firstName, nameParts[0]);
+              if (nameParts.length > 1) {
+                Prefs.setString(
+                    PrefKeys.lastName, nameParts.sublist(1).join(' '));
+              }
+            }
+            // print(nameParts);
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+          print("Emitting UserLoginIncomplete...hashCode: $hashCode");
+          // emit(UserLoginIncomplete());
+          // Future.delayed(Duration(milliseconds: 300), () {
+          //   emit(UserLoginIncomplete());
+          // });
+          emit(UserLoginIncomplete());
+        } else {
+          String token = response['token'];
+          Prefs.setString(PrefKeys.token, token);
+          Prefs.setString(PrefKeys.uId, userId);
+          Prefs.setString(PrefKeys.userId, userId);
+
+          Prefs.setString(PrefKeys.userName,
+              "${response['user']['first_name']} ${response['user']['last_name']}");
+          Utilities.setUserData(userData: jsonEncode(response['user']));
+          emit(LoginPlateFormState());
+        }
+      } else if (statusCode == 400 || statusCode == 401) {
+        emit(LoginFailureState(errorMessage: response['message']));
+      } else if (statusCode == 500) {
+        emit(LoginFailureState(
+            errorMessage: "Server error. Please try again later."));
+      } else {
+        emit(LoginFailureState(
+            errorMessage: response['message'] ?? "Unexpected error occurred."));
+      }
+    } catch (e) {
+      emit(LoginFailureState(
+          errorMessage: "Failed to complete social login: ${e.toString()}"));
+    }
+  }
+
+// appleSocialLogin(
+//         appleCredential.email ?? "No email",
+//         appleCredential.identityToken ?? "",
+//         'apple',
+//         {
+//           'displayName': userDisplayName,
+//           'email': appleCredential.email,
+//         },
+//       );
+  Future<void> appleSocialLogin(
+    String email,
+    String socialToken,
+    loginSource,
+    dynamic user,
+  ) async {
+    // print(ApiUrl.socialLoginApi);
+    try {
+      final response = await _apiClient.post(
+        ApiUrl.appleSocialLoginApi,
+        body: {
+          // 'login_source': loginSource,
+          'token': socialToken,
+          // 'email': email
+          user: user
         },
       );
       print("API response: $response");

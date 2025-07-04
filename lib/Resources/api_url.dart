@@ -20,6 +20,7 @@ abstract class ApiUrl {
   static const String updateBioApi = '$baseUrl/users/update-bio';
   static const String changePasswordApi = '$baseUrl/users/change-password';
   static const String socialLoginApi = '$baseUrl/users/google';
+  static const String appleSocialLoginApi = '$baseUrl/users/apple';
   static const String completeUserInfo =
       '$baseUrl/users/social-profile-complete';
 

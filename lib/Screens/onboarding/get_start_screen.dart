@@ -5,6 +5,7 @@ import 'package:musa_app/Cubit/auth/Login/login_cubit.dart';
 import 'package:musa_app/Cubit/auth/Login/login_state.dart';
 import 'package:musa_app/Screens/auth/social_login.dart';
 import 'package:musa_app/Utility/packages.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 
 class GetStartScreen extends StatefulWidget {
@@ -129,16 +130,23 @@ class _GetStartScreenState extends State<GetStartScreen>
                             width: 25,
                           ),
                           const SizedBox(height: 16),
-                          if (Platform.isIOS)
-                            _buildSocialButton(
-                              onTap: () {
-                                loginCubit.loginWithApple(context);
-                              },
-                              icon: Assets.appleLogo,
-                              label: StringConst.continueWithApple,
-                              height: 25,
-                              width: 25,
-                            ),
+                          // if (Platform.isIOS)
+                          _buildSocialButton(
+                            onTap: () {
+                              loginCubit.loginWithApple(context);
+                            },
+                            icon: Assets.appleLogo,
+                            label: StringConst.continueWithApple,
+                            height: 25,
+                            width: 25,
+                          ),
+                          // SignInWithAppleButton(
+                          //   onPressed: () {
+                          //     loginCubit.loginWithApple(context);
+                          //   },
+                          // ),
+                          // if (Platform.isIOS)
+                          const SizedBox(height: 11),
                         ],
                       ),
                     ),
