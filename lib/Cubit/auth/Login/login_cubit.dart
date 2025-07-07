@@ -326,10 +326,9 @@ class LoginCubit extends Cubit<LoginState> {
       final response = await _apiClient.post(
         ApiUrl.appleSocialLoginApi,
         body: {
-          // 'login_source': loginSource,
           'token': socialToken,
-          // 'email': email
-          user: user
+          'displayName': user['displayName'] ?? '',
+          'email': user['email'] ?? '',
         },
       );
       print("API response: $response");
