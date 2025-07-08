@@ -31,9 +31,9 @@ class _SocialMusaListState extends State<DisplayMusaList> {
     displayCubit = widget.displayCubit;
     widget.displayCubit.myMusaList.clear();
     widget.displayCubit.homePageNumber = 1;
-    widget.displayCubit.getMyFeeds(
-        page: widget.displayCubit.homePageNumber,
-        userId: widget.displayCubit.myUserId.toString());
+    // widget.displayCubit.getMyFeeds(
+    //     page: widget.displayCubit.homePageNumber,
+    //     userId: widget.displayCubit.myUserId.toString());
 
     _innerScrollController = ScrollController();
     _innerScrollController.addListener(_innerScrollListener);
@@ -90,9 +90,9 @@ class _SocialMusaListState extends State<DisplayMusaList> {
             },
             listener: (context, state) {
               if (state is EditMusaLoaded) {
-                displayCubit.getMyFeeds(
-                    page: displayCubit.homePageNumber,
-                    userId: widget.displayCubit.myUserId.toString());
+                // displayCubit.getMyFeeds(
+                //     page: displayCubit.homePageNumber,
+                //     userId: widget.displayCubit.myUserId.toString());
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

@@ -250,8 +250,9 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                               title: Text(
                                                 'Confirm',
                                               ),
-                                              content: Text(
-                                                  'Are you sure you want to change the visibility of this MUSA?'),
+                                              content: Text(isHideDisplay
+                                                  ? 'Are you sure you want to display this MUSA?'
+                                                  : 'Are you sure you want to hide this MUSA?'),
                                               actions: <Widget>[
                                                 TextButton(
                                                   child: Text(

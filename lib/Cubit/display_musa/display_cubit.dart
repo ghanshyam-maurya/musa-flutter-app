@@ -7,6 +7,7 @@ import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Utility/packages.dart';
 import 'package:musa_app/Resources/api_url.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:intl/intl.dart';
 
 class DisplayCubit extends Cubit<DisplayState> {
   DisplayCubit() : super(MyListInitial());
@@ -21,6 +22,9 @@ class DisplayCubit extends Cubit<DisplayState> {
   bool noDataNextPage = false;
   bool hasFeeds = false;
 
+  DateTime? selectedDate;
+  String? selectedDateString;
+
   List<MusaData> myMusaList = [];
   final ApiClient _apiClient = ApiClient();
   //Set user data
@@ -29,22 +33,14 @@ class DisplayCubit extends Cubit<DisplayState> {
     userName = '${userData.firstName} ${userData.lastName}';
     userProfilePicture = userData.photo;
     myUserId = userData.id;
+    // Do NOT set selectedDate or selectedDateString here to avoid duplicate API calls
   }
 
-  // Load cached posts first
-  void loadCachedPosts() async {
-    final box = Hive.box('postsBox');
-    String? cachedData = box.get('cachedPosts');
-    if (cachedData != null) {
-      myMusaList = List<MusaData>.from(
-          jsonDecode(cachedData).map((x) => MusaData.fromJson(x)));
-      // Emit success so UI can show cached posts immediately
-      emit(MyListSuccess());
-    }
-  }
+  // No caching logic needed
 
   // Get social feeds
-  getMyFeeds({required int page, required String userId}) async {
+  getMyFeeds(
+      {required int page, required String userId, String? filterDate}) async {
     print(
         "getSocialFeeds called with page---------------------------------------------->: $page");
     try {
@@ -54,8 +50,8 @@ class DisplayCubit extends Cubit<DisplayState> {
         isLoadingMore = true;
       }
 
-      final result =
-          await repository.getMyFeedsList(page: page, userId: userId);
+      final result = await repository.getMyFeedsList(
+          page: page, userId: userId, filterDate: filterDate);
       result.fold(
         (left) {
           if (left.data != null && left.data!.isNotEmpty) {
@@ -89,7 +85,11 @@ class DisplayCubit extends Cubit<DisplayState> {
 
   // Load more feeds when user scrolls to bottom
   void loadMoreFeeds() {
-    getMyFeeds(page: homePageNumber, userId: myUserId.toString());
+    getMyFeeds(
+      page: homePageNumber + 1,
+      userId: myUserId.toString(),
+      filterDate: selectedDateString,
+    );
   }
 
   updateMusa({required bool isHideDisplay, required String musaId}) async {
@@ -156,5 +156,33 @@ class DisplayCubit extends Cubit<DisplayState> {
         }
       }
     });
+  }
+
+  void filterByDate(DateTime date) {
+    selectedDate = date;
+    selectedDateString = DateFormat('yyyy-MM-dd').format(date);
+    homePageNumber = 1;
+    myMusaList.clear();
+
+    // Call API with date filter
+    getMyFeeds(
+      page: 1,
+      userId: myUserId.toString(),
+      filterDate: selectedDateString,
+    );
+  }
+
+// Clear date filter
+  void clearDateFilter() {
+    selectedDate = null;
+    selectedDateString = null;
+    homePageNumber = 1;
+    myMusaList.clear();
+
+    // Call API without date filter
+    getMyFeeds(
+      page: 1,
+      userId: myUserId.toString(),
+    );
   }
 }
