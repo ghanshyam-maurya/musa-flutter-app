@@ -1,12 +1,13 @@
 import '../../../Utility/musa_widgets.dart';
 import '../../../Utility/packages.dart';
+import 'cast_utils.dart';
 
 class DisplayCastModeWidget extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final List<dynamic> fileList; // Use the correct type for your file list
   final VoidCallback? onPressed;
-  double? height = 20.sp;
-  double? fontSize = 10.sp;
+  final double? height;
+  final double? fontSize;
 
   DisplayCastModeWidget({
     Key? key,
@@ -34,7 +35,11 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
             MusaWidgets.borderTextButton(
               minWidth: 10.sp,
               title: StringConst.displayText,
-              onPressed: widget.onPressed ?? () {},
+              onPressed: () {
+                // Start cast process directly from here
+                CastUtils.showCastDialog(context, widget.fileList);
+                if (widget.onPressed != null) widget.onPressed!();
+              },
               borderColor: AppColor.primaryColor,
               borderWidth: 1.sp,
               borderRadius: 5.sp,
@@ -42,8 +47,6 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
               fontSize: widget.fontSize!,
               textcolor: AppColor.primaryColor,
             ),
-            // You can add the MusaImageVideoContainer here if needed
-            // MusaImageVideoContainer(fileList: widget.fileList),
           ],
         ),
       ),
