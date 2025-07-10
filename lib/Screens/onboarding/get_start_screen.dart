@@ -130,23 +130,22 @@ class _GetStartScreenState extends State<GetStartScreen>
                             width: 25,
                           ),
                           const SizedBox(height: 16),
-                          // if (Platform.isIOS)
-                          _buildSocialButton(
-                            onTap: () {
-                              loginCubit.loginWithApple(context);
-                            },
-                            icon: Assets.appleLogo,
-                            label: StringConst.continueWithApple,
-                            height: 25,
-                            width: 25,
-                          ),
+                          if (Platform.isIOS)
+                            _buildSocialButton(
+                              onTap: () {
+                                loginCubit.loginWithApple(context);
+                              },
+                              icon: Assets.appleLogo,
+                              label: StringConst.continueWithApple,
+                              height: 25,
+                              width: 25,
+                            ),
                           // SignInWithAppleButton(
                           //   onPressed: () {
                           //     loginCubit.loginWithApple(context);
                           //   },
                           // ),
-                          // if (Platform.isIOS)
-                          const SizedBox(height: 11),
+                          if (Platform.isIOS) const SizedBox(height: 11),
                         ],
                       ),
                     ),
