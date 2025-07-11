@@ -184,159 +184,94 @@ class _SignupState extends State<Signup> {
                   ),
                   const SizedBox(height: 12),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              onRecordButtonPressed();
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: AppColor
-                                    .textInactive, // light green background
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
-                                    Assets
-                                        .recordAudioSvg, // Replace with your actual path
-                                    height: 20,
-                                    width: 20, // dark green icon
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  onRecordButtonPressed();
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColor
+                                        .textInactive, // light green background
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Record Audio',
-                                    style: AppTextStyle.normalTextStyleNew(
-                                      size: 14,
-                                      color: AppColor.greenDark,
-                                      fontweight: FontWeight.w700,
-                                    ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        Assets
+                                            .recordAudioSvg, // Replace with your actual path
+                                        height: 16,
+                                        width: 16,
+                                        color: Color(
+                                            0xFF1B5E20), // dark green icon
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Record Audio',
+                                        style: AppTextStyle.normalTextStyleNew(
+                                          size: 12,
+                                          color: AppColor.greenDark,
+                                          fontweight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 12),
+                              InkWell(
+                                onTap: () {
+                                  // onRecordButtonPressed();
+                                  _pickAudioFile();
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColor
+                                        .textInactive, // light green background
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        Assets
+                                            .uploadAudioSvg, // Replace with your actual path
+                                        height: 16,
+                                        width: 16,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Upload Audio',
+                                        style: AppTextStyle.normalTextStyleNew(
+                                          size: 12,
+                                          color: AppColor.greenDark,
+                                          fontweight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          InkWell(
-                            onTap: () {
-                              // onRecordButtonPressed();
-                              _pickAudioFile();
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: AppColor
-                                    .textInactive, // light green background
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
-                                    Assets
-                                        .uploadAudioSvg, // Replace with your actual path
-                                    height: 20,
-                                    width: 20,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Upload Audio',
-                                    style: AppTextStyle.normalTextStyleNew(
-                                      size: 14,
-                                      color: AppColor.greenDark,
-                                      fontweight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                      // const SizedBox(height: 12),
-                      // Row(
-                      //   children: [
-                      //     InkWell(
-                      //       onTap: () {
-                      //         onSpeechToTextButtonPressed();
-                      //       },
-                      //       borderRadius: BorderRadius.circular(12),
-                      //       child: Container(
-                      //         padding: EdgeInsets.symmetric(
-                      //             horizontal: 16, vertical: 10),
-                      //         decoration: BoxDecoration(
-                      //           color:
-                      //               Color(0xFFE6F4EA), // light green background
-                      //           borderRadius: BorderRadius.circular(8),
-                      //         ),
-                      //         child: Row(
-                      //           mainAxisSize: MainAxisSize.min,
-                      //           children: [
-                      //             SvgPicture.asset(
-                      //               Assets
-                      //                   .recordAudioSvg, // Replace with your actual path
-                      //               height: 20,
-                      //               width: 20,
-                      //               color: Color(0xFF1B5E20), // dark green icon
-                      //             ),
-                      //             SizedBox(width: 8),
-                      //             Text(
-                      //               'Speech To Text',
-                      //               style: AppTextStyle.normalTextStyleNew(
-                      //                 size: 14,
-                      //                 color: AppColor.greenDark,
-                      //                 fontweight: FontWeight.w700,
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      //commented as design needs to be different
-                      // if (audioFilePath != null) ...[
-                      //   const SizedBox(height: 12),
-                      //   Container(
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.grey[200],
-                      //       borderRadius: BorderRadius.circular(8),
-                      //       border: Border.all(color: Colors.grey.shade400),
-                      //     ),
-                      //     padding: const EdgeInsets.symmetric(
-                      //         horizontal: 12, vertical: 8),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       children: [
-                      //         Expanded(
-                      //           child: Text(
-                      //             audioFilePath!.split('/').last,
-                      //             overflow: TextOverflow.ellipsis,
-                      //           ),
-                      //         ),
-                      //         IconButton(
-                      //           icon:
-                      //               const Icon(Icons.close, color: Colors.red),
-                      //           onPressed: () {
-                      //             setState(() {
-                      //               audioFilePath = null;
-                      //               signupCubit.audioFilePath = null;
-                      //             });
-                      //           },
-                      //         )
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ],
                       if (audioFilePath != null) ...[
                         const SizedBox(height: 12),
                         AudioPlayerPopup(
