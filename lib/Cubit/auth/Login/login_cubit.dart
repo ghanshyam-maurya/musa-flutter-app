@@ -340,26 +340,23 @@ class LoginCubit extends Cubit<LoginState> {
         Prefs.setString(PrefKeys.email, userEmail);
         Prefs.setString(PrefKeys.userType, "social");
         bool isCompleteUserInfo = response['user']['is_signup_complete'];
-        // print("isCompleteUserInfo : $isCompleteUserInfo");
         if (isCompleteUserInfo == false) {
           try {
-            final nameParts = user.displayName?.split(' ') ?? [];
-            if (nameParts.isNotEmpty) {
+            final displayName = user['displayName'] ?? '';
+            final nameParts = displayName.split(' ');
+            if (nameParts.isNotEmpty && nameParts[0].isNotEmpty) {
               Prefs.setString(PrefKeys.firstName, nameParts[0]);
               if (nameParts.length > 1) {
                 Prefs.setString(
                     PrefKeys.lastName, nameParts.sublist(1).join(' '));
+              } else {
+                Prefs.setString(PrefKeys.lastName, '');
               }
             }
-            // print(nameParts);
           } catch (e) {
             debugPrint(e.toString());
           }
           print("Emitting UserLoginIncomplete...hashCode: $hashCode");
-          // emit(UserLoginIncomplete());
-          // Future.delayed(Duration(milliseconds: 300), () {
-          //   emit(UserLoginIncomplete());
-          // });
           emit(UserLoginIncomplete());
         } else {
           String token = response['token'];
