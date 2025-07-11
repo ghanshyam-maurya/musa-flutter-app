@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../Utility/packages.dart';
 import 'package:intl/intl.dart';
@@ -53,7 +55,11 @@ class _AudioPlayerPopupState extends State<AudioPlayerPopup> {
   // }
   Future<void> _initPlayer() async {
     _player = AudioPlayer();
-    // await _player.setFilePath(widget.filePath);
+    // iOS: Set up audio session for playback
+    if (Platform.isIOS) {
+      final session = await AudioSession.instance;
+      await session.configure(AudioSessionConfiguration.music());
+    }
     if (widget.filePath.startsWith('http')) {
       await _player.setUrl(widget.filePath);
     } else {
@@ -110,7 +116,9 @@ class _AudioPlayerPopupState extends State<AudioPlayerPopup> {
               decoration: BoxDecoration(
                 color: AppColor.greenTextbg,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green.shade100),
+                border: Platform.isIOS
+                    ? Border.all(color: Colors.green.shade400, width: 1.5)
+                    : Border.all(color: Colors.green.shade100),
               ),
               child: Row(
                 children: [
@@ -132,18 +140,39 @@ class _AudioPlayerPopupState extends State<AudioPlayerPopup> {
                       inactiveColor: AppColor.lightGreenNew,
                     ),
                   ),
-                  IconButton(
-                    icon: _isPlaying
-                        ? SvgPicture.asset(Assets.pauseIcon)
-                        : SvgPicture.asset(Assets.playIcon),
-                    onPressed: () async {
-                      if (_isPlaying) {
-                        await _player.pause();
-                      } else {
-                        await _player.play();
-                      }
-                    },
-                  ),
+                  Platform.isIOS
+                      ? Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: Colors.green.shade400, width: 1.5),
+                          ),
+                          child: IconButton(
+                            icon: _isPlaying
+                                ? SvgPicture.asset(Assets.pauseIcon)
+                                : SvgPicture.asset(Assets.playIcon),
+                            onPressed: () async {
+                              if (_isPlaying) {
+                                await _player.pause();
+                              } else {
+                                await _player.play();
+                              }
+                            },
+                          ),
+                        )
+                      : IconButton(
+                          icon: _isPlaying
+                              ? SvgPicture.asset(Assets.pauseIcon)
+                              : SvgPicture.asset(Assets.playIcon),
+                          onPressed: () async {
+                            if (_isPlaying) {
+                              await _player.pause();
+                            } else {
+                              await _player.play();
+                            }
+                          },
+                        ),
                 ],
               ),
             ),
@@ -155,7 +184,9 @@ class _AudioPlayerPopupState extends State<AudioPlayerPopup> {
             decoration: BoxDecoration(
               color: AppColor.greenTextbg,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.green.shade100),
+              border: Platform.isIOS
+                  ? Border.all(color: Colors.green.shade400, width: 1.5)
+                  : Border.all(color: Colors.green.shade100),
             ),
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black87),

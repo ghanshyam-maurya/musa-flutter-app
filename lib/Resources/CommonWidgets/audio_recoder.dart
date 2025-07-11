@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:io';
 import 'package:just_audio/just_audio.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'package:path_provider/path_provider.dart';
@@ -54,11 +55,16 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
   Future<void> startRecording() async {
     if (await record.hasPermission()) {
       final directory = await getApplicationDocumentsDirectory();
-
+      // Use .m4a for iOS, .aac for Android
+      String extension = Platform.isIOS ? 'm4a' : 'aac';
       final filePath =
-          '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.mp3';
+          '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.$extension';
 
-      final config = RecordConfig(encoder: AudioEncoder.aacLc);
+      final config = RecordConfig(
+        encoder: AudioEncoder.aacLc,
+        bitRate: 128000,
+        sampleRate: 44100,
+      );
 
       await record.start(config, path: filePath);
       setState(() {
