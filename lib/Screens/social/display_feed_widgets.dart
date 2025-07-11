@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_player.dart';
-import 'package:musa_app/Screens/components/display_cast_mode_button.dart';
+//import 'package:musa_app/Screens/components/display_cast_mode_button.dart';
+import 'package:musa_app/Screens/components/media_cast_button.dart';
 // import '../../../Cubit/dashboard/home_dashboard_cubit/home_cubit.dart';
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Resources/component/musa_image_video_container.dart';
@@ -740,12 +741,16 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                   // SizedBox(
                   //   width: 4,
                   // ),
-                  DisplayCastModeWidget(
-                    padding: EdgeInsets.only(right: 10.sp),
+                  // DisplayCastModeWidget(
+                  //   padding: EdgeInsets.only(right: 10.sp),
+                  //   fileList: musaData.file ?? [],
+                  //   onPressed: () async {
+                  //     // Your onPressed logic here
+                  //   },
+                  // ),
+                  MediaCastButton(
+                    //padding: EdgeInsets.only(right: 10.sp),
                     fileList: musaData.file ?? [],
-                    onPressed: () async {
-                      // Your onPressed logic here
-                    },
                   ),
                 ],
               ),

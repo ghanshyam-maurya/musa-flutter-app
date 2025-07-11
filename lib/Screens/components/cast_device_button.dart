@@ -19,7 +19,7 @@ class CastDeviceButton extends StatelessWidget {
     return IconButton(
       icon: Icon(Icons.cast, size: iconSize, color: color ?? Colors.blue),
       onPressed: () {
-        CastUtils.showCastDialog(context, fileList);
+        //CastUtils.showCastDialog(context, fileList);
       },
       tooltip: 'Cast to device',
     );
