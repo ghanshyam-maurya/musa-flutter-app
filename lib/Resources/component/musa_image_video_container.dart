@@ -27,7 +27,6 @@ class _CollageContainerState extends State<MusaImageVideoContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     //Get image view
@@ -39,13 +38,13 @@ class _CollageContainerState extends State<MusaImageVideoContainer> {
           Utilities.isVideoUrl(file.previewLink!)) {
         print("inside video view22");
         return SizedBox(
-          width: imageWidth,
+          width: imageWidth ?? double.infinity,
           height: imageHeight,
           child: MusaWidgets.autoPlayVideoView(file.previewLink!),
         );
       }
       return SizedBox(
-          width: imageWidth,
+          width: imageWidth ?? double.infinity,
           height: imageHeight,
           // child: Utilities.isVideoUrl(imageUrl)
           //     ? MusaWidgets.thumbnailView(imageUrl)
@@ -68,100 +67,103 @@ class _CollageContainerState extends State<MusaImageVideoContainer> {
       } else if (fileList.length == 2) {
         return Row(
           children: [
-            imageView(getBestLink(fileList[0]),
-                imageHeight: screenHeight * 0.25,
-                //imageWidth: screenWidth * 0.5 - 55),
-                imageWidth: screenWidth * 0.5 - 25,
-                file: fileList[0]),
+            Expanded(
+              child: imageView(getBestLink(fileList[0]),
+                  imageHeight: screenHeight * 0.25,
+                  imageWidth: null, // Let Expanded handle the width
+                  file: fileList[0]),
+            ),
             SizedBox(
               width: 5,
             ),
-            imageView(getBestLink(fileList[1]),
-                imageHeight: screenHeight * 0.25,
-                //imageWidth: screenWidth * 0.5 - 55),
-                imageWidth: screenWidth * 0.5 - 25,
-                file: fileList[1]),
+            Expanded(
+              child: imageView(getBestLink(fileList[1]),
+                  imageHeight: screenHeight * 0.25,
+                  imageWidth: null, // Let Expanded handle the width
+                  file: fileList[1]),
+            ),
           ],
         );
       } else if (fileList.length == 3) {
         return Row(
           children: [
-            imageView(getBestLink(fileList[0]),
-                imageHeight: screenHeight * 0.25,
-                //imageWidth: screenWidth * 0.5 - 55),
-                imageWidth: screenWidth * 0.5 - 25,
-                file: fileList[0]),
+            Expanded(
+              child: imageView(getBestLink(fileList[0]),
+                  imageHeight: screenHeight * 0.25,
+                  imageWidth: null, // Let Expanded handle the width
+                  file: fileList[0]),
+            ),
             SizedBox(
               width: 5,
             ),
-            Column(
-              children: [
-                imageView(getBestLink(fileList[1]),
-                    imageHeight: screenHeight * 0.125,
-                    //imageWidth: screenWidth * 0.5 - 55),
-                    imageWidth: screenWidth * 0.5 - 25,
-                    file: fileList[1]),
-                SizedBox(
-                  height: 5,
-                ),
-                imageView(getBestLink(fileList[2]),
-                    imageHeight: screenHeight * 0.125,
-                    //imageWidth: screenWidth * 0.5 - 55),
-                    imageWidth: screenWidth * 0.5 - 25,
-                    file: fileList[2]),
-              ],
+            Expanded(
+              child: Column(
+                children: [
+                  imageView(getBestLink(fileList[1]),
+                      imageHeight: screenHeight * 0.125,
+                      imageWidth: null, // Let Expanded handle the width
+                      file: fileList[1]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  imageView(getBestLink(fileList[2]),
+                      imageHeight: screenHeight * 0.125,
+                      imageWidth: null, // Let Expanded handle the width
+                      file: fileList[2]),
+                ],
+              ),
             )
           ],
         );
       } else if (fileList.length > 3) {
         return Row(
           children: [
-            imageView(getBestLink(fileList[0]),
-                imageHeight: screenHeight * 0.25,
-                //imageWidth: screenWidth * 0.5 - 55),
-                imageWidth: screenWidth * 0.5 - 25,
-                file: fileList[0]),
+            Expanded(
+              child: imageView(getBestLink(fileList[0]),
+                  imageHeight: screenHeight * 0.25,
+                  imageWidth: null, // Let Expanded handle the width
+                  file: fileList[0]),
+            ),
             SizedBox(
               width: 5,
             ),
-            Column(
-              children: [
-                imageView(getBestLink(fileList[1]),
-                    imageHeight: screenHeight * 0.125,
-                    //imageWidth: screenWidth * 0.5 - 55),
-                    imageWidth: screenWidth * 0.5 - 25,
-                    file: fileList[1]),
-                SizedBox(
-                  height: 5,
-                ),
-                Stack(
-                  children: [
-                    imageView(getBestLink(fileList[2]),
-                        imageHeight: screenHeight * 0.125,
-                        //imageWidth: screenWidth * 0.5 - 55),
-                        imageWidth: screenWidth * 0.5 - 25,
-                        file: fileList[2]),
-                    Container(
-                      height: screenHeight * 0.125,
-                      //width: screenWidth * 0.5 - 55,
-                      width: screenWidth * 0.5 - 25,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(15.sp),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "+${fileList.length - 3}",
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
+            Expanded(
+              child: Column(
+                children: [
+                  imageView(getBestLink(fileList[1]),
+                      imageHeight: screenHeight * 0.125,
+                      imageWidth: null, // Let Expanded handle the width
+                      file: fileList[1]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Stack(
+                    children: [
+                      imageView(getBestLink(fileList[2]),
+                          imageHeight: screenHeight * 0.125,
+                          imageWidth: null, // Let Expanded handle the width
+                          file: fileList[2]),
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(15.sp),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "+${fileList.length - 3}",
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                          ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         );

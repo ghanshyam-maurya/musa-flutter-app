@@ -101,27 +101,67 @@ class HomeCubit extends Cubit<HomeSocialState> {
 
   getSocialSearchFeeds({required int page}) async {
     try {
-      if (isSelectedIndex == 0) {
-        isFirstComeMusa = false;
-      }
-      if (isSelectedIndex == 1) {
-        isFirstComeUser = false;
-      }
       emit(HomeMusaSearchLoading());
       final result = await repository.getSocialMusaList(page: 1);
       result.fold(
         (left) {
-          socialSearchMusaList.addAll(left.data!);
-          emit(SocialListSearchSuccess());
+          socialSearchMusaList = left.data ?? []; // Replace instead of adding
+          isFirstComeMusa = false;
+          // Create a mock response to use the same state as search
+          final mockResponse = SocialMusaListResponse(
+            status: 200,
+            message: "Success",
+            data: socialSearchMusaList,
+          );
+          emit(SearchMusaSearchLoaded(mockResponse));
         },
         (right) {
+          socialSearchMusaList = [];
+          isFirstComeMusa = false;
           emit(HomeMusaSearchError(right.message!));
         },
       );
     } catch (e) {
       debugPrint("error : $e");
+      socialSearchMusaList = [];
+      isFirstComeMusa = false;
       emit(HomeMusaSearchError(e.toString()));
     }
+  }
+
+  // Get initial user list
+  getInitialUserList() async {
+    await Connectivity().checkConnectivity().then((value) async {
+      if (value != ConnectivityResult.none) {
+        try {
+          emit(HomeMusaSearchLoading());
+          final token = Prefs.getString(PrefKeys.token);
+          final response = await _apiClient
+              .post("${ApiUrl.userListSearch}", // Empty search to get all users
+                  headers: {'Authorization': 'Bearer $token'});
+          if (response['status'] == 200) {
+            final SearchUserResponse myUserListData =
+                SearchUserResponse.fromJson(response);
+            searchUser = myUserListData.users ?? [];
+            isFirstComeUser = false;
+            emit(SearchUserListLoaded());
+          } else {
+            searchUser = [];
+            isFirstComeUser = false;
+            emit(HomeMusaSearchError(
+                'Failed to fetch user list: ${response['message']}'));
+          }
+        } catch (e) {
+          searchUser = [];
+          isFirstComeUser = false;
+          emit(HomeMusaSearchError('An error occurred: $e'));
+        }
+      } else {
+        searchUser = [];
+        isFirstComeUser = false;
+        emit(HomeMusaSearchError('No internet connection'));
+      }
+    });
   }
 
   // Get my latest feeds
@@ -208,9 +248,19 @@ class HomeCubit extends Cubit<HomeSocialState> {
   }
 
   itemSelection(index) {
-    emit(HomeMusaSearchLoading());
     isSelectedIndex = index;
-    emit(SearchMusaSearchSuccess());
+    // Load initial data when switching tabs
+    if (index == 0) {
+      // MUSA tab - load initial MUSA list if not already loaded
+      if (socialSearchMusaList.isEmpty) {
+        getSocialSearchFeeds(page: 1);
+      } else {
+        emit(SearchMusaSearchSuccess());
+      }
+    } else {
+      // User tab - load initial user list
+      getInitialUserList();
+    }
   }
 
   Future<void> getSearchMusaList(searchItem, selectedIndex) async {
@@ -225,28 +275,49 @@ class HomeCubit extends Cubit<HomeSocialState> {
                   : "${ApiUrl.userListSearch}$searchItem",
               headers: {'Authorization': 'Bearer $token'});
           if (response['status'] == 200) {
-            final Object myMusaListData;
             if (selectedIndex == 0) {
-              myMusaListData = SocialMusaListResponse.fromJson(response);
-              // emit(SearchMusaSearchLoaded(myMusaListData));
-              emit(SocialListSuccess());
+              final SocialMusaListResponse myMusaListData =
+                  SocialMusaListResponse.fromJson(response);
+              socialSearchMusaList = myMusaListData.data ?? [];
+              isFirstComeMusa = searchItem.isEmpty;
+              emit(SearchMusaSearchLoaded(myMusaListData));
             } else {
-              myMusaListData = SearchUserResponse.fromJson(response);
-              // searchUser = myMusaListData.users;
-              print("searchUser=========");
-              // print(searchUser.length);
+              final SearchUserResponse myUserListData =
+                  SearchUserResponse.fromJson(response);
+              searchUser = myUserListData.users ?? [];
+              isFirstComeUser = searchItem.isEmpty;
               emit(SearchUserListLoaded());
-              emit(SocialListSuccess());
             }
           } else {
+            if (selectedIndex == 0) {
+              socialSearchMusaList = [];
+              isFirstComeMusa = false;
+            } else {
+              searchUser = [];
+              isFirstComeUser = false;
+            }
             emit(HomeMusaSearchError(
-                'Failed to fetch my musa list: ${response['message']}'));
+                'Failed to fetch search results: ${response['message']}'));
           }
         } catch (e) {
+          if (selectedIndex == 0) {
+            socialSearchMusaList = [];
+            isFirstComeMusa = false;
+          } else {
+            searchUser = [];
+            isFirstComeUser = false;
+          }
           emit(HomeMusaSearchError('An error occurred: $e'));
         }
       } else {
-        emit(HomeMusaSearchError('An error occurred:'));
+        if (selectedIndex == 0) {
+          socialSearchMusaList = [];
+          isFirstComeMusa = false;
+        } else {
+          searchUser = [];
+          isFirstComeUser = false;
+        }
+        emit(HomeMusaSearchError('No internet connection'));
       }
     });
   }

@@ -1620,6 +1620,7 @@ abstract class MusaWidgets {
     required Widget body,
     required Function(String) onChangedSearch,
     Color? backgroundColor,
+    VoidCallback? onClearSearch,
   }) =>
       Column(
         children: [
@@ -1667,6 +1668,9 @@ abstract class MusaWidgets {
                         suffixIcon: GestureDetector(
                             onTap: () {
                               searchController.clear();
+                              if (onClearSearch != null) {
+                                onClearSearch();
+                              }
                             },
                             child: Icon(Icons.clear)),
                         onChanged: onChangedSearch),
