@@ -262,6 +262,9 @@ class LoginCubit extends Cubit<LoginState> {
         // print("isCompleteUserInfo : $isCompleteUserInfo");
         if (isCompleteUserInfo == false) {
           try {
+            // reset first and last name in case they were set previously
+            Prefs.setString(PrefKeys.firstName, '');
+            Prefs.setString(PrefKeys.lastName, '');
             final nameParts = user.displayName?.split(' ') ?? [];
             if (nameParts.isNotEmpty) {
               Prefs.setString(PrefKeys.firstName, nameParts[0]);
@@ -342,6 +345,9 @@ class LoginCubit extends Cubit<LoginState> {
         bool isCompleteUserInfo = response['user']['is_signup_complete'];
         if (isCompleteUserInfo == false) {
           try {
+            // reset first and last name in case they were set previously
+            Prefs.setString(PrefKeys.firstName, '');
+            Prefs.setString(PrefKeys.lastName, '');
             final displayName = user['displayName'] ?? '';
             final nameParts = displayName.split(' ');
             if (nameParts.isNotEmpty && nameParts[0].isNotEmpty) {
