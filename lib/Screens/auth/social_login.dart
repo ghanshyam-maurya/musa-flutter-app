@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:musa_app/Cubit/auth/Login/login_cubit.dart';
 import 'package:musa_app/Cubit/auth/Login/login_state.dart';
-import 'package:musa_app/Resources/component/custom_date_picker.dart';
+import 'package:musa_app/Resources/component/month_year_picker.dart';
 import 'package:musa_app/Utility/app_validations.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'package:file_picker/file_picker.dart';
@@ -310,37 +310,37 @@ class _SocialLoginState extends State<SocialLogin> {
   _buildDatePicker() {
     return GestureDetector(
       onTap: () async {
-        DateTime today = DateTime.now();
         DateTime years = DateTime.now().subtract(Duration(days: 16 * 365));
-        // DateTime sixteenYearsAgo =
-        //     DateTime(today.year - 16, today.month, today.day);
 
-        DateTime? selectedDate = await showCustomDatePicker(
+        // Check if there's already a date in the controller
+        DateTime? initialDate;
+        if (loginCubit.dOBController.text.isNotEmpty) {
+          try {
+            // Parse the existing date (format: "MMMM yyyy" like "May 1999")
+            final parsedDate =
+                DateFormat('MMMM yyyy').parse(loginCubit.dOBController.text);
+            initialDate = parsedDate;
+          } catch (e) {
+            // If parsing fails, use the default
+            initialDate = years;
+          }
+        } else {
+          initialDate = years;
+        }
+
+        DateTime? selectedDate = await showMonthYearPicker(
           context: context,
-          initialDate: years,
+          initialDate: initialDate,
           firstDate: DateTime(1000),
           lastDate: years,
-          builder: (BuildContext context, Widget? child) {
-            return Theme(
-              data: ThemeData.light().copyWith(
-                primaryColor: Colors.green,
-                colorScheme: ColorScheme.light(primary: Colors.green),
-                buttonTheme:
-                    ButtonThemeData(textTheme: ButtonTextTheme.primary),
-              ),
-              child: child!,
-            );
-          },
+          helpText: 'Select birth month and year',
+          cancelText: 'Cancel',
+          confirmText: 'OK',
+          primaryColor: AppColor.greenDark,
         );
-        if (selectedDate != null) {
-          // if (selectedDate.isAfter(sixteenYearsAgo)) {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text('Age below 16 is not allowed.')),
-          //   );
-          //   return;
-          // }
-          final formattedDate = DateFormat('MMMM yyyy').format(selectedDate);
 
+        if (selectedDate != null) {
+          final formattedDate = DateFormat('MMMM yyyy').format(selectedDate);
           loginCubit.dOBController.text = formattedDate;
         }
       },

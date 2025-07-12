@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:musa_app/Cubit/profile/edit_profile/edit_profile_cubit.dart';
 import 'package:musa_app/Cubit/profile/edit_profile/edit_profile_state.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_recoder.dart';
-import 'package:musa_app/Resources/component/custom_date_picker.dart';
+import 'package:musa_app/Resources/component/month_year_picker.dart';
 import 'package:musa_app/Utility/app_validations.dart';
 import 'package:musa_app/Utility/musa_widgets.dart';
 import 'package:musa_app/Utility/packages.dart';
@@ -613,38 +613,37 @@ class _EditProfileState extends State<EditProfile> {
   _buildDatePicker() {
     return GestureDetector(
       onTap: () async {
-        DateTime today = DateTime.now();
         DateTime years = DateTime.now().subtract(Duration(days: 16 * 365));
-        // DateTime sixteenYearsAgo =
-        //     DateTime(today.year - 16, today.month, today.day);
 
-        DateTime? selectedDate = await showCustomDatePicker(
+        // Check if there's already a date in the controller
+        DateTime? initialDate;
+        if (editProfileCubit.dOBController.text.isNotEmpty) {
+          try {
+            // Parse the existing date (format: "MMMM yyyy" like "May 1999")
+            final parsedDate = DateFormat('MMMM yyyy')
+                .parse(editProfileCubit.dOBController.text);
+            initialDate = parsedDate;
+          } catch (e) {
+            // If parsing fails, use the default
+            initialDate = years;
+          }
+        } else {
+          initialDate = years;
+        }
+
+        DateTime? selectedDate = await showMonthYearPicker(
           context: context,
-          initialDate: years,
+          initialDate: initialDate,
           firstDate: DateTime(1000),
           lastDate: years,
-          builder: (BuildContext context, Widget? child) {
-            return Theme(
-              data: ThemeData.light().copyWith(
-                primaryColor: AppColor.greenDark,
-                colorScheme: ColorScheme.light(primary: AppColor.greenDark),
-                buttonTheme:
-                    ButtonThemeData(textTheme: ButtonTextTheme.primary),
-              ),
-              child: child!,
-            );
-          },
+          helpText: 'Select birth month and year',
+          cancelText: 'Cancel',
+          confirmText: 'OK',
+          primaryColor: AppColor.greenDark,
         );
+
         if (selectedDate != null) {
-          // if (selectedDate.isAfter(sixteenYearsAgo)) {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text('Age below 16 is not allowed.')),
-          //   );
-          //   return;
-          // }
-
           final formattedDate = DateFormat('MMMM yyyy').format(selectedDate);
-
           editProfileCubit.dOBController.text = formattedDate;
         }
       },
