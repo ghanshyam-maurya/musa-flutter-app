@@ -45,7 +45,7 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
   int commentCount = 0;
   int textCommentCount = 0;
   int audioCommentCount = 0;
-  String userName = "", userProfileImage = "";
+  String firstName = "", lastName = "", userProfileImage = "";
   String timeStatus = "", albumName = "", subAlbumName = "";
   AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
@@ -65,8 +65,8 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
     // print('musaData--------------->${musaData.toJson()}');
     // print('text comment count-------------> ${musaData.textCommentCount}');
     if (musaData.userDetail != null && musaData.userDetail!.isNotEmpty) {
-      userName =
-          '${musaData.userDetail![0].firstName} ${musaData.userDetail![0].lastName}';
+      firstName = musaData.userDetail![0].firstName ?? "";
+      lastName = musaData.userDetail![0].lastName ?? "";
       userProfileImage = '${musaData.userDetail![0].photo}';
     }
     if (musaData.createdAt != null) {
@@ -224,12 +224,39 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  (() {
+                                    final totalLength = (firstName + lastName)
+                                        .replaceAll(" ", "")
+                                        .length;
+                                    if (firstName.isEmpty && lastName.isEmpty) {
+                                      return Text("Dummy User");
+                                    } else if (totalLength >= 28) {
+                                      // threshold, adjust as needed
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(firstName,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis),
+                                          Text(lastName,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis),
+                                        ],
+                                      );
+                                    } else {
+                                      return Text(
+                                        (firstName +
+                                            (lastName.isNotEmpty
+                                                ? ' ' + lastName
+                                                : '')),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      );
+                                    }
+                                  })(),
                                   Text(
-                                    userName ?? "Dummy User",
-                                    // style: AppTextStyle.appBarTitleStyleBlack.copyWith(fontSize: 12),
-                                  ),
-                                  Text(
-                                    timeStatus ?? '',
+                                    timeStatus,
                                     style: AppTextStyle.normalTextStyle1
                                         .copyWith(fontSize: 10),
                                   ),
@@ -269,7 +296,7 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                                         ContributorsInMusaList(
                                                       musaData: musaData,
                                                       contributorCount:
-                                                          contributorCount ?? 0,
+                                                          contributorCount,
                                                       contributorRemoveCount:
                                                           (count) {
                                                         setState(() {

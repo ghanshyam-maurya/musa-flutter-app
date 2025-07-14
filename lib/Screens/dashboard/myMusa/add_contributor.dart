@@ -240,12 +240,18 @@ class _AddContributorState extends State<AddContributor> {
                                 ),
                               ),
                               SizedBox(width: 10),
-                              Text(
-                                "${contributor.firstName} ${contributor.lastName}",
-                                style: TextStyle(
-                                  color: Color(0xFF222222),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
+                              Expanded(
+                                flex: 6,
+                                child: Text(
+                                  "${contributor.firstName} ${contributor.lastName}"
+                                      .trim(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Color(0xFF222222),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                               ),
                               Spacer(),

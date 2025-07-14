@@ -127,7 +127,9 @@ class _SubAlbumMusaListState extends State<SubAlbumMusaList> {
                                   itemCount:
                                       subAlbumMusaCubit.subAlbumMusaList.length,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                      horizontal: 10,
+                                      vertical:
+                                          10), // Reduced horizontal padding to utilize more space
                                   itemBuilder: (context, index) {
                                     return CommonSubWidgets(
                                       isMyMUSA: true,
