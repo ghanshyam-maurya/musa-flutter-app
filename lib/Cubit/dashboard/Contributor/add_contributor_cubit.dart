@@ -44,12 +44,19 @@ class AddContributorCubit extends Cubit<AddContributorState> {
   Future<void> addContributorsInMyMusa(musaId) async {
     emit(AddContributorLoading());
     List<String> userIds = selectedContributors.keys.toList();
+
+    // Don't make the API call if there are no contributors to add
+    if (userIds.isEmpty) {
+      emit(AddedContributorsInMusa());
+      return;
+    }
+
     repository.addContributors(musaId: musaId, userId: userIds).then((value) {
       value.fold((left) {
         emit(AddedContributorsInMusa());
       }, (right) {
         emit(AddContributorError(
-            errorMessage: right.message ?? 'Failed to load users.'));
+            errorMessage: right.message ?? 'Failed to add contributors.'));
       });
     });
   }

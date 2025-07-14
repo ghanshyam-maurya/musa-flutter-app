@@ -75,7 +75,8 @@ class _AddContributorState extends State<AddContributor> {
           if (state is AddedContributorsInMusa) {
             widget.contributorAddCount!(
                 cubit.selectedContributors.length.toInt());
-            Navigator.pop(context);
+            // Return true to indicate contributors were successfully added
+            Navigator.pop(context, true);
           }
         },
         builder: (context, state) {
@@ -137,8 +138,19 @@ class _AddContributorState extends State<AddContributor> {
                   onTap: () {
                     if (widget.isComeFromProfile != null &&
                         widget.isComeFromProfile!) {
-                      cubit.addContributorsInMyMusa(widget.musaId);
-                      Navigator.pop(context);
+                      // Check if new contributors were selected
+                      if (cubit.selectedContributors.isNotEmpty) {
+                        // Call the contributorAddCount callback before popping
+                        widget.contributorAddCount
+                            ?.call(cubit.selectedContributors.length.toInt());
+                        // Make the API call to add contributors
+                        cubit.addContributorsInMyMusa(widget.musaId);
+                        // Return true to indicate contributors were added
+                        Navigator.pop(context, true);
+                      } else {
+                        // Return false to indicate no contributors were added
+                        Navigator.pop(context, false);
+                      }
                     } else {
                       Navigator.pop(context, cubit.selectedContributors);
                     }

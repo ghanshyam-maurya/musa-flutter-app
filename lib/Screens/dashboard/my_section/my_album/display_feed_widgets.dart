@@ -304,8 +304,10 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                               width: 6,
                                             ),
                                             InkWell(
-                                              onTap: () {
-                                                Navigator.push(
+                                              onTap: () async {
+                                                // Use async/await to get the result
+                                                final result =
+                                                    await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
@@ -319,11 +321,28 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                                           contributorCount =
                                                               contributorCount +
                                                                   count;
+
+                                                          // Also update musaData's contributor count so it's consistent
+                                                          if (musaData
+                                                                  .contributorCount !=
+                                                              null) {
+                                                            musaData.contributorCount =
+                                                                contributorCount;
+                                                          }
                                                         });
                                                       },
-                                                    ), // Replace with your new screen
+                                                    ),
                                                   ),
                                                 );
+
+                                                // Request updated contributor count from API if needed
+                                                if (result == true) {
+                                                  // Optional: You could add an API call here to refresh the data
+                                                  // For now, we'll rely on the contributorAddCount callback
+                                                }
+
+                                                // Refresh UI when returning from AddContributor screen
+                                                setState(() {});
                                               },
                                               // add border around this button
                                               child: Container(
