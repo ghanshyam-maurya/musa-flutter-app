@@ -59,7 +59,9 @@ class _ContributorsInMusaListState extends State<ContributorsInMusaList> {
         title = musaData.subAlbumDetail?[0].title ?? '';
       }
 
-      contributorCount = widget.contributorCount ?? 0;
+      // Make sure to properly initialize the contributor count
+      contributorCount =
+          widget.contributorCount ?? musaData.contributorCount ?? 0;
     }
   }
 
@@ -150,9 +152,16 @@ class _ContributorsInMusaListState extends State<ContributorsInMusaList> {
                             removeCount++;
                             contributorCount--;
                           });
+
                           // Update contributorsList locally
                           contributorsList.data!.removeWhere(
                               (contributor) => contributor.contributorId == id);
+
+                          // Notify the parent widget about the removal
+                          if (widget.contributorRemoveCount != null) {
+                            widget.contributorRemoveCount!(
+                                1); // Remove 1 contributor
+                          }
 
                           // Notify the cubit of the updated list
                           profileCubit.updateContributorsList(contributorsList);

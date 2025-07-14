@@ -57,7 +57,9 @@ abstract class MusaWidgets {
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      closeCallback;
+                      if (closeCallback != null) {
+                        closeCallback();
+                      }
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -75,7 +77,10 @@ abstract class MusaWidgets {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: GestureDetector(
                       onTap: () {
-                        context.pop();
+                        if (closeCallback != null) {
+                          closeCallback();
+                        }
+                        Navigator.pop(context);
                       },
                       child: Icon(Icons.close),
                     ),

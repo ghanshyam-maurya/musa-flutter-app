@@ -108,9 +108,43 @@ class _UserListViewState extends State<UserListView> {
                         onTap: () {
                           if (item.contributorId != null &&
                               item.contributorId!.isNotEmpty) {
-                            // AddContributorCubit().removeContributor(musaTd: widget.musaId, contributorId: item.contributorId??'');
-                            widget.removeCallback?.call(item
-                                .contributorId!); // Notify parent on removal
+                            // Show confirmation dialog
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Remove Contributor'),
+                                  content: Text(
+                                      'Are you sure you want to remove this contributor?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('Cancel',
+                                          style:
+                                              TextStyle(color: AppColor.grey)),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close dialog
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('Yes',
+                                          style: TextStyle(
+                                              color: AppColor.primaryColor)),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close dialog
+                                        Navigator.of(context)
+                                            .pop(); // Close bottom sheet
+
+                                        // Call the remove callback
+                                        widget.removeCallback
+                                            ?.call(item.contributorId!);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
                         },
                         child: Container(
