@@ -1,6 +1,7 @@
 // import 'package:musa_app/Screens/dashboard/chat/chat_list_view.dart';
 import 'package:musa_app/Screens/dashboard/home/home.dart';
 import 'package:musa_app/Screens/art/art.dart';
+import 'package:musa_app/Screens/profile/my_musa_contributors.dart';
 import 'package:musa_app/Screens/social/social.dart';
 import 'package:musa_app/Utility/packages.dart';
 import '../../Screens/dashboard/home/media_upload_page.dart';
@@ -201,7 +202,10 @@ uploadPopUp(BuildContext context) {
                 text: "Add Contributor",
                 onTap: () {
                   Navigator.pop(context);
-                  // TODO: Implement Add Contributor action
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MyMusaContributors()),
+                  );
                 },
               ),
             ],
