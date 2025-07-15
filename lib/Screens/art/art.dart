@@ -1,4 +1,5 @@
 import 'package:musa_app/Cubit/art/art_cubit.dart';
+import 'package:musa_app/Screens/components/notification_icon_button.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'art_musa_list.dart';
 
@@ -151,14 +152,20 @@ class _ArtState extends State<Art> {
                   context.push(RouteTo.settings);
                 },
               ),
-              IconButton(
-                padding: EdgeInsets.all(8),
+              // IconButton(
+              //   padding: EdgeInsets.all(8),
+              //   iconSize: 24,
+              //   icon: SvgPicture.asset(
+              //     Assets.notification,
+              //     width: 24,
+              //     height: 24,
+              //   ),
+              //   onPressed: () {
+              //     context.push(RouteTo.notificationView);
+              //   },
+              // ),
+              NotificationIconButton(
                 iconSize: 24,
-                icon: SvgPicture.asset(
-                  Assets.notification,
-                  width: 24,
-                  height: 24,
-                ),
                 onPressed: () {
                   context.push(RouteTo.notificationView);
                 },

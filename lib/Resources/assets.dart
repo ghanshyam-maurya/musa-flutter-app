@@ -116,6 +116,8 @@ abstract class Assets {
   static const String searchIcon_1 = 'assets/svgs/search_icon.svg';
   static const String settings = 'assets/svgs/settings.svg';
   static const String notification = 'assets/svgs/notification.svg';
+  static const String activeNotification =
+      'assets/svgs/active-notification.svg';
   static const String messenger = 'assets/svgs/messenger.svg';
   static const String micRecord = 'assets/svgs/mic_record.svg';
   static const String addFromCamera = 'assets/images/camera_new.png';

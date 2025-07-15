@@ -1,4 +1,5 @@
 import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_state.dart';
+import 'package:musa_app/Screens/components/notification_icon_button.dart';
 import 'package:musa_app/Screens/dashboard/my_section/my_library/my_media_list_view.dart';
 import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_cubit.dart';
 import 'package:musa_app/Cubit/auth/Login/login_cubit.dart';
@@ -141,8 +142,14 @@ class _MyScreenState extends State<MyScreen> {
                             context.push(RouteTo.settings);
                           },
                         ),
-                        IconButton(
-                          icon: SvgPicture.asset(Assets.notification),
+                        // IconButton(
+                        //   icon: SvgPicture.asset(Assets.notification),
+                        //   onPressed: () {
+                        //     context.push(RouteTo.notificationView);
+                        //   },
+                        // ),
+                        NotificationIconButton(
+                          iconSize: 24,
                           onPressed: () {
                             context.push(RouteTo.notificationView);
                           },

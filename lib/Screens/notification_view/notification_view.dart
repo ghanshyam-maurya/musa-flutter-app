@@ -21,13 +21,14 @@ class _NotificationViewState extends State<NotificationView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _notificationCubit.getNotificationList();
   }
 
   Widget loader = Container(
       // height: 100,
-      child: Center(child: CircularProgressIndicator()));
+      child: Center(
+          child: CircularProgressIndicator(color: AppColor.primaryColor)));
 
   Widget noDataFound = Container(
       //height: 100,
@@ -109,8 +110,7 @@ class _NotificationViewState extends State<NotificationView>
                 },
                 tabs: [
                   _buildTab("General", 0),
-                  _buildTab("Display", 1),
-                  _buildTab("Contributors", 2),
+                  _buildTab("Contributors", 1),
                 ],
               ),
               Expanded(
@@ -118,7 +118,7 @@ class _NotificationViewState extends State<NotificationView>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      //General notification
+                      // General notification
                       state is NotificationLoading
                           ? loader
                           : state is NotificationSuccess
@@ -131,21 +131,7 @@ class _NotificationViewState extends State<NotificationView>
                                   : noDataFound
                               : Container(),
 
-                      //Display notification
-                      state is NotificationLoading
-                          ? loader
-                          : (state is NotificationSuccess ||
-                                  state is DisplayRequestUpdated)
-                              ? _notificationCubit
-                                      .displayNotification.isNotEmpty
-                                  ? _buildTabContent(
-                                      _notificationCubit.displayNotification,
-                                      state,
-                                      showActions: true)
-                                  : noDataFound
-                              : Container(),
-
-                      //Contributor notification
+                      // Contributor notification
                       state is NotificationLoading
                           ? loader
                           : state is NotificationSuccess
@@ -236,7 +222,7 @@ class _NotificationViewState extends State<NotificationView>
                             Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                time ?? '',
+                                time,
                                 style:
                                     AppTextStyle.normalBoldTextStyle.copyWith(
                                   fontSize: 10,
@@ -273,7 +259,8 @@ class _NotificationViewState extends State<NotificationView>
                     ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(
+                            color: AppColor.primaryColor),
                       )
                     : Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
