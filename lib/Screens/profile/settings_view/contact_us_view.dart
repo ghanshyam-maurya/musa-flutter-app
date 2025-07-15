@@ -1,4 +1,3 @@
-import '../../../Utility/musa_widgets.dart';
 import '../../../Utility/packages.dart';
 
 class ContactUsView extends StatefulWidget {
@@ -11,8 +10,99 @@ class ContactUsView extends StatefulWidget {
 }
 
 class ContactUsViewState extends State<ContactUsView> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _subjectController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+
+  final Repository _repository = Repository();
+  bool _isLoading = false;
+  String? _subjectError;
+  String? _messageError;
+
+  void _validateAndSubmit() {
+    setState(() {
+      _subjectError = null;
+      _messageError = null;
+    });
+
+    bool isValid = true;
+
+    if (_subjectController.text.trim().isEmpty) {
+      setState(() {
+        _subjectError = 'Please enter a subject';
+      });
+      isValid = false;
+    }
+
+    if (_messageController.text.trim().isEmpty) {
+      setState(() {
+        _messageError = 'Please enter your message';
+      });
+      isValid = false;
+    }
+
+    if (isValid) {
+      _submitContactForm();
+    } else {
+      // Force rebuild to show validation errors
+      setState(() {});
+    }
+  }
+
+  void _submitContactForm() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await _repository.sendContactMessage(
+          subject: _subjectController.text.trim(),
+          message: _messageController.text.trim());
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      response.fold(
+        (success) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Your message has been sent successfully'),
+              backgroundColor: Color(0xFF00674E),
+            ),
+          );
+
+          // Clear the form
+          _subjectController.clear();
+          _messageController.clear();
+
+          // Navigate back or to previous screen
+          context.pop();
+        },
+        (failure) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message ?? 'An error occurred'),
+              backgroundColor:
+                  Colors.red[400] ?? Colors.red, // Use a fallback color if null
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(StringConst.somethingWentWrong),
+          backgroundColor: Colors.red[400] ?? Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +149,12 @@ class ContactUsViewState extends State<ContactUsView> {
             //   inputController: _firstNameController,
             // ),
             CommonTextField(
-              controller: _emailController,
+              controller: _subjectController,
               hintText: 'Subject',
               prefixIconPath: 'assets/svgs/subject_icon.svg',
-
-              // obscureText: changePwCubit.obsecureText1,
-              // onToggleObscure: () {
-              //   changePwCubit.showPassword1();
-              // },
+              validator: (value) =>
+                  _subjectError != null ? _subjectError : null,
+              autovalidateMode: AutovalidateMode.always,
             ),
             // MusaWidgets.commonTextField(
             //   bgColor: Colors.transparent,
@@ -93,7 +181,8 @@ class ContactUsViewState extends State<ContactUsView> {
                   borderRadius: BorderRadius.circular(15.sp),
                   color: Color(0xFFF8FDFA),
                   border: Border.all(
-                    color: Color(0xFFB4C7B9),
+                    color:
+                        _messageError != null ? Colors.red : Color(0xFFB4C7B9),
                     width: 1.sp,
                   )),
               child: Padding(
@@ -104,11 +193,6 @@ class ContactUsViewState extends State<ContactUsView> {
                   children: [
                     Row(
                       children: [
-                        // Icon(
-                        //   Icons.edit,
-                        //   color: Colors.grey,
-                        //   size: 18.sp,
-                        // ),
                         SizedBox(
                           width: 5.sp,
                         ),
@@ -123,12 +207,18 @@ class ContactUsViewState extends State<ContactUsView> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: _messageController,
                         maxLines: 10,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 8.sp,
                             horizontal: 10.sp,
+                          ),
+                          errorText: _messageError,
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12.sp,
                           ),
                         ),
                         style: AppTextStyle.normalTextStyle1,
@@ -145,7 +235,9 @@ class ContactUsViewState extends State<ContactUsView> {
             //   bgcolor: Color(0xFF00674E),
             // ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                _validateAndSubmit();
+              },
               child: Container(
                 width: double.infinity, // This makes it take full width
                 alignment: Alignment.center,
@@ -154,13 +246,22 @@ class ContactUsViewState extends State<ContactUsView> {
                   color: Color(0xFF00674E),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
-                  StringConst.submitText,
-                  style: AppTextStyle.semiTextStyle(
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
+                child: _isLoading
+                    ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                    : Text(
+                        StringConst.submitText,
+                        style: AppTextStyle.semiTextStyle(
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
               ),
             )
           ],

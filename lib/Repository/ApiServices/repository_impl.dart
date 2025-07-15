@@ -30,6 +30,11 @@ abstract class RepositoryImpl {
   Future<Either<AddContributorsInMusaResponse, Failure>> addContributors(
       {required String musaId, required List<String> userId});
 
+  Future<Either<dynamic, Failure>> sendContactMessage({
+    required String subject,
+    required String message,
+  });
+
 // Future<Either<UserRetrievedResponse, Failure>> updateUserStatus(
 
   Future<Either<LoggedInResponse, Failure>> login(

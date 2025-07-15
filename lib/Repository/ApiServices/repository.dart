@@ -1171,4 +1171,36 @@ class Repository implements RepositoryImpl {
       return Right(Failure(message: StringConst.somethingWentWrong));
     }
   }
+
+  @override
+  Future<Either<dynamic, Failure>> sendContactMessage({
+    required String subject,
+    required String message,
+  }) async {
+    Uri url = Uri.parse(ApiUrl.contactUs);
+    var token = Prefs.getString(PrefKeys.token);
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'subject': subject,
+          'message': message,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return Left(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        return Right(Failure.fromJson(jsonDecode(response.body)));
+      }
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    } catch (e) {
+      debugPrint("error : $e");
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    }
+  }
 }
