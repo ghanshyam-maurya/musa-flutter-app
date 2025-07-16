@@ -395,7 +395,9 @@ class CreateMusaCubit extends Cubit<CreateMusaState> {
   }
 
   Future<void> pickAndUploadImages(
-      {required ImageSource source, bool multiple = true}) async {
+      {required BuildContext context,
+      required ImageSource source,
+      bool multiple = true}) async {
     try {
       List<XFile>? pickedFiles;
       if (multiple) {
@@ -454,91 +456,8 @@ class CreateMusaCubit extends Cubit<CreateMusaState> {
     }
   }
 
-  // Future<void> pickAndUploadMedia(
-  //     {required ImageSource source,
-  //     required bool multiple,
-  //     required bool isVideo}) async {
-  //   try {
-  //     List<File> files = [];
-
-  //     if (isVideo) {
-  //       final XFile? pickedVideo = await _picker.pickVideo(source: source);
-  //       if (pickedVideo != null) {
-  //         files.add(File(pickedVideo.path));
-  //       }
-  //       print('picked video: ${pickedVideo?.path}');
-  //       if (pickedVideo == null) {
-  //         emit(CreateMusaError(errorMessage: 'No video selected'));
-  //         return;
-  //       }
-  //     } else {
-  //       List<XFile>? pickedFiles;
-  //       if (multiple) {
-  //         pickedFiles = await _picker.pickMultiImage();
-  //       } else {
-  //         final XFile? pickedFile = await _picker.pickImage(source: source);
-  //         if (pickedFile != null) {
-  //           pickedFiles = [pickedFile];
-  //         }
-  //       }
-
-  //       if (pickedFiles != null && pickedFiles.isNotEmpty) {
-  //         //files.addAll(pickedFiles.map((xFile) => File(xFile.path)));
-
-  //         List<AssetEntity> assetEntities = [];
-
-  //         for (XFile file in pickedFiles) {
-  //           try {
-  //             // Save the file to gallery and get AssetEntity
-  //             final AssetEntity? asset =
-  //                 await PhotoManager.editor.saveImageWithPath(
-  //               file.path,
-  //               title: "IMG_${DateTime.now().millisecondsSinceEpoch}",
-  //             );
-
-  //             if (asset != null) {
-  //               assetEntities.add(asset);
-  //             }
-  //           } catch (e) {
-  //             print("Error saving image: $e");
-  //             // Fallback: create a simple AssetEntity with file path as ID
-  //             final mockAsset = AssetEntity(
-  //               id: file.path,
-  //               typeInt: AssetType.image.index,
-  //               width: 0,
-  //               height: 0,
-  //               duration: 0,
-  //               orientation: 0,
-  //               isFavorite: false,
-  //               title: file.name,
-  //               createDateSecond: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-  //               modifiedDateSecond:
-  //                   DateTime.now().millisecondsSinceEpoch ~/ 1000,
-  //               relativePath: '',
-  //               latitude: null,
-  //               longitude: null,
-  //             );
-  //             assetEntities.add(mockAsset);
-  //           }
-  //         }
-
-  //         selectedAssets.value = [...selectedAssets.value, ...assetEntities];
-  //         print('selected assests: ${selectedAssets.value}');
-  //         print('selected assests length: ${selectedAssets.value.length}');
-  //         emit(CreateMusaFileUpdated());
-  //       }
-  //     }
-
-  //     // if (files.isNotEmpty) {
-  //     //   await uploadLibraryFiles(
-  //     //       files); // You can internally distinguish type by file extension
-  //     // }
-  //   } catch (e) {
-  //     emit(CreateMusaError(errorMessage: e.toString()));
-  //   }
-  // }
-
   Future<void> pickAndUploadMedia({
+    required BuildContext context,
     required ImageSource source,
     required bool multiple,
     required bool isVideo,
@@ -580,6 +499,8 @@ class CreateMusaCubit extends Cubit<CreateMusaState> {
           }
           print('picked video: ${pickedVideo.path}');
           emit(CreateMusaFileUpdated());
+          int count = 0;
+          Navigator.of(context).popUntil((_) => count++ >= 2);
         } else {
           emit(CreateMusaError(errorMessage: 'No video selected'));
           return;
@@ -635,6 +556,8 @@ class CreateMusaCubit extends Cubit<CreateMusaState> {
           print('selected assets: ${selectedAssets.value}');
           print('selected assets length: ${selectedAssets.value.length}');
           emit(CreateMusaFileUpdated());
+          int count = 0;
+          Navigator.of(context).popUntil((_) => count++ >= 2);
         }
       }
     } catch (e) {
@@ -656,19 +579,23 @@ class CreateMusaCubit extends Cubit<CreateMusaState> {
               leading: Icon(Icons.photo),
               title: Text('Select Image'),
               onTap: () async {
-                Navigator.pop(context);
+                int count = 0;
+                Navigator.of(context).popUntil((_) => count++ >= 2);
+
                 await pickAndUploadImages(
-                    source: ImageSource.gallery, multiple: multiple);
+                    context: context,
+                    source: ImageSource.gallery,
+                    multiple: multiple);
               },
             ),
             ListTile(
               leading: Icon(Icons.videocam),
               title: Text('Select Video'),
               onTap: () async {
-                Navigator.pop(context);
                 await pickAndUploadMedia(
+                  context: context,
                   source: ImageSource.gallery,
-                  multiple: true, // image_picker does not support multi-video
+                  multiple: true,
                   isVideo: true,
                 );
               },

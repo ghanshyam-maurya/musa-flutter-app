@@ -354,7 +354,13 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                               ),
                               itemCount: mediaFiles.length,
                               itemBuilder: (context, index) {
-                                String url = mediaFiles[index].fileLink ?? '';
+                                String url =
+                                    (mediaFiles[index].previewLink != null &&
+                                            mediaFiles[index]
+                                                .previewLink!
+                                                .isNotEmpty)
+                                        ? mediaFiles[index].previewLink!
+                                        : mediaFiles[index].fileLink ?? '';
                                 return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -374,7 +380,11 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                   )));
                                     },
                                     child: Utilities.isVideoUrl(url)
-                                        ? MusaWidgets.thumbnailView(url)
+                                        ? MusaWidgets.autoPlayVideoView(
+                                            url,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                          )
                                         : Utilities.isAudioUrl(url)
                                             ? Utilities.getAudioPlayerView(url)
                                             : MusaWidgets.getPhotoView(url));

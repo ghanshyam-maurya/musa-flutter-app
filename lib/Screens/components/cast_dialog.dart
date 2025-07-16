@@ -31,14 +31,20 @@ class _CastDialogState extends State<CastDialog> {
         await CastScreen.discoverDevice(timeout: Duration(seconds: 3));
     setState(() {
       devices = found;
-      curDev = null;
+      curDev =
+          found.isNotEmpty ? found.first : null; // auto-select first device
     });
   }
 
   Future<void> _startCasting() async {
-    if (curDev == null) return;
-    setState(() => isCasting = true);
+    if (curDev == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a device')),
+      );
+      return;
+    }
 
+    setState(() => isCasting = true);
     final spec = curDev!.spec;
 
     print('--- Device Info ---');
@@ -47,29 +53,38 @@ class _CastDialogState extends State<CastDialog> {
     print('Model Name: ${spec.modelName}');
     print('Device Type: ${spec.deviceType}');
 
-    // final alive = await curDev!.alive();
-    // if (!alive) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Device is not reachable')),
-    //   );
-    //   setState(() => isCasting = false);
-    //   return;
-    // }
+    //final testUrl =
+    //  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    final testUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
 
-    // await curDev!.setAVTransportURI(SetAVTransportURIInput(widget.url));
-    // setState(() => isCasting = false);
-    // Navigator.pop(context);
-
-    if (widget.url == null || widget.url!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Media URL is missing or invalid')),
-      );
-      return;
-    }
+    final metadata = '''
+<?xml version="1.0"?>
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+           xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+           xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+  <item id="0" parentID="-1" restricted="1">
+    <dc:title>Sample MP4</dc:title>
+    <upnp:class>object.item.videoItem</upnp:class>
+    <res protocolInfo="http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_BL_CIF15">$testUrl</res>
+  </item>
+</DIDL-Lite>
+''';
 
     try {
-      print('Trying to cast: ${widget.url}');
-      await curDev!.setAVTransportURI(SetAVTransportURIInput(widget.url!));
+      print('Trying to cast: $testUrl');
+
+      // ✅ Correctly pass metadata using `CurrentURIMetaData`
+      await curDev!.setAVTransportURI(SetAVTransportURIInput(
+        testUrl,
+        CurrentURIMetaData: metadata,
+      ));
+
+      // ✅ Trigger Play after URI is set
+      await curDev!.play(PlayInput(
+        InstanceID: '0',
+        Speed: '1',
+      ));
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Casting started')),
       );
@@ -96,22 +111,32 @@ class _CastDialogState extends State<CastDialog> {
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    DropdownButton<Device>(
-                      value: curDev,
-                      hint: Text('Select device'),
-                      onChanged: (dev) => setState(() => curDev = dev),
-                      items: devices.map((dev) {
-                        return DropdownMenuItem<Device>(
-                          value: dev,
-                          child: Text(dev.spec.friendlyName),
-                        );
-                      }).toList(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Device>(
+                            isExpanded: true,
+                            value: curDev,
+                            hint: Text('Select device'),
+                            onChanged: (dev) => setState(() => curDev = dev),
+                            items: devices.map((dev) {
+                              return DropdownMenuItem<Device>(
+                                value: dev,
+                                child: Text(
+                                  dev.spec.friendlyName,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
       actions: [
         TextButton(
-          onPressed: Navigator.of(context).pop,
+          onPressed: () => Navigator.of(context).pop(),
           child: Text('Cancel'),
         ),
         if (!isCasting)

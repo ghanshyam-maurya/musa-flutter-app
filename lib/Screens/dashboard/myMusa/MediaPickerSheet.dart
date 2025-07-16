@@ -5,6 +5,8 @@ import 'package:musa_app/Resources/CommonWidgets/gallery_picker.dart';
 import 'package:musa_app/Utility/musa_widgets.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'package:video_player/video_player.dart';
+import 'package:musa_app/Screens/dashboard/my_section/my_library/my_media_list_view.dart';
+import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_cubit.dart';
 
 import '../my_section/my_library/my_library_from_create_musa.dart';
 
@@ -23,6 +25,7 @@ class MediaPickerBottomSheetState extends State<MediaPickerBottomSheet> {
   final ValueNotifier<String> selectedTab = ValueNotifier("Gallery");
   List<AssetEntity> _assets = [];
   final Map<String, VideoPlayerController> _controllers = {};
+  MySectionCubit mySectionCubit = MySectionCubit();
 
   @override
   void initState() {
@@ -660,41 +663,53 @@ class MediaPickerBottomSheetState extends State<MediaPickerBottomSheet> {
                     //   ),
                     // );
                     // // onRecordButtonPressed();
-                    final result = await Navigator.push(
+                    // final result = await Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (_) => MyLibrariesFromCreateMusaView(
+                    //             musa: true,
+                    //           )),
+                    // );
+                    // if (result != null) {
+                    //   for (var media in result) {
+                    //     if (media.toString().contains(
+                    //         RegExp(r'\.(jpg|jpeg|png|gif|mp4|mov|avi)$'))) {
+                    //       //selectedLibrary.value.add(media.toString());
+                    //       selectedLibrary.value =
+                    //           List.from(selectedLibrary.value)
+                    //             ..add(media.toString());
+                    //     }
+                    //     // else if (media
+                    //     //     .toString()
+                    //     //     .contains(RegExp(r'\.(mp3|wav|flac|aac|m4a)$'))) {
+                    //     //   if (widget.cubit != null) {
+                    //     //     widget.cubit?.selectedAudio.value =
+                    //     //         List.from(widget.cubit!.selectedAudio.value)
+                    //     //           ..add(media.toString());
+                    //     //   }
+                    //     // }
+                    //   }
+                    //   setState(() {
+                    //     List<String> selectedAssetsPaths = _selectedAssets.value
+                    //         .map((asset) => asset.id)
+                    //         .toList();
+                    //     var dataMediaList =
+                    //         selectedLibrary.value + selectedAssetsPaths;
+                    //     Navigator.pop(context, dataMediaList);
+                    //   });
+                    // }
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => MyLibrariesFromCreateMusaView(
-                                musa: true,
-                              )),
+                        builder: (_) => BottomNavBar(
+                          passIndex: 1, // Optional
+                          customPage: MyMediaListView(
+                            mySectionCubit: mySectionCubit,
+                            musa: true,
+                          ),
+                        ),
+                      ),
                     );
-                    if (result != null) {
-                      for (var media in result) {
-                        if (media.toString().contains(
-                            RegExp(r'\.(jpg|jpeg|png|gif|mp4|mov|avi)$'))) {
-                          //selectedLibrary.value.add(media.toString());
-                          selectedLibrary.value =
-                              List.from(selectedLibrary.value)
-                                ..add(media.toString());
-                        }
-                        // else if (media
-                        //     .toString()
-                        //     .contains(RegExp(r'\.(mp3|wav|flac|aac|m4a)$'))) {
-                        //   if (widget.cubit != null) {
-                        //     widget.cubit?.selectedAudio.value =
-                        //         List.from(widget.cubit!.selectedAudio.value)
-                        //           ..add(media.toString());
-                        //   }
-                        // }
-                      }
-                      setState(() {
-                        List<String> selectedAssetsPaths = _selectedAssets.value
-                            .map((asset) => asset.id)
-                            .toList();
-                        var dataMediaList =
-                            selectedLibrary.value + selectedAssetsPaths;
-                        Navigator.pop(context, dataMediaList);
-                      });
-                    }
                   },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(

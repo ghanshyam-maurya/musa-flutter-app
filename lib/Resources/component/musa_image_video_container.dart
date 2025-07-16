@@ -31,7 +31,7 @@ class _CollageContainerState extends State<MusaImageVideoContainer> {
 
     //Get image view
     Widget imageView(imageUrl, {imageHeight, imageWidth, FileElement? file}) {
-      print("inside video view");
+      print("inside video view333333");
       print("previewLink22: ${file?.previewLink}");
       if (file != null &&
           file.previewLink?.isNotEmpty == true &&
