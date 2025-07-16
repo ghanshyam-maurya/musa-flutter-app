@@ -78,16 +78,27 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
   }
 
   Future<void> stopRecording() async {
-    final path = await record.stop();
-    setState(() {
-      _isRecording = false;
-      _isPaused = false;
-      _stopTimer();
-    });
-    if (path != null) {
-      widget.onRecordingComplete(path);
-      audioFilePath = path;
+    try {
+      final path = await record.stop();
+      setState(() {
+        _isRecording = false;
+        _isPaused = false;
+        _stopTimer();
+      });
+      if (path != null) {
+        audioFilePath = path;
+        widget.onRecordingComplete(path);
+        return;
+      } else {
+        print('Error: Recording path is null');
+      }
+    } catch (e) {
+      print('Error stopping recording: $e');
     }
+    // If we reach here, recording failed
+    setState(() {
+      audioFilePath = null;
+    });
   }
 
   Future<void> pauseRecording() async {
@@ -147,6 +158,7 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
   void dispose() {
     record.dispose();
     _stopTimer();
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -250,9 +262,13 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
                               EdgeInsets.only(top: 10, left: 40, right: 40),
                           height: 45,
                           child: MusaTextButton.borderTextButton(
-                            onPressed: () {
-                              stopRecording();
-                              widget.recordUploadBtn();
+                            onPressed: () async {
+                              // Wait for recording to complete before proceeding
+                              await stopRecording();
+                              // Only call upload if we have a valid audio file
+                              if (audioFilePath != null) {
+                                widget.recordUploadBtn();
+                              }
                             },
                             title: 'Stop Recording',
                             textcolor: AppColor.greenDark,
@@ -316,9 +332,14 @@ class _AudioCommentPopupState extends State<AudioCommentPopup> {
                         backgroundColor:
                             const Color.fromARGB(255, 215, 207, 207),
                         child: IconButton(
-                          onPressed: () {
-                            widget.recordUploadBtn();
-                            record.stop();
+                          onPressed: () async {
+                            if (audioFilePath != null) {
+                              // Ensure any ongoing recording is stopped
+                              if (_isRecording || _isPaused) {
+                                await record.stop();
+                              }
+                              widget.recordUploadBtn();
+                            }
                           },
                           icon: Icon(
                             Icons.send,
