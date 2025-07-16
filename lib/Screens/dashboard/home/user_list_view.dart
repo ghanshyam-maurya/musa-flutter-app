@@ -65,7 +65,7 @@ class _UserListViewState extends State<UserListView> {
         itemBuilder: (context, index) {
           var item = _displayedUsers![index];
           return SizedBox(
-            height: 62.sp,
+            height: 68.sp,
             width: MediaQuery.of(context).size.width,
             child: Center(
               child: Column(
@@ -79,9 +79,14 @@ class _UserListViewState extends State<UserListView> {
                         borderWidth: 3.sp,
                       ),
                       SizedBox(width: 5.sp),
-                      Text(
-                        '${item.userDetail?[0].firstName} ${item.userDetail?[0].lastName}',
-                        style: AppTextStyle.normalBoldTextStyle,
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          '${item.userDetail?[0].firstName} ${item.userDetail?[0].lastName}',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: AppTextStyle.normalBoldTextStyle,
+                        ),
                       ),
                       SizedBox(width: 5.sp),
                       const Spacer(),

@@ -23,6 +23,7 @@ abstract class ApiUrl {
   static const String appleSocialLoginApi = '$baseUrl/users/apple';
   static const String completeUserInfo =
       '$baseUrl/users/social-profile-complete';
+  static const String contactUs = '$baseUrl/users/contact-us';
 
   static const String logOutUser = '$baseUrl/users/logout';
   static const String getUserDetails = '$baseUrl/users/detail';

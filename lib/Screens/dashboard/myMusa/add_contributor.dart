@@ -241,7 +241,7 @@ class _AddContributorState extends State<AddContributor> {
                               ),
                               SizedBox(width: 10),
                               Expanded(
-                                flex: 6,
+                                flex: 4,
                                 child: Text(
                                   "${contributor.firstName} ${contributor.lastName}"
                                       .trim(),

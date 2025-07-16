@@ -306,13 +306,13 @@ class _DashboardSearchState extends State<DashboardSearch> {
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          MyProfile(userId: user.sId),
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) =>
+                                  //         MyProfile(userId: user.sId),
+                                  //   ),
+                                  // );
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
