@@ -61,6 +61,8 @@ abstract class ApiUrl {
       '$baseUrl/users/musa/contributor/users';
   static const String removeContributor =
       '$baseUrl/users/musa/contributor/remove';
+  static const String removeContributorFromAllMusa =
+      '$baseUrl/users/musa/contributor/remove/all';
   static const String deleteMusa = '$baseUrl/users/musa/delete';
   static const String searchSocial =
       '$baseUrl/users/musa/social/search?search=';

@@ -61,10 +61,17 @@ class _MyMusaContributorsState extends State<MyMusaContributors> {
           }
         },
         builder: (context, state) {
-          if (state is MyMusaContributorsLoading ||
-              state is ContributorRemovalLoading) {
+          if (state is MyMusaContributorsLoading) {
             return MusaWidgets.loader(context: context, isForFullHeight: true);
           }
+
+          // Show loading indicator only when it's initial loading
+          // For removal loading, we'll keep the current view
+          if (state is ContributorRemovalLoading &&
+              !(state is MyMusaContributorsSuccess)) {
+            return MusaWidgets.loader(context: context, isForFullHeight: true);
+          }
+
           if (state is MyMusaContributorsError) {
             return Center(
                 child: Padding(
@@ -74,30 +81,60 @@ class _MyMusaContributorsState extends State<MyMusaContributors> {
                   style: TextStyle(fontSize: 22, color: Colors.black)),
             ));
           }
-          if (state is MyMusaContributorsSuccess) {
-            // print('state.sections-------->: ${state.sections.length}');
-            if (state.sections.isEmpty) {
-              return const Center(
-                  child: Text("No contributor sections found."));
+
+          // For ContributorRemovalSuccess state, the cubit should have already refreshed the data
+          // For ContributorRemovalError state, we want to keep showing the existing list
+          if (state is MyMusaContributorsSuccess ||
+              state is ContributorRemovalError) {
+            // Get sections from the state
+            List<MusaSection> sections = [];
+            if (state is MyMusaContributorsSuccess) {
+              sections = state.sections;
+            } else if (state is ContributorRemovalError) {
+              // For error state, use the previously loaded sections if available
+              if (_cubit.lastLoadedSections.isNotEmpty) {
+                sections = _cubit.lastLoadedSections;
+              } else {
+                // If no sections were previously loaded, show an error
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Error removing contributor. Please try again.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 22, color: Colors.black),
+                    ),
+                  ),
+                );
+              }
             }
+
+            // if (sections.isEmpty) {
+            //   return const Center(
+            //       child: Text("No contributor sections found."));
+            // }
+
+            // Track rendered user IDs to ensure each user is rendered only once
+            final Set<String> renderedUserIds = {};
             return Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 800),
                 child: ListView.builder(
-                  itemCount: state.sections.length,
+                  itemCount: sections.length,
                   itemBuilder: (context, index) {
-                    final section = state.sections[index];
-                    // Pass the index and total count to the helper method
+                    final section = sections[index];
                     return _buildPaintingSection(
                       section,
                       index,
-                      state.sections.length,
+                      sections.length,
+                      renderedUserIds,
                     );
                   },
                 ),
               ),
             );
           }
+
           // Initial state
           return const SizedBox.shrink();
         },
@@ -105,44 +142,55 @@ class _MyMusaContributorsState extends State<MyMusaContributors> {
     );
   }
 
-  /// Builds a widget for a single painting section.
-  Widget _buildPaintingSection(MusaSection section, int index, int totalItems) {
-    // print("section data ---------------->: $section");
+  /// Builds a widget for a single painting section, rendering each user only once across all sections.
+  Widget _buildPaintingSection(
+    MusaSection section,
+    int index,
+    int totalItems,
+    Set<String> renderedUserIds,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0, top: 8.0),
-            child: Text(
-              section.title ?? 'Untitled Section',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColor.greenDark, // Teal color
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 12.0, top: 8.0),
+          //   child: Text(
+          //     section.title ?? 'Untitled Section',
+          //     style: const TextStyle(
+          //       fontSize: 20,
+          //       fontWeight: FontWeight.bold,
+          //       color: AppColor.greenDark,
+          //     ),
+          //   ),
+          // ),
           if (section.contributors == null || section.contributors!.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text("No contributors for this section."),
+              child: Text("No contributors found."),
             )
           else
             Column(
-              children: section.contributors!.map((contributor) {
+              children: section.contributors!.where((contributor) {
+                final id = contributor.contributorDetails?.id;
+                if (id == null) return false;
+                if (renderedUserIds.contains(id)) {
+                  return false;
+                } else {
+                  renderedUserIds.add(id);
+                  return true;
+                }
+              }).map((contributor) {
                 return _buildContributorRow(
                     section, contributor.contributorDetails);
               }).toList(),
             ),
-
-          // Safely check if this is NOT the last item before adding a divider.
-          if (index < totalItems - 1)
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: Divider(color: Colors.grey.shade200, height: 1),
-            ),
+          // if (index < totalItems - 1)
+          //   Padding(
+          //     padding: const EdgeInsets.only(top: 24.0),
+          //     child: Divider(color: Colors.grey.shade200, height: 1),
+          //   ),
         ],
       ),
     );
@@ -189,11 +237,11 @@ class _MyMusaContributorsState extends State<MyMusaContributors> {
           TextButton(
             onPressed: () {
               // Call the new dialog function
-              if (section.id != null && details?.id != null) {
+              if (section.id != null && details.id != null) {
                 _showRemoveConfirmationDialog(
                   context: context,
                   musaId: section.id!,
-                  contributeId: details!.id!,
+                  contributeId: details.id!,
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -231,8 +279,8 @@ class _MyMusaContributorsState extends State<MyMusaContributors> {
             borderRadius: BorderRadius.circular(12),
           ),
           title: const Text('Confirm Removal'),
-          content:
-              const Text('Are you sure you want to remove this contributor?'),
+          content: const Text(
+              'Your action will remove this contributor from all your Musas'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel',

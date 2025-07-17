@@ -8,6 +8,9 @@ import 'mymusa_contributor_state.dart';
 class MyMusaContributorsCubit extends Cubit<MyMusaContributorsState> {
   MyMusaContributorsCubit() : super(MyMusaContributorsInitial());
 
+  // Store the last successfully loaded sections to display in case of errors
+  List<MusaSection> lastLoadedSections = [];
+
   Future<void> fetchMyMusaContributors() async {
     emit(MyMusaContributorsLoading());
     final token = Prefs.getString(PrefKeys.token);
@@ -31,6 +34,8 @@ class MyMusaContributorsCubit extends Cubit<MyMusaContributorsState> {
         final musaResponse = MusaContributorsResponse.fromJson(responseBody);
 
         if (musaResponse.data != null && musaResponse.data!.isNotEmpty) {
+          // Store the last successfully loaded sections
+          lastLoadedSections = musaResponse.data!;
           emit(MyMusaContributorsSuccess(musaResponse.data!));
         } else {
           emit(const MyMusaContributorsError("No contributors found."));
@@ -57,7 +62,7 @@ class MyMusaContributorsCubit extends Cubit<MyMusaContributorsState> {
     try {
       final response = await http.post(
         // Ensure 'removeContributor' is defined in your ApiUrl class
-        Uri.parse(ApiUrl.removeContributor),
+        Uri.parse(ApiUrl.removeContributorFromAllMusa),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -71,16 +76,20 @@ class MyMusaContributorsCubit extends Cubit<MyMusaContributorsState> {
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
         // Emit success to show the snackbar
-        emit(ContributorRemovalSuccess(responseBody['message']));
+        emit(ContributorRemovalSuccess(
+            responseBody['message'] ?? 'Contributor removed successfully'));
         // As requested, immediately fetch the latest list to refresh the UI
         await fetchMyMusaContributors();
       } else {
         final responseBody = json.decode(response.body);
+        // When removal fails, emit error state but keep last sections loaded
         emit(ContributorRemovalError(
             responseBody['message'] ?? 'Failed to remove contributor.'));
+        // Don't refresh the list in case of error
       }
     } catch (e) {
-      emit(ContributorRemovalError('An error occurred: ${e.toString()}'));
+      print('Error removing contributor: ${e.toString()}');
+      emit(ContributorRemovalError('Failed to remove contributor'));
     }
   }
 }
