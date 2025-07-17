@@ -29,6 +29,28 @@ class _AddContributorState extends State<AddContributor> {
   TextEditingController searchController = TextEditingController();
   ValueNotifier<String> searchQuery = ValueNotifier<String>("");
 
+  // Method to trigger API search
+  void performSearch(String query) {
+    if (query.isNotEmpty) {
+      // Show loading state
+      setState(() {
+        // The BlocConsumer will automatically show the loading state
+      });
+
+      if (isComeFromProfile) {
+        cubit.getContributorUsersListWithStatus(widget.musaId, query);
+      } else {
+        cubit.getContributorUsersList(searchQuery: query);
+      }
+    } else {
+      if (isComeFromProfile) {
+        cubit.getContributorUsersListWithStatus(widget.musaId, query);
+      } else {
+        cubit.getContributorUsersList();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -323,15 +345,31 @@ class _AddContributorState extends State<AddContributor> {
             searchQuery.value =
                 value.trim().toLowerCase(); // Update search query
           },
+          textInputAction: TextInputAction.search,
+          onSubmitted: (value) {
+            // Make API call when user submits via keyboard
+            performSearch(value.trim().toLowerCase());
+          },
           decoration: InputDecoration(
             // prefixIcon: Icon(Icons.search, color: AppColor.grey),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(
-                'assets/svgs/search.svg',
-                fit: BoxFit.contain, // This helps maintain aspect ratio
-                width: 20,
-                height: 20,
+            suffixIcon: GestureDetector(
+              onTap: () {
+                // Make API call with search query when search icon is clicked
+                performSearch(searchQuery.value);
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  // Subtle circle effect to indicate it's tappable
+                  color: Colors.transparent,
+                ),
+                child: SvgPicture.asset(
+                  'assets/svgs/search.svg',
+                  fit: BoxFit.contain,
+                  width: 20,
+                  height: 20,
+                  color: AppColor.greenDark, // Making the icon more visible
+                ),
               ),
             ),
             hintText: 'Search...',
