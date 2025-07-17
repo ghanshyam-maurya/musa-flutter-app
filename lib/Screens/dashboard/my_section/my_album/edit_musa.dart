@@ -670,90 +670,90 @@ class _EditMusaState extends State<EditMusa> {
                   ),
                   */
 
-                  // Text(
-                  //   'Contributors',
-                  //   style: AppTextStyle.mediumTextStyle(
-                  //     color: AppColor.black,
-                  //     size: 14,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
+                  Text(
+                    'Contributors',
+                    style: AppTextStyle.mediumTextStyle(
+                      color: AppColor.black,
+                      size: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
-                  // SingleChildScrollView(
-                  //   scrollDirection: Axis.horizontal,
-                  //   child: Row(
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     children: [
-                  //       //Contributors Chips
-                  //       ...cubit.selectedContributors.entries.map((entry) {
-                  //         String contributorId = entry.key;
-                  //         String contributorName = entry.value;
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //Contributors Chips
+                        ...cubit.selectedContributors.entries.map((entry) {
+                          String contributorId = entry.key;
+                          String contributorName = entry.value;
 
-                  //         return Container(
-                  //           margin: const EdgeInsets.only(right: 10),
-                  //           child: Chip(
-                  //             backgroundColor: const Color(0xFFF8F8F8),
-                  //             label: Text(
-                  //               contributorName,
-                  //               style: AppTextStyle.normalTextStyle(
-                  //                 color: AppColor.black,
-                  //                 size: 14,
-                  //               ),
-                  //             ),
-                  //             onDeleted: () {
-                  //               setState(() {
-                  //                 cubit.selectedContributors
-                  //                     .remove(contributorId);
-                  //               });
-                  //             },
-                  //             deleteIcon: const Icon(Icons.close, size: 16),
-                  //             deleteIconColor: AppColor.black,
-                  //             shape: RoundedRectangleBorder(
-                  //               borderRadius: BorderRadius.circular(12),
-                  //               side:
-                  //                   BorderSide(color: const Color(0xFFE0E0E0)),
-                  //             ),
-                  //           ),
-                  //         );
-                  //       }),
+                          return Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            child: Chip(
+                              backgroundColor: const Color(0xFFF8F8F8),
+                              label: Text(
+                                contributorName,
+                                style: AppTextStyle.normalTextStyle(
+                                  color: AppColor.black,
+                                  size: 14,
+                                ),
+                              ),
+                              onDeleted: () {
+                                setState(() {
+                                  cubit.selectedContributors
+                                      .remove(contributorId);
+                                });
+                              },
+                              deleteIcon: const Icon(Icons.close, size: 16),
+                              deleteIconColor: AppColor.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side:
+                                    BorderSide(color: const Color(0xFFE0E0E0)),
+                              ),
+                            ),
+                          );
+                        }),
 
-                  //       ///Add Button
-                  //       GestureDetector(
-                  //         onTap: () {
-                  //           cubit.openContributorScreen(context: context);
-                  //           cubit.descriptionFocusNode.unfocus();
-                  //         },
-                  //         child: Container(
-                  //           padding: const EdgeInsets.symmetric(
-                  //               horizontal: 12, vertical: 8),
-                  //           decoration: BoxDecoration(
-                  //             color: const Color(0xFFE6F3EA),
-                  //             borderRadius: BorderRadius.circular(12),
-                  //           ),
-                  //           child: Row(
-                  //             children: [
-                  //               SvgPicture.asset(
-                  //                 'assets/svgs/add.svg',
-                  //                 width: 16,
-                  //                 height: 16,
-                  //               ),
-                  //               const SizedBox(width: 4),
-                  //               Text(
-                  //                 'Add',
-                  //                 style: AppTextStyle.normalTextStyle(
-                  //                   color: const Color(0xFF0C7A3E),
-                  //                   size: 14,
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                        ///Add Button
+                        GestureDetector(
+                          onTap: () {
+                            cubit.openContributorScreen(context: context);
+                            cubit.descriptionFocusNode.unfocus();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE6F3EA),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svgs/add.svg',
+                                  width: 16,
+                                  height: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Add',
+                                  style: AppTextStyle.normalTextStyle(
+                                    color: const Color(0xFF0C7A3E),
+                                    size: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                  // const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   Text(
                     StringConst.musaType,

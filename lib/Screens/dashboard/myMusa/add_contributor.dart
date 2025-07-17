@@ -6,6 +6,7 @@ import 'package:musa_app/Utility/packages.dart';
 class AddContributor extends StatefulWidget {
   final List<String> initialSelectedContributors; // Receive selected users
   final bool? isComeFromProfile;
+  final bool? isComeFromEditMusa;
   final String? musaId;
   final Function(int)? contributorAddCount;
 
@@ -13,6 +14,7 @@ class AddContributor extends StatefulWidget {
       {super.key,
       required this.initialSelectedContributors,
       this.isComeFromProfile,
+      this.isComeFromEditMusa,
       this.musaId,
       this.contributorAddCount});
 
@@ -25,6 +27,7 @@ class _AddContributorState extends State<AddContributor> {
 
   late Map<String, String> _selectedContributors;
   bool isComeFromProfile = false;
+  bool isComeFromEditMusa = false;
 
   TextEditingController searchController = TextEditingController();
   ValueNotifier<String> searchQuery = ValueNotifier<String>("");
@@ -58,10 +61,18 @@ class _AddContributorState extends State<AddContributor> {
     _selectedContributors = {};
     isComeFromProfile =
         widget.isComeFromProfile != null && widget.isComeFromProfile!;
+    isComeFromEditMusa =
+        widget.isComeFromEditMusa != null && widget.isComeFromEditMusa!;
 
     if (widget.isComeFromProfile != null && widget.isComeFromProfile!) {
       print(
           'iscomefromprofile---------------->${widget.musaId} ${widget.isComeFromProfile}');
+      cubit.selectedContributors = {};
+      cubit.getContributorUsersListWithStatus(widget.musaId, searchQuery.value);
+    } else if (widget.isComeFromEditMusa != null &&
+        widget.isComeFromEditMusa!) {
+      print(
+          'iscomefromeditMusa---------------->${widget.musaId} ${widget.isComeFromEditMusa}');
       cubit.selectedContributors = {};
       cubit.getContributorUsersListWithStatus(widget.musaId, searchQuery.value);
     } else {
@@ -173,6 +184,9 @@ class _AddContributorState extends State<AddContributor> {
                         // Return false to indicate no contributors were added
                         Navigator.pop(context, false);
                       }
+                    } else if (widget.isComeFromEditMusa != null &&
+                        widget.isComeFromEditMusa!) {
+                      Navigator.pop(context, cubit.selectedContributors);
                     } else {
                       Navigator.pop(context, cubit.selectedContributors);
                     }
