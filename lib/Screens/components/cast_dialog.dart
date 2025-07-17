@@ -53,9 +53,9 @@ class _CastDialogState extends State<CastDialog> {
     print('Model Name: ${spec.modelName}');
     print('Device Type: ${spec.deviceType}');
 
-    //final testUrl =
-    //  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-    final testUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    final testUrl =
+        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    //final testUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
 
     final metadata = '''
 <?xml version="1.0"?>
@@ -73,13 +73,11 @@ class _CastDialogState extends State<CastDialog> {
     try {
       print('Trying to cast: $testUrl');
 
-      // ✅ Correctly pass metadata using `CurrentURIMetaData`
       await curDev!.setAVTransportURI(SetAVTransportURIInput(
         testUrl,
         CurrentURIMetaData: metadata,
       ));
 
-      // ✅ Trigger Play after URI is set
       await curDev!.play(PlayInput(
         InstanceID: '0',
         Speed: '1',

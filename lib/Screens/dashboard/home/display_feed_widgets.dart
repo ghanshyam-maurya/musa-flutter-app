@@ -765,6 +765,7 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                   DisplayCastModeWidget(
                     padding: EdgeInsets.only(right: 10.sp),
                     fileList: musaData.file ?? [],
+                    musaData: musaData,
                   ),
                   // SizedBox(
                   //   width: 1.sp,
