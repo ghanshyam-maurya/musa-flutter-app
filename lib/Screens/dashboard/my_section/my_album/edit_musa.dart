@@ -1104,12 +1104,13 @@ class _EditMusaState extends State<EditMusa> {
           if (cubit.remoteAudioComments != 'remove')
             AudioPlayerPopup(
               filePath: widget.musaData.audioComments!.first,
-              onRemove: () {
+              onRemove: () async {
                 // setState(() {
                 //   audioFilePath = null;
                 //   cubit.audioFilePath = null;
                 // });
-                showRemoveConfirmationDialogForVoiceFile();
+                // showRemoveConfirmationDialogForVoiceFile();
+                cubit.remoteAudioComments = 'remove';
               },
             ),
         ],
@@ -2087,13 +2088,24 @@ class _EditMusaState extends State<EditMusa> {
             top: 4,
             right: 4,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (isRemote) {
-                  // For remote files, show confirmation dialog
+                  // For remote files, remove directly without confirmation
                   final remoteFileId = remoteFileUrlToIdMap[asset.id];
                   if (remoteFileId != null) {
-                    showRemoveConfirmationDialogForRemoteFile(
-                        remoteFileId, asset.id);
+                    // showRemoveConfirmationDialogForRemoteFile(
+                    // remoteFileId, asset.id);
+
+                    // Update the UI by removing the item from the state
+                    setState(() {
+                      var updatedAssets =
+                          List<AssetEntity>.from(cubit.selectedAssets.value)
+                            ..removeWhere((a) => a.id == asset.id);
+                      cubit.selectedAssets.value = updatedAssets;
+                      remoteFileUrlToIdMap.remove(asset.id);
+                    });
+                    // add this file to the remote media files to delete list
+                    cubit.remoteMediaFilesTodelete!.add(remoteFileId);
                   }
                 } else {
                   // For local files, just remove from the list
@@ -2219,7 +2231,7 @@ class _EditMusaState extends State<EditMusa> {
                 // Call the cubit method to delete the file via API
                 // await cubit.removeMusaFile(fileId: fileId);
 
-                // // Update the UI by removing the item from the state
+                // Update the UI by removing the item from the state
                 setState(() {
                   var updatedAssets =
                       List<AssetEntity>.from(cubit.selectedAssets.value)
