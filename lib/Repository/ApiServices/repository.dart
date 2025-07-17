@@ -315,17 +315,22 @@ class Repository implements RepositoryImpl {
 
   @override
   Future<Either<AddContributorUserResponse, Failure>>
-      getUserListWithContributorStatus({required String musaId}) async {
+      getUserListWithContributorStatus(
+          {required String musaId, String? searchQuery}) async {
     // TODO: implement getUserListWithContributorStatus
     //final token = await SharedPreferencesHelper.getToken();
+    // Uri url = Uri.parse(ApiUrl.contributorsList);
     Uri url = Uri.parse(ApiUrl.contributorsList);
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      url = Uri.parse('${ApiUrl.contributorsList}?search=$searchQuery');
+    }
     var token = Prefs.getString(PrefKeys.token);
     try {
       var headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       };
-      var request = http.Request('GET', url);
+      var request = http.Request('POST', url);
       request.body = json.encode({
         "musa_id": musaId,
       });
@@ -739,10 +744,14 @@ class Repository implements RepositoryImpl {
   }
 
   @override
-  Future<Either<AddContributorUserResponse, Failure>>
-      getContributorUsers() async {
+  Future<Either<AddContributorUserResponse, Failure>> getContributorUsers(
+      {String? searchQuery}) async {
     final token = Prefs.getString(PrefKeys.token);
+    // Uri url = Uri.parse(ApiUrl.getUserList);
     Uri url = Uri.parse(ApiUrl.getUserList);
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      url = Uri.parse('${ApiUrl.getUserList}?search=$searchQuery');
+    }
     try {
       http.Response response =
           await http.get(url, headers: {'Authorization': 'Bearer $token'});

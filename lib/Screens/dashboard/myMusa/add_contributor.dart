@@ -41,9 +41,9 @@ class _AddContributorState extends State<AddContributor> {
       print(
           'iscomefromprofile---------------->${widget.musaId} ${widget.isComeFromProfile}');
       cubit.selectedContributors = {};
-      cubit.getContributorUsersListWithStatus(widget.musaId);
+      cubit.getContributorUsersListWithStatus(widget.musaId, searchQuery.value);
     } else {
-      cubit.getContributorUsersList();
+      cubit.getContributorUsersList(searchQuery: searchQuery.value);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

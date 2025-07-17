@@ -12,10 +12,10 @@ class AddContributorCubit extends Cubit<AddContributorState> {
     getContributorUsersList();
   }
 
-  Future<void> getContributorUsersList() async {
+  Future<void> getContributorUsersList({String? searchQuery}) async {
     emit(AddContributorInitial());
     emit(AddContributorLoading());
-    repository.getContributorUsers().then((value) {
+    repository.getContributorUsers(searchQuery: searchQuery).then((value) {
       value.fold((left) {
         contributorList = left.users ?? [];
         emit(AddContributorFetched());
@@ -26,10 +26,13 @@ class AddContributorCubit extends Cubit<AddContributorState> {
     });
   }
 
-  Future<void> getContributorUsersListWithStatus(musaId) async {
+  Future<void> getContributorUsersListWithStatus(musaId, searchQuery) async {
     emit(AddContributorInitial());
     emit(AddContributorLoading());
-    repository.getUserListWithContributorStatus(musaId: musaId).then((value) {
+    repository
+        .getUserListWithContributorStatus(
+            musaId: musaId, searchQuery: searchQuery)
+        .then((value) {
       value.fold((left) {
         contributorList.clear();
         contributorList = left.users ?? [];

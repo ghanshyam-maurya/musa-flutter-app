@@ -44,7 +44,7 @@ abstract class ApiUrl {
       '$baseUrl/users/musa/social/list?page&limit';
   static const String getMySectionSubAlbumList =
       '$baseUrl/users/musa/my-musa/sub-album';
-  static const String getUserList = '$baseUrl/users/list';
+  static const String getUserList = '$baseUrl/users/list/search';
   static const String inviteContributor =
       '$baseUrl/users/musa/contributor/invite';
   static const String getProfileMusaListApi =
