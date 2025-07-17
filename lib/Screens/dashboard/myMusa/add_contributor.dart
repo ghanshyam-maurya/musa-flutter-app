@@ -209,15 +209,32 @@ class _AddContributorState extends State<AddContributor> {
             return ValueListenableBuilder<String>(
               valueListenable: searchQuery,
               builder: (context, query, _) {
+                // Comment out local search filtering
+                // final filteredContributors =
+                //     cubit.contributorList.where((contributor) {
+                //   bool isAlreadyContributor = contributor.contributeStatus == 1;
+                //   String userName =
+                //       "${contributor.firstName ?? ''} ${contributor.lastName ?? ''}"
+                //           .trim();
+                //   return userName.isNotEmpty &&
+                //       !isAlreadyContributor &&
+                //       userName.toLowerCase().contains(query);
+                // }).toList();
+
+                // Use the full contributor list from API instead of local filtering
                 final filteredContributors =
                     cubit.contributorList.where((contributor) {
+                  // Check if user is already a contributor
                   bool isAlreadyContributor = contributor.contributeStatus == 1;
-                  String userName =
-                      "${contributor.firstName ?? ''} ${contributor.lastName ?? ''}"
-                          .trim();
-                  return userName.isNotEmpty &&
-                      !isAlreadyContributor &&
-                      userName.toLowerCase().contains(query);
+
+                  // Check if firstName or lastName is null or empty
+                  bool hasValidName = (contributor.firstName != null &&
+                          contributor.firstName!.isNotEmpty) ||
+                      (contributor.lastName != null &&
+                          contributor.lastName!.isNotEmpty);
+
+                  // Only include users who are not already contributors AND have a valid name
+                  return !isAlreadyContributor && hasValidName;
                 }).toList();
 
                 print(
@@ -342,8 +359,12 @@ class _AddContributorState extends State<AddContributor> {
           controller: searchController,
           cursorColor: Colors.grey, // Added cursor color
           onChanged: (value) {
-            searchQuery.value =
-                value.trim().toLowerCase(); // Update search query
+            // Comment out local search query update
+            // searchQuery.value =
+            //     value.trim().toLowerCase(); // Update search query
+
+            // Keep reference to value but don't trigger local filtering
+            searchQuery.value = value.trim().toLowerCase();
           },
           textInputAction: TextInputAction.search,
           onSubmitted: (value) {
