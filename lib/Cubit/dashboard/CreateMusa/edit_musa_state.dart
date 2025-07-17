@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:musa_app/Repository/AppResponse/musa_contributors_list_modal.dart';
 
 sealed class EditMusaState extends Equatable {
   const EditMusaState();
@@ -51,3 +52,18 @@ final class EditMusaDescriptionUpdated extends EditMusaState {
   final String description;
   const EditMusaDescriptionUpdated({required this.description});
 }
+
+// Contributors states
+final class EditMusaContributorsListLoading extends EditMusaState {}
+
+final class EditMusaContributorsListLoaded extends EditMusaState {
+  final MusaContributorListModel contributorsList;
+  EditMusaContributorsListLoaded(this.contributorsList);
+}
+
+final class EditMusaContributorsListError extends EditMusaState {
+  final String message;
+  EditMusaContributorsListError(this.message);
+}
+
+final class EditMusaContributorsListNoInternet extends EditMusaState {}

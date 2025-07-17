@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 import 'package:musa_app/Cubit/dashboard/CreateMusa/edit_musa_state.dart';
 import 'package:musa_app/Repository/AppResponse/library_response.dart';
 import 'package:musa_app/Repository/AppResponse/my_section_album_list.dart';
 import 'package:musa_app/Repository/AppResponse/my_section_sub_album_list.dart';
+import 'package:musa_app/Repository/AppResponse/musa_contributors_list_modal.dart';
 import 'package:musa_app/Resources/api_url.dart';
 import 'package:musa_app/Utility/packages.dart';
 
@@ -23,6 +26,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
   List<MySectionAlbumData> musaAlbumList = [];
   List<MySectionSubAlbumData> musaSubAlbumList = [];
   Map<String, String> selectedContributors = {};
+  MusaContributorListModel? musaContributorsList;
   final ValueNotifier<List<String>> selectedAudio = ValueNotifier([]);
   String isPublic = 'only_me';
   ValueNotifier<double> loadingTime = ValueNotifier(0.0);
@@ -41,7 +45,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
   List<String>? remoteMediaFilesTodelete = []; // List of remote media file URLs
   int? initialTotalRemoteFiles = 0; // ID of remote audio file to delete
   String? remoteAudioComments = '';
-
+  List<String>? contributorsTodelete = [];
   final ImagePicker _picker = ImagePicker();
 
   // Method to update description field state
@@ -112,6 +116,21 @@ class EditMusaCubit extends Cubit<EditMusaState> {
     emit(EditMusaUpdated());
   }
 
+  removeInitialContributor(String contributorId) {
+    // Add contributor ID to the delete list
+    contributorsTodelete ??= [];
+    contributorsTodelete!.add(contributorId);
+    // print("Contributors to delete: $contributorsTodelete");
+    // Remove contributor from the current list
+    if (musaContributorsList?.data != null) {
+      musaContributorsList!.data!.removeWhere(
+        (contributor) => contributor.contributorId.toString() == contributorId,
+      );
+    }
+
+    emit(EditMusaUpdated());
+  }
+
   openContributorScreen({required BuildContext context}) async {
     Map<String, String>? result = await Navigator.push(
       context,
@@ -130,6 +149,52 @@ class EditMusaCubit extends Cubit<EditMusaState> {
       FocusScope.of(context).unfocus();
       emit(EditMusaDataFetched());
     }
+  }
+
+  Future<void> getContributorListOfMusaApi() async {
+    await Connectivity().checkConnectivity().then((value) async {
+      if (value != ConnectivityResult.none) {
+        try {
+          emit(EditMusaContributorsListLoading());
+          if (musaId.isNotEmpty) {
+            final token = Prefs.getString(PrefKeys.token);
+
+            debugPrint(token.toString());
+
+            var headers = {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            };
+            var request =
+                http.Request('GET', Uri.parse(ApiUrl.musaContributors));
+            request.body = json.encode({"musa_id": musaId});
+            request.headers.addAll(headers);
+            http.StreamedResponse response = await request.send();
+
+            if (response.statusCode == 200) {
+              final responseBody = await response.stream.bytesToString();
+
+              final musaContributorList =
+                  MusaContributorListModel.fromJson(jsonDecode(responseBody));
+
+              debugPrint(musaContributorList.toString());
+              musaContributorsList = musaContributorList;
+
+              emit(EditMusaContributorsListLoaded(musaContributorList));
+            } else {
+              emit(EditMusaContributorsListError(
+                  'Failed to fetch contributors list'));
+            }
+          }
+        } catch (e) {
+          print(e);
+          emit(EditMusaContributorsListError(
+              'Failed to fetch contributors list'));
+        }
+      } else {
+        emit(EditMusaContributorsListNoInternet());
+      }
+    });
   }
 
   getAlbumListApi({required BuildContext context}) async {
@@ -285,6 +350,13 @@ class EditMusaCubit extends Cubit<EditMusaState> {
         for (int i = 0; i < contributorIds.length; i++) {
           formData.fields.add(
               MapEntry("contributor_id[$i]", contributorIds[i].toString()));
+        }
+      }
+      // Add contributors to delete
+      if (contributorsTodelete != null && contributorsTodelete!.isNotEmpty) {
+        for (int i = 0; i < contributorsTodelete!.length; i++) {
+          formData.fields.add(
+              MapEntry("delete_contributors[$i]", contributorsTodelete![i]));
         }
       }
       try {

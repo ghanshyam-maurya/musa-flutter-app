@@ -101,6 +101,8 @@ class _EditMusaState extends State<EditMusa> {
           cubit.recurringDateController.text = '';
         }
         await cubit.getAlbumListApi(context: context);
+        // Fetch contributors list for this MUSA
+        await cubit.getContributorListOfMusaApi();
         // Auto-select album and sub-album based on the ids that come with this Musa
         try {
           // 1️⃣  Set album
@@ -287,6 +289,14 @@ class _EditMusaState extends State<EditMusa> {
                   buttonText: 'Okay',
                   title: 'Error',
                   description: state.errorMessage);
+            }
+            if (state is EditMusaContributorsListError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
             if (state is EditMusaFileRemove) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -678,6 +688,72 @@ class _EditMusaState extends State<EditMusa> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Initial Contributors from API (separate row)
+                  if (cubit.musaContributorsList?.data != null &&
+                      cubit.musaContributorsList!.data!.isNotEmpty) ...[
+                    // const SizedBox(height: 10),
+                    // Text(
+                    //   'Current Contributors',
+                    //   style: AppTextStyle.mediumTextStyle(
+                    //     color: AppColor.black,
+                    //     size: 14,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 10),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Initial Contributors Chips
+                          ...cubit.musaContributorsList!.data!
+                              .map((contributor) {
+                            if (contributor.userDetail != null &&
+                                contributor.userDetail!.isNotEmpty) {
+                              final userDetail = contributor.userDetail!.first;
+                              final contributorName =
+                                  '${userDetail.firstName ?? ''} ${userDetail.lastName ?? ''}'
+                                      .trim();
+
+                              if (contributorName.isNotEmpty) {
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 10),
+                                  child: Chip(
+                                    backgroundColor: const Color(0xFFF8F8F8),
+                                    label: Text(
+                                      contributorName,
+                                      style: AppTextStyle.normalTextStyle(
+                                        color: AppColor.black,
+                                        size: 14,
+                                      ),
+                                    ),
+                                    onDeleted: () {
+                                      print(
+                                          "contributor.id to delete: ${contributor.contributorId}");
+                                      setState(() {
+                                        cubit.removeInitialContributor(
+                                            contributor.contributorId
+                                                .toString());
+                                      });
+                                    },
+                                    deleteIcon:
+                                        const Icon(Icons.close, size: 16),
+                                    deleteIconColor: AppColor.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                          color: const Color(0xFFE0E0E0)),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                            return const SizedBox.shrink();
+                          }).where((widget) => widget is! SizedBox),
+                        ],
+                      ),
+                    ),
+                  ],
 
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
