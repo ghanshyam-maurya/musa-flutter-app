@@ -1,5 +1,6 @@
 import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_state.dart';
 import 'package:musa_app/Screens/components/notification_icon_button.dart';
+import 'package:musa_app/Screens/dashboard/home/home_search_view.dart';
 import 'package:musa_app/Screens/dashboard/my_section/my_library/my_media_list_view.dart';
 import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_cubit.dart';
 import 'package:musa_app/Cubit/auth/Login/login_cubit.dart';
@@ -108,116 +109,61 @@ class _MyScreenState extends State<MyScreen> {
         children: [
           // AppBar Section
           SizedBox(
-            height: 160,
+            height: 140,
             child: Stack(
               children: [
-                AppBarMusa3(
-                  leading: SizedBox(
-                    width: 35,
-                    height: 110,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Text(
-                          "My",
-                          style: AppTextStyle.mediumTextStyle(
-                              color: AppColor.black, size: 18),
-                        ),
-                      ),
+                AppBarDashboard(
+                  leading: const SizedBox.shrink(),
+                  title: Text(
+                    'My',
+                    style: const TextStyle(
+                      color: Color(0xFF222222),
+                      fontFamily: 'Manrope',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      height: 42 / 24,
+                      letterSpacing: -0.5,
                     ),
                   ),
-                  end: Padding(
-                    padding: const EdgeInsets.only(top: 50, bottom: 10),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: SvgPicture.asset(Assets.searchIcon_1),
-                          onPressed: () {
-                            context.push(RouteTo.dashboardSearch);
-                          },
+                  end: Row(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.all(8),
+                        iconSize: 24,
+                        icon: SvgPicture.asset(
+                          Assets.searchIcon_1,
+                          width: 24,
+                          height: 24,
                         ),
-                        IconButton(
-                          icon: SvgPicture.asset(Assets.settings),
-                          onPressed: () {
-                            context.push(RouteTo.settings);
-                          },
-                        ),
-                        // IconButton(
-                        //   icon: SvgPicture.asset(Assets.notification),
-                        //   onPressed: () {
-                        //     context.push(RouteTo.notificationView);
-                        //   },
-                        // ),
-                        NotificationIconButton(
-                          iconSize: 24,
-                          onPressed: () {
-                            context.push(RouteTo.notificationView);
-                          },
-                        ),
-                        // IconButton(
-                        //   icon: SvgPicture.asset(Assets.messenger),
-                        //   onPressed: _toggleSearch,
-                        // ),
-                      ],
-                    ),
-                  ),
-                  title: const SizedBox(),
-                ),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 16,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: SizedBox(
-                      height: 50,
-                      // decoration: BoxDecoration(
-                      //   color: Colors.grey[300],
-                      //   borderRadius: BorderRadius.circular(25),
-                      // ),
-                      // padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Row(
-                        children: [
-                          // _buildSegment("My MUSA's", 0),
-                          // _buildSegment("My Library", 1),
-                          Expanded(
-                            child: CommonTextField(
-                              controller: mySectionCubit.searchController,
-                              hintText: StringConst.searchMusa,
-                              // prefixIconPath: Assets.emailInboxGreen,
-                              // validator: MusaValidator.validatorEmail,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DashboardSearch(title: "My"),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     // Add your clear logic here
-                          //   },
-                          //   child: Icon(Icons.close, color: Colors.grey[700]),
-                          // ),
-                          // Row(
-                          //   mainAxisSize: MainAxisSize.min,
-                          //   children: [
-                          //     SvgPicture.asset(
-                          //       Assets.clear, // Replace with your actual path
-                          //       height: 45,
-                          //       width: 45, // dark green icon
-                          //     ),
-                          //   ],
-                          // ),
-                          GestureDetector(
-                            onTap: () {
-                              mySectionCubit.searchController.clear();
-                            },
-                            child: SvgPicture.asset(
-                              Assets.clear, // Replace with your actual path
-                              height: 45,
-                              width: 45, // dark green icon
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
+                      IconButton(
+                        padding: EdgeInsets.all(8),
+                        iconSize: 24,
+                        icon: SvgPicture.asset(
+                          Assets.settings,
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {
+                          context.push(RouteTo.settings);
+                        },
+                      ),
+                      NotificationIconButton(
+                        iconSize: 24,
+                        onPressed: () {
+                          context.push(RouteTo.notificationView);
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -376,7 +322,7 @@ class _MyScreenState extends State<MyScreen> {
       },
     ];
 
-    final List<Widget> widgets = [const SizedBox(height: 30)];
+    final List<Widget> widgets = [const SizedBox(height: 0)];
     for (var btn in buttons) {
       widgets.add(
         Padding(

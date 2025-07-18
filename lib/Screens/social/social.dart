@@ -1,5 +1,6 @@
 import 'package:musa_app/Cubit/social/social_cubit.dart';
 import 'package:musa_app/Screens/components/notification_icon_button.dart';
+import 'package:musa_app/Screens/dashboard/home/home_search_view.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'socia_musa_list.dart';
 
@@ -137,7 +138,12 @@ class _SocialState extends State<Social> {
                   height: 24,
                 ),
                 onPressed: () {
-                  context.push(RouteTo.dashboardSearch);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardSearch(title: "Social"),
+                    ),
+                  );
                 },
               ),
               IconButton(

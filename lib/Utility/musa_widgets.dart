@@ -824,6 +824,7 @@ abstract class MusaWidgets {
     String? subAlbumCount,
   }) {
     // print('album name is------------------> $albumName');
+    print('images length is------------------> ${images}');
     double itemHeight = 150.sp;
     double itemWidth = MediaQuery.of(context).size.width * 0.5 - 30.sp;
     return Column(
@@ -850,12 +851,11 @@ abstract class MusaWidgets {
                   ? (flowType == "AudioFile")
                       ? Image.asset(Assets.audioFile)
                       : Utilities.isVideoUrl(images[0].fileLink ?? '')
-                          ? thumbnailView(images[0].fileLink ?? '',
-                              imageHeight: 150.0,
-                              imageWidth:
-                                  MediaQuery.of(context).size.width * 0.5 -
-                                      30.sp,
-                              radius: 10.0)
+                          ? MusaWidgets.autoPlayVideoView(
+                              images[0]?.previewLink ?? '',
+                              width: double.infinity,
+                              height: double.infinity,
+                            )
                           : CachedNetworkImage(
                               imageUrl: images[0].fileLink ?? '',
                               imageBuilder: (context, imageProvider) =>
@@ -906,10 +906,11 @@ abstract class MusaWidgets {
                                     )
                                   : Utilities.isVideoUrl(
                                           images[0].fileLink ?? '')
-                                      ? thumbnailView(images[0].fileLink ?? '',
-                                          imageHeight: itemHeight,
-                                          imageWidth: itemWidth / 2 - 10,
-                                          radius: 10.0)
+                                      ? MusaWidgets.autoPlayVideoView(
+                                          images[0]?.previewLink ?? '',
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        )
                                       : CachedNetworkImage(
                                           imageUrl: images[0].fileLink ?? '',
                                           imageBuilder:
@@ -956,10 +957,11 @@ abstract class MusaWidgets {
                                     )
                                   : Utilities.isVideoUrl(
                                           images[1].fileLink ?? '')
-                                      ? thumbnailView(images[1].fileLink ?? '',
-                                          imageHeight: itemHeight,
-                                          imageWidth: itemWidth / 2 - 10,
-                                          radius: 10.0)
+                                      ? MusaWidgets.autoPlayVideoView(
+                                          images[1]?.previewLink ?? '',
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        )
                                       : CachedNetworkImage(
                                           imageUrl: images[1].fileLink ?? '',
                                           imageBuilder:
@@ -1017,11 +1019,11 @@ abstract class MusaWidgets {
                                         )
                                       : Utilities.isVideoUrl(
                                               images[0].fileLink ?? '')
-                                          ? thumbnailView(
-                                              images[0].fileLink ?? '',
-                                              imageHeight: itemHeight,
-                                              imageWidth: itemWidth / 2 - 10,
-                                              radius: 10.0)
+                                          ? MusaWidgets.autoPlayVideoView(
+                                              images[0]?.previewLink ?? '',
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                            )
                                           : CachedNetworkImage(
                                               imageUrl:
                                                   images[0].fileLink ?? '',
@@ -1079,13 +1081,11 @@ abstract class MusaWidgets {
                                             )
                                           : Utilities.isVideoUrl(
                                                   images[1].fileLink ?? '')
-                                              ? thumbnailView(
-                                                  images[1].fileLink ?? '',
-                                                  imageHeight:
-                                                      itemHeight / 2 - 10,
-                                                  imageWidth:
-                                                      itemWidth / 2 - 10,
-                                                  radius: 10.0)
+                                              ? MusaWidgets.autoPlayVideoView(
+                                                  images[1]?.previewLink ?? '',
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                )
                                               : CachedNetworkImage(
                                                   imageUrl:
                                                       images[1].fileLink ?? '',
@@ -1143,13 +1143,11 @@ abstract class MusaWidgets {
                                             )
                                           : Utilities.isVideoUrl(
                                                   images[2].fileLink ?? '')
-                                              ? thumbnailView(
-                                                  images[2].fileLink ?? '',
-                                                  imageHeight:
-                                                      itemHeight / 2 - 10,
-                                                  imageWidth:
-                                                      itemWidth / 2 - 10,
-                                                  radius: 10.0)
+                                              ? MusaWidgets.autoPlayVideoView(
+                                                  images[2]?.previewLink ?? '',
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                )
                                               : CachedNetworkImage(
                                                   imageUrl:
                                                       images[2].fileLink ?? '',
@@ -1242,16 +1240,14 @@ abstract class MusaWidgets {
                                               : Utilities.isVideoUrl(
                                                       images[index].fileLink ??
                                                           '')
-                                                  ? thumbnailView(
-                                                      images[index].fileLink ??
+                                                  ? MusaWidgets
+                                                      .autoPlayVideoView(
+                                                      images[index]
+                                                              ?.previewLink ??
                                                           '',
-                                                      imageHeight: itemHeight,
-                                                      imageWidth: itemWidth,
-                                                      customRadius:
-                                                          BorderRadius.only(
-                                                        bottomRight:
-                                                            Radius.circular(10),
-                                                      ))
+                                                      width: double.infinity,
+                                                      height: double.infinity,
+                                                    )
                                                   : CachedNetworkImage(
                                                       imageUrl: images[index]
                                                               .fileLink ??

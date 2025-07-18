@@ -6,6 +6,7 @@ import '../../../Utility/musa_widgets.dart';
 import '../../profile/my_profile.dart';
 import 'home_myfeed_carousel.dart';
 import 'home_socia_musa_list.dart';
+import 'package:musa_app/Screens/dashboard/home/home_search_view.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -141,7 +142,12 @@ class _HomeState extends State<Home> {
                   height: 24,
                 ),
                 onPressed: () {
-                  context.push(RouteTo.dashboardSearch);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardSearch(title: "MUSA"),
+                    ),
+                  );
                 },
               ),
               IconButton(
