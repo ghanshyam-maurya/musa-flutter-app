@@ -197,17 +197,17 @@ uploadPopUp(BuildContext context) {
                   );
                 },
               ),
-              SizedBox(height: 12),
-              _QuickActionButton(
-                text: "Add Contributor",
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => MyMusaContributors()),
-                  );
-                },
-              ),
+              // SizedBox(height: 12),
+              // _QuickActionButton(
+              //   text: "Add Contributor",
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (_) => MyMusaContributors()),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),
