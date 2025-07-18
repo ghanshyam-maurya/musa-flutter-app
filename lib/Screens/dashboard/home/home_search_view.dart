@@ -84,13 +84,13 @@ class _DashboardSearchState extends State<DashboardSearch> {
                 children: [
                   AppBarMusa3(
                     leading: SizedBox(
-                      width: dynamicWidth,
+                      width: 80,
                       height: 110,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30.0),
                           child: Text(
-                            widget.title,
+                            "Search",
                             style: const TextStyle(
                               color: Color(0xFF222222),
                               fontFamily: 'Manrope',
@@ -107,12 +107,12 @@ class _DashboardSearchState extends State<DashboardSearch> {
                       padding: const EdgeInsets.only(top: 50, bottom: 10),
                       child: Row(
                         children: [
-                          IconButton(
-                            icon: SvgPicture.asset(Assets.searchIcon_1),
-                            onPressed: () {
-                              // Already in search view
-                            },
-                          ),
+                          // IconButton(
+                          //   icon: SvgPicture.asset(Assets.searchIcon_1),
+                          //   onPressed: () {
+                          //     // Already in search view
+                          //   },
+                          // ),
                           IconButton(
                             icon: SvgPicture.asset(Assets.settings),
                             onPressed: () {
@@ -214,7 +214,7 @@ class _DashboardSearchState extends State<DashboardSearch> {
     return Container(
       color: Colors.white, // Ensure pure white background for the entire screen
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
