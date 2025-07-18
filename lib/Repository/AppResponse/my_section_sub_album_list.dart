@@ -103,19 +103,23 @@ class MySectionSubAlbumData {
 class FileElement {
   String? id;
   String? fileLink;
+  String? previewLink;
 
   FileElement({
     this.id,
     this.fileLink,
+    this.previewLink,
   });
 
   factory FileElement.fromJson(Map<String, dynamic> json) => FileElement(
         id: json["_id"],
         fileLink: json["file_link"],
+        previewLink: json["preview_link"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
         "file_link": fileLink,
+        "preview_link": previewLink,
       };
 }
