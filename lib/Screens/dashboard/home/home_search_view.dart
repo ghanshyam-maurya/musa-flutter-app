@@ -9,7 +9,8 @@ import 'package:musa_app/Utility/musa_widgets.dart';
 import 'package:musa_app/Utility/packages.dart';
 
 class DashboardSearch extends StatefulWidget {
-  const DashboardSearch({super.key});
+  final String title;
+  const DashboardSearch({super.key, this.title = "Search"});
 
   @override
   State<DashboardSearch> createState() => _DashboardSearchState();
@@ -61,6 +62,14 @@ class _DashboardSearchState extends State<DashboardSearch> {
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height - 300;
+    double dynamicWidth = 80;
+    if (widget.title == 'My') {
+      dynamicWidth = 35; // Adjust width for 'My' title
+    }
+    if (widget.title == 'Popular Art') {
+      dynamicWidth = 125; // Adjust width for 'Search' title
+    }
+
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -75,15 +84,21 @@ class _DashboardSearchState extends State<DashboardSearch> {
                 children: [
                   AppBarMusa3(
                     leading: SizedBox(
-                      width: 65,
+                      width: dynamicWidth,
                       height: 110,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30.0),
                           child: Text(
-                            "Search",
-                            style: AppTextStyle.mediumTextStyle(
-                                color: AppColor.black, size: 18),
+                            widget.title,
+                            style: const TextStyle(
+                              color: Color(0xFF222222),
+                              fontFamily: 'Manrope',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              height: 42 / 24,
+                              letterSpacing: -0.5,
+                            ),
                           ),
                         ),
                       ),
@@ -92,12 +107,12 @@ class _DashboardSearchState extends State<DashboardSearch> {
                       padding: const EdgeInsets.only(top: 50, bottom: 10),
                       child: Row(
                         children: [
-                          // IconButton(
-                          //   icon: SvgPicture.asset(Assets.searchIcon_1),
-                          //   onPressed: () {
-                          //     // Already in search view
-                          //   },
-                          // ),
+                          IconButton(
+                            icon: SvgPicture.asset(Assets.searchIcon_1),
+                            onPressed: () {
+                              // Already in search view
+                            },
+                          ),
                           IconButton(
                             icon: SvgPicture.asset(Assets.settings),
                             onPressed: () {
