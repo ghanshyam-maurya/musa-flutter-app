@@ -87,6 +87,41 @@ class CommentCubit extends Cubit<CommentState> {
   //   });
   // }
 
+  //Event for removing musa file
+  Future<void> removeMusaFile({String? fileId, String? musaId}) async {
+    emit(CommentLoading()); // Show loading state
+
+    try {
+      if (fileId != null && fileId.isNotEmpty) {
+        final token = Prefs.getString(PrefKeys.token);
+        final response = await _apiClient.post(
+          ApiUrl.removeFileFromMusa,
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+          body: {
+            'file_id': fileId,
+            'musa_id': musaId ?? '', // Include musaId if available
+          },
+        );
+
+        if (response['status'] == 200) {
+          emit(CommentSuccess());
+        } else {
+          emit(CommentFailure(
+              errorMessage: response['message'] ?? 'Failed to remove file'));
+        }
+      } else {
+        emit(CommentFailure(errorMessage: 'No file specified for removal.'));
+      }
+    } catch (e) {
+      print("Exception when removing file: $e");
+      emit(CommentFailure(
+          errorMessage: 'An error occurred while removing the file.'));
+      rethrow; // Rethrow to handle in UI
+    }
+  }
+
   //Event for get comment list api
   Future<void> getCommentApi({required String musaId}) async {
     print(musaId);

@@ -361,6 +361,7 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                 .isNotEmpty)
                                         ? mediaFiles[index].previewLink!
                                         : mediaFiles[index].fileLink ?? '';
+                                String fileId = mediaFiles[index].id ?? '';
                                 return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -368,16 +369,19 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   MusaPostDetailWithCommentView(
-                                                    musaId: musaData.id ?? "",
-                                                    isVideo:
-                                                        Utilities.isVideoUrl(
-                                                                url)
-                                                            .toString(),
-                                                    url: url,
-                                                    commentCount: musaData
-                                                        .commentCount
-                                                        .toString(),
-                                                  )));
+                                                      musaData: musaData,
+                                                      musaId: musaData.id ?? "",
+                                                      isVideo:
+                                                          Utilities.isVideoUrl(
+                                                                  url)
+                                                              .toString(),
+                                                      url: url,
+                                                      fileId: fileId,
+                                                      commentCount: musaData
+                                                          .commentCount
+                                                          .toString(),
+                                                      likeUpdateCallBack: widget
+                                                          .likeUpdateCallBack)));
                                     },
                                     child: Utilities.isVideoUrl(url)
                                         ? MusaWidgets.autoPlayVideoView(
