@@ -1,5 +1,6 @@
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 import '../../../Utility/musa_widgets.dart';
+import '../../../Resources/CommonWidgets/display_mode_comment_view.dart';
 import '../../../Utility/packages.dart';
 //import 'cast_media_dialog.dart';
 import 'cast_dialog.dart';
@@ -129,6 +130,27 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
                 Utilities.navigateToLandscapeScreen(
                   context,
                   displayViewItems: widget.musaData,
+                  commentBtn: () {
+                    print("Comment button tapped22233");
+                    // showModalBottomSheet(
+                    //     context: context,
+                    //     isScrollControlled: true,
+                    //     backgroundColor: Colors.transparent,
+                    //     builder: (_) => DisplayModeCommentView(
+                    //           musaId: widget.musaData.id ?? "",
+                    //           commentCountBtn: (count) {
+                    //             // Optional: Update comment count in parent
+                    //           },
+                    //         ));
+                    showRightSidePanel(
+                        context,
+                        (ctx) => DisplayModeCommentView(
+                              musaId: widget.musaData.id ?? "",
+                              commentCountBtn: (count) {
+                                // update logic
+                              },
+                            ));
+                  },
                 );
               },
               borderColor: AppColor.primaryColor,
@@ -141,6 +163,34 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
           ],
         ),
       ),
+    );
+  }
+
+  void showRightSidePanel(BuildContext context, WidgetBuilder builder) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.3),
+      builder: (context) {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Material(
+              color: Colors.white, // Set solid white background
+              elevation: 10,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(0),
+                  bottomLeft: Radius.circular(0),
+                ),
+              ),
+              //clipBehavior: Clip.antiAlias, // Smooth rounded edges
+              child: builder(context),
+            ),
+          ),
+        );
+      },
     );
   }
 }

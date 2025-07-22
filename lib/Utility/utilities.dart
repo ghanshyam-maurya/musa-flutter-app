@@ -87,6 +87,7 @@ class Utilities {
   static Future<void> navigateToLandscapeScreen(
     BuildContext context, {
     required MusaData? displayViewItems,
+    required Function() commentBtn,
   }) async {
     print(displayViewItems);
     print("DISPLAY VIEW ITEM");
@@ -102,6 +103,7 @@ class Utilities {
       MaterialPageRoute(
           builder: (context) => DisplayModeLandscape(
                 displayViewItems: displayViewItems,
+                commentBtn: commentBtn,
               )),
     );
 

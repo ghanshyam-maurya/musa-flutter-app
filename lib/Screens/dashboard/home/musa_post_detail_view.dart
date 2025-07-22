@@ -355,6 +355,11 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                       context,
                                                       displayViewItems:
                                                           musaData,
+                                                      commentBtn: () {
+                                                        // your comment button logic here
+                                                        print(
+                                                            "Comment button tapped4444");
+                                                      },
                                                     );
                                                   }
                                                 });
@@ -416,6 +421,11 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                                 context,
                                                                 displayViewItems:
                                                                     musaData,
+                                                                commentBtn: () {
+                                                                  // your comment button logic here
+                                                                  print(
+                                                                      "Comment button tapped555");
+                                                                },
                                                               );
                                                             }
                                                           });
@@ -459,6 +469,11 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                         context,
                                                         displayViewItems:
                                                             musaData,
+                                                        commentBtn: () {
+                                                          // your comment button logic here
+                                                          print(
+                                                              "Comment button tapped666");
+                                                        },
                                                       );
                                                     } else if (musaData
                                                                 .displayStatus ==

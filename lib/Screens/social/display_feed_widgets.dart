@@ -330,6 +330,11 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                                             context,
                                                             displayViewItems:
                                                                 musaData,
+                                                            commentBtn: () {
+                                                              // your comment button logic here
+                                                              print(
+                                                                  "Comment button tapped777");
+                                                            },
                                                           );
                                                           break;
                                                         case 'Add Contributor':

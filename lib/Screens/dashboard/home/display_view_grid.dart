@@ -5,16 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:musa_app/Resources/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
+import '../../../Utility/packages.dart';
 import '../../../Cubit/display_mode_cubit/display_mode_cubit.dart';
 import '../../../Repository/AppResponse/social_musa_list_response.dart';
 
 class DisplayModeLandscape extends StatefulWidget {
   final MusaData? displayViewItems;
+  final Function() commentBtn;
 
   const DisplayModeLandscape({
     super.key,
     required this.displayViewItems,
+    required this.commentBtn,
   });
 
   @override
@@ -130,23 +132,71 @@ class _DisplayModeLandscapeState extends State<DisplayModeLandscape> {
               : const SizedBox(),
 
           // **Exit Button**
+          // Positioned(
+          //   top: 20,
+          //   right: 20,
+          //   child: GestureDetector(
+          //     onTap: _exitScreen,
+          //     child: Container(
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         color: Colors.black.withOpacity(0.5),
+          //         shape: BoxShape.circle,
+          //       ),
+          //       child: const Icon(
+          //         Icons.close,
+          //         color: Colors.white,
+          //         size: 30,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
           Positioned(
-            top: 20,
-            right: 20,
-            child: GestureDetector(
-              onTap: _exitScreen,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
+            top: 35,
+            right: 45,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Close Button
+                GestureDetector(
+                  onTap: _exitScreen,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 255, 255)
+                          .withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      size: 30,
+                    ),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 30,
+                const SizedBox(
+                    height: 12), // spacing between close and comment button
+
+                // Comment Button
+                InkWell(
+                  onTap: widget.commentBtn,
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 255, 255)
+                          .withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/svgs/comment.svg',
+                      height: 20,
+                      width: 20,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
