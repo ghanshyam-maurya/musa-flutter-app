@@ -13,6 +13,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
   final String musaId;
   final String isVideo;
   final String url;
+  final String fileId;
   String? commentCount;
   final Function? likeUpdateCallBack;
 
@@ -22,6 +23,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
     required this.musaId,
     required this.isVideo,
     required this.url,
+    required this.fileId,
     required this.commentCount,
     this.likeUpdateCallBack,
   });
@@ -37,6 +39,8 @@ class _MusaPostDetailWithCommentViewState
   @override
   void initState() {
     commentCubit.getCommentApi(musaId: widget.musaId);
+    // print(
+    //     "Musa data--------------------------------->: ${widget.musaData.file?.length}");
     super.initState();
   }
 
@@ -67,79 +71,103 @@ class _MusaPostDetailWithCommentViewState
                         ),
                       ),
                       Spacer(),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        height: 28,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: AppColor.white,
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6.sp),
-                              side: BorderSide(
-                                color: AppColor.white,
-                                width: 1.sp,
+                      if ((widget.musaData.file?.length ?? 0) > 1)
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          height: 28,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: AppColor.white,
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.sp),
+                                side: BorderSide(
+                                  color: AppColor.white,
+                                  width: 1.sp,
+                                ),
                               ),
+                              minimumSize: Size(0, 28), // height: 28
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            minimumSize: Size(0, 28), // height: 28
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Alert'),
-                                content: Text(
-                                    'Are you sure you want to delete this MUSA file?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: Text('No',
-                                        style: TextStyle(
-                                            color: AppColor.primaryColor)),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Alert'),
+                                  content: Text(
+                                      'Are you sure you want to delete this MUSA file?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: Text('No',
+                                          style: TextStyle(
+                                              color: AppColor.primaryColor)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: Text('Yes',
+                                          style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                if (widget.musaData.id != null &&
+                                    widget.musaData.id!.isNotEmpty) {
+                                  try {
+                                    await commentCubit.removeMusaFile(
+                                      fileId: widget.fileId,
+                                      musaId: widget.musaData.id!,
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content:
+                                            Text('File deleted successfully'),
+                                        backgroundColor: AppColor.primaryColor,
+                                      ),
+                                    );
+                                    Navigator.of(context)
+                                        .pop(); // Go back after delete
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  } catch (e) {
+                                    print(e.toString());
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Failed to delete file'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            },
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svgs/delete_icon.svg',
+                                    width: 14,
+                                    height: 14,
                                   ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: Text('Yes',
-                                        style: TextStyle(color: Colors.red)),
+                                  SizedBox(width: 6.sp),
+                                  Text(
+                                    'Delete',
+                                    style:
+                                        AppTextStyle.normalTextStyle1.copyWith(
+                                      fontSize: 14,
+                                      color: Color(0xFFFF4343),
+                                    ),
                                   ),
                                 ],
                               ),
-                            );
-                            // if (confirm == true) {
-                            //   if (musaData.id != null &&
-                            //       musaData.id!.isNotEmpty) {
-                            //     widget.deleteBtn!();
-                            //     Navigator.of(context)
-                            //         .pop(); // Go back after delete
-                            //   }
-                            // }
-                          },
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/svgs/delete_icon.svg',
-                                  width: 14,
-                                  height: 14,
-                                ),
-                                SizedBox(width: 6.sp),
-                                Text(
-                                  'Delete',
-                                  style: AppTextStyle.normalTextStyle1.copyWith(
-                                    fontSize: 14,
-                                    color: Color(0xFFFF4343),
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

@@ -361,6 +361,7 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                 .isNotEmpty)
                                         ? mediaFiles[index].previewLink!
                                         : mediaFiles[index].fileLink ?? '';
+                                String fileId = mediaFiles[index].id ?? '';
                                 return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -375,6 +376,7 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                                   url)
                                                               .toString(),
                                                       url: url,
+                                                      fileId: fileId,
                                                       commentCount: musaData
                                                           .commentCount
                                                           .toString(),

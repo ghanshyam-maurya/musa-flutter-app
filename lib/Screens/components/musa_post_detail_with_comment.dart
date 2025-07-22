@@ -13,6 +13,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
   final String musaId;
   final String isVideo;
   final String url;
+  final String fileId;
   String? commentCount;
   final Function? likeUpdateCallBack;
 
@@ -22,6 +23,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
     required this.musaId,
     required this.isVideo,
     required this.url,
+    required this.fileId,
     required this.commentCount,
     this.likeUpdateCallBack,
   });
@@ -67,7 +69,8 @@ class _MusaPostDetailWithCommentViewState
                         ),
                       ),
                       Spacer(),
-                      if (widget.musaData.amIContributorInThisMusa == true)
+                      if ((widget.musaData.amIContributorInThisMusa == true) &&
+                          (widget.musaData.file?.length ?? 0) > 1)
                         Container(
                           margin: EdgeInsets.only(left: 10),
                           height: 28,
@@ -110,14 +113,36 @@ class _MusaPostDetailWithCommentViewState
                                   ],
                                 ),
                               );
-                              // if (confirm == true) {
-                              //   if (musaData.id != null &&
-                              //       musaData.id!.isNotEmpty) {
-                              //     widget.deleteBtn!();
-                              //     Navigator.of(context)
-                              //         .pop(); // Go back after delete
-                              //   }
-                              // }
+                              if (confirm == true) {
+                                if (widget.musaData.id != null &&
+                                    widget.musaData.id!.isNotEmpty) {
+                                  try {
+                                    await commentCubit.removeMusaFile(
+                                      fileId: widget.fileId,
+                                      musaId: widget.musaData.id!,
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content:
+                                            Text('File deleted successfully'),
+                                        backgroundColor: AppColor.primaryColor,
+                                      ),
+                                    );
+                                    Navigator.of(context)
+                                        .pop(); // Go back after delete
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  } catch (e) {
+                                    print(e.toString());
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Failed to delete file'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
                             },
                             child: Center(
                               child: Row(
