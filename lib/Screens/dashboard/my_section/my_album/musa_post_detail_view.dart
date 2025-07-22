@@ -379,6 +379,8 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                                                               .toString(),
                                                       url: url,
                                                       fileId: fileId,
+                                                      isComeFromCarosel: widget
+                                                          .isComeFromCarosel,
                                                       commentCount: musaData
                                                           .commentCount
                                                           .toString(),

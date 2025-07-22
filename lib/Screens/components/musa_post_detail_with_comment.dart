@@ -95,7 +95,7 @@ class _MusaPostDetailWithCommentViewState
                                 builder: (context) => AlertDialog(
                                   title: Text('Alert'),
                                   content: Text(
-                                      'Are you sure you want to delete this MUSA file?'),
+                                      'Are you sure you want to delete this media file?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>

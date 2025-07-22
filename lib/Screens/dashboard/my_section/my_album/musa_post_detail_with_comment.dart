@@ -16,6 +16,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
   final String fileId;
   String? commentCount;
   final Function? likeUpdateCallBack;
+  final bool isComeFromCarosel;
 
   MusaPostDetailWithCommentView({
     super.key,
@@ -26,6 +27,7 @@ class MusaPostDetailWithCommentView extends StatefulWidget {
     required this.fileId,
     required this.commentCount,
     this.likeUpdateCallBack,
+    this.isComeFromCarosel = false,
   });
   @override
   State<MusaPostDetailWithCommentView> createState() =>
@@ -96,7 +98,7 @@ class _MusaPostDetailWithCommentViewState
                                 builder: (context) => AlertDialog(
                                   title: Text('Alert'),
                                   content: Text(
-                                      'Are you sure you want to delete this MUSA file?'),
+                                      'Are you sure you want to delete this media file?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
@@ -132,7 +134,11 @@ class _MusaPostDetailWithCommentViewState
                                     Navigator.of(context)
                                         .pop(); // Go back after delete
                                     Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
+
+                                    // only if not coming from carousel
+                                    if (!widget.isComeFromCarosel) {
+                                      Navigator.of(context).pop();
+                                    }
                                   } catch (e) {
                                     print(e.toString());
                                     ScaffoldMessenger.of(context).showSnackBar(
