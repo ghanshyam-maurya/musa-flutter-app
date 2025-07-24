@@ -210,20 +210,28 @@ class _CommonSubWidgetsState extends State<CommonSubWidgets> {
                                       borderWidth: 3.sp,
                                     ),
                                     const SizedBox(width: 4),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          userName ?? "Dummy User",
-                                          // style: AppTextStyle.appBarTitleStyleBlack.copyWith(fontSize: 12),
-                                        ),
-                                        Text(
-                                          timeStatus ?? '',
-                                          style: AppTextStyle.normalTextStyle1
-                                              .copyWith(fontSize: 10),
-                                        ),
-                                      ],
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            userName ?? "Dummy User",
+                                            maxLines: 2,
+                                            style: AppTextStyle
+                                                .appBarTitleStyleBlack
+                                                .copyWith(fontSize: 12),
+                                          ),
+                                          Text(
+                                            timeStatus,
+                                            style: AppTextStyle.normalTextStyle1
+                                                .copyWith(fontSize: 10),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
