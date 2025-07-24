@@ -179,7 +179,7 @@ class _EditProfileState extends State<EditProfile> {
                                 controller: editProfileCubit.lastNameController,
                                 hintText: StringConst.lastName,
                                 // prefixIconPath: Assets.userIcon1,
-                                validator: MusaValidator.validatorName(),
+                                validator: MusaValidator.validatorLName(),
                               ),
                             ),
                           ],
