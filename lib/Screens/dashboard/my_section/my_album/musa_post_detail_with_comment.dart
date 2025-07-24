@@ -49,7 +49,7 @@ class _MusaPostDetailWithCommentViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  backgroundColor: AppColor.bgGrey,
+      backgroundColor: AppColor.white,
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
@@ -235,7 +235,8 @@ class _MusaPostDetailWithCommentViewState
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: EdgeInsets.fromLTRB(16, 14, 16, 54),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

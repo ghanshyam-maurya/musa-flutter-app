@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musa_app/Utility/packages.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayDetailView extends StatefulWidget {
@@ -54,7 +55,7 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.grey,
+            color: Colors.white,
           ),
           child: Stack(
             alignment: Alignment.center,
@@ -89,14 +90,16 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 42),
                   child: ValueListenableBuilder<double>(
                     valueListenable: _progressNotifier,
                     builder: (context, progress, child) {
                       return LinearProgressIndicator(
                         value: progress,
                         backgroundColor: Colors.grey,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColor.greenDark),
                       );
                     },
                   ),
