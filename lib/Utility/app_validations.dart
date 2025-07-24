@@ -80,11 +80,11 @@ abstract class MusaValidator {
           return '${data ?? 'Last Name'} must be at least 2 characters long';
         }
 
-        String pattern = r'^[a-z A-Z]+$';
-        RegExp regex = RegExp(pattern);
-        if (!regex.hasMatch(value)) {
-          return 'Enter Valid ${data ?? 'Name'}';
-        }
+        // String pattern = r'^[a-z A-Z]+$';
+        // RegExp regex = RegExp(pattern);
+        // if (!regex.hasMatch(value)) {
+        //   return 'Enter Valid ${data ?? 'Name'}';
+        // }
 
         // You can add more first name criteria here, such as disallowing special characters and numbers.
         return null; // Return null if the first name is valid

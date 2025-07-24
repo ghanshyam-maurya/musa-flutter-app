@@ -519,7 +519,7 @@ class _EditProfileState extends State<EditProfile> {
                           Navigator.of(context).pop();
                         },
                         child: Text(
-                          'Yes, Remove',
+                          'Yes',
                           style: TextStyle(
                             color: Color(0xFF00674E),
                             fontSize: 14,
