@@ -59,6 +59,8 @@ class _AddContributorState extends State<AddContributor> {
     super.initState();
     // cubit.resetState();
     _selectedContributors = {};
+    print(
+        'intialSelectedContributors------------->: ${widget.initialSelectedContributors}');
     isComeFromProfile =
         widget.isComeFromProfile != null && widget.isComeFromProfile!;
     isComeFromEditMusa =
@@ -268,7 +270,9 @@ class _AddContributorState extends State<AddContributor> {
                           var contributor = filteredContributors[index];
                           var user = contributor.id;
                           bool isSelected =
-                              _selectedContributors.containsKey(user);
+                              _selectedContributors.containsKey(user) ||
+                                  widget.initialSelectedContributors
+                                      .contains(user.toString());
 
                           return Row(
                             children: [
@@ -314,6 +318,9 @@ class _AddContributorState extends State<AddContributor> {
                                     if (isSelected) {
                                       _selectedContributors.remove(user);
                                       cubit.selectedContributors.remove(user);
+                                      // If the user was initially selected, remove from initial list
+                                      widget.initialSelectedContributors
+                                          .remove(user.toString());
                                     } else {
                                       _selectedContributors[user.toString()] =
                                           "${contributor.firstName} ${contributor.lastName}";

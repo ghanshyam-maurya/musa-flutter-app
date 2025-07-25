@@ -136,7 +136,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
       context,
       MaterialPageRoute(
         builder: (context) => AddContributor(
-          initialSelectedContributors: [],
+          initialSelectedContributors: selectedContributors.keys.toList(),
           isComeFromProfile: false,
           isComeFromEditMusa: true,
           musaId: musaId,
