@@ -176,8 +176,9 @@ class _CommentViewState extends State<CommentView> {
                                                   Text(
                                                     userName,
                                                     style: AppTextStyle
-                                                        .normalBoldTextStyle
-                                                        .copyWith(fontSize: 14),
+                                                        .semiMediumTextStyle(
+                                                            color: Colors.black,
+                                                            size: 14),
                                                   ),
                                                   // SizedBox(width: 5.sp),
                                                   // Text(
@@ -204,7 +205,7 @@ class _CommentViewState extends State<CommentView> {
                                                           .normalBoldTextStyle
                                                           .copyWith(
                                                               color:
-                                                                  Colors.grey,
+                                                                  Colors.black,
                                                               fontSize: 14.sp),
                                                     ),
                                             ],
