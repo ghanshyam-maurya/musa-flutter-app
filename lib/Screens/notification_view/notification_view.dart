@@ -22,6 +22,11 @@ class _NotificationViewState extends State<NotificationView>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
     _notificationCubit.getNotificationList();
   }
 
@@ -105,9 +110,7 @@ class _NotificationViewState extends State<NotificationView>
                 padding: EdgeInsets.only(bottom: 10),
                 labelPadding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
                 // Adds space below the tab label
-                onTap: (index) {
-                  setState(() {});
-                },
+                onTap: (_) {},
                 tabs: [
                   _buildTab("General", 0),
                   _buildTab("Contributors", 1),
