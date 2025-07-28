@@ -1182,6 +1182,38 @@ class Repository implements RepositoryImpl {
   }
 
   @override
+  Future removeMediaFile({
+    required String fileId,
+  }) async {
+    Uri url = Uri.parse(ApiUrl.removeMediaFile);
+    var token = Prefs.getString(PrefKeys.token);
+    try {
+      var bodydata;
+      if (fileId != null && fileId.isNotEmpty) {
+        bodydata = {'file_id': fileId};
+      }
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(bodydata),
+      );
+
+      if (response.statusCode == 200) {
+        return Left(SocialMusaListResponse.fromJson(jsonDecode(response.body)));
+      } else if (response.statusCode == 401) {
+        return Right(Failure.fromJson(jsonDecode(response.body)));
+      }
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    } catch (e) {
+      debugPrint("error : $e");
+      return Right(Failure(message: StringConst.somethingWentWrong));
+    }
+  }
+
+  @override
   Future<Either<dynamic, Failure>> sendContactMessage({
     required String subject,
     required String message,

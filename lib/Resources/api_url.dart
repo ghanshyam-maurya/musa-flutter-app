@@ -87,4 +87,6 @@ abstract class ApiUrl {
   static const String getArtMusaListApi =
       '$baseUrl/users/musa/art/list?page&limit';
   static const String removeFileFromMusa = '$baseUrl/users/musa/files/remove';
+  static const String removeMediaFile =
+      '$baseUrl/users/musa/media-files/remove';
 }

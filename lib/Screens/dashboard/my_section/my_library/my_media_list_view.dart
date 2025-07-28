@@ -119,7 +119,9 @@ class MyMediaListViewState extends State<MyMediaListView> {
                           return Container(
                             height: 200,
                             alignment: Alignment.center,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              color: AppColor.primaryColor,
+                            ),
                           );
                         },
                         errorBuilder: (context, error, stackTrace) =>
@@ -290,16 +292,33 @@ class MyMediaListViewState extends State<MyMediaListView> {
                                         .map((entry) {
                                       int index = entry.key;
                                       var photo = entry.value;
-
+                                      // print("Photo ---------->: ${photo.id}");
                                       return GestureDetector(
                                         onTap: () {
                                           showPhotoPreviewPopup(
                                             context: context,
                                             imageUrl: photo.fileLink ?? '',
-                                            onDelete: () {
-                                              setState(() {
-                                                photos.remove(photo);
-                                              });
+                                            onDelete: () async {
+                                              final result = await widget
+                                                  .mySectionCubit
+                                                  .removeMusaMediaFile(
+                                                fileId: photo.id ?? '',
+                                              );
+                                              if (result == true) {
+                                                setState(() {
+                                                  photos.remove(photo);
+                                                });
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Failed to delete photo. Please try again.'),
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                  ),
+                                                );
+                                              }
                                             },
                                           );
                                         },
@@ -314,7 +333,9 @@ class MyMediaListViewState extends State<MyMediaListView> {
                                               color: Colors.grey[200],
                                               child: Center(
                                                   child:
-                                                      CircularProgressIndicator()),
+                                                      CircularProgressIndicator(
+                                                color: AppColor.primaryColor,
+                                              )),
                                             ),
                                             errorWidget:
                                                 (context, url, error) =>
@@ -463,7 +484,30 @@ class MyMediaListViewState extends State<MyMediaListView> {
                                         ),
                                         onTap: () {
                                           _showAudioSliderPopup(
-                                              audio.fileLink!);
+                                            audio.fileLink!,
+                                            () async {
+                                              final result = await widget
+                                                  .mySectionCubit
+                                                  .removeMusaMediaFile(
+                                                fileId: audio.id ?? '',
+                                              );
+                                              if (result == true) {
+                                                setState(() {
+                                                  audios.remove(audio);
+                                                });
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Failed to delete audio. Please try again.'),
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          );
                                         },
                                       ),
                                       CommonDottedDivider(
@@ -524,7 +568,7 @@ class MyMediaListViewState extends State<MyMediaListView> {
     );
   }
 
-  void _showAudioSliderPopup(String filePath) {
+  void _showAudioSliderPopup(String filePath, VoidCallback onDelete) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -578,7 +622,7 @@ class MyMediaListViewState extends State<MyMediaListView> {
                     child: TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        // onDelete();
+                        onDelete();
                       },
                       child: Text(
                         'Delete',

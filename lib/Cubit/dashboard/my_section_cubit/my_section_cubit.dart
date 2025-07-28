@@ -305,4 +305,40 @@ class MySectionCubit extends Cubit<MySectionState> {
     //   emit(MySectionLoadedState(filtered));
     // }
   }
+
+  Future<bool> removeMusaMediaFile({String? fileId}) async {
+    emit(EditMediaLoading()); // Optional: show a loading state
+
+    try {
+      print("Attempting to remove media file: $fileId ");
+      var response;
+      if (fileId != null && fileId.isNotEmpty) {
+        response = await repository.removeMediaFile(fileId: fileId);
+      } else {
+        emit(EditMediaError(errorMessage: 'No file specified for removal.'));
+        return false;
+      }
+      // Handle Either<Success, Failure> response
+      bool isSuccess = false;
+      response.fold(
+        (success) {
+          emit(EditMediaFileRemove());
+          print("Successfully removed file");
+          isSuccess = true;
+        },
+        (failure) {
+          String errorMessage = failure.message ?? 'Failed to remove file.';
+          print("API Error: $errorMessage");
+          emit(EditMediaError(errorMessage: errorMessage));
+          isSuccess = false;
+        },
+      );
+      return isSuccess;
+    } catch (e) {
+      print("Exception when removing file: $e");
+      emit(EditMediaError(
+          errorMessage: 'An error occurred while removing the file.'));
+      return false;
+    }
+  }
 }
