@@ -7,6 +7,8 @@ import 'package:musa_app/Screens/dashboard/home/media_upload_page.dart';
 import 'package:musa_app/Repository/AppResponse/library_response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_player.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 class MyMediaListView extends StatefulWidget {
   final MySectionCubit mySectionCubit;
@@ -25,6 +27,9 @@ class MyMediaListViewState extends State<MyMediaListView> {
   bool isVideoExpanded = false;
   bool isAudioExpanded = false;
   bool _initialLoadComplete = false;
+
+  // Video player controller
+  VideoPlayerController? _videoPlayerController;
 
   @override
   void initState() {
@@ -132,6 +137,121 @@ class MyMediaListViewState extends State<MyMediaListView> {
                     Center(
                       child: TextButton(
                         onPressed: () {
+                          Navigator.pop(context);
+                          onDelete();
+                        },
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showVideoPreviewPopup({
+    required BuildContext context,
+    required String videoUrl,
+    required VoidCallback onDelete,
+  }) {
+    // Initialize video player
+    _videoPlayerController = VideoPlayerController.network(videoUrl);
+    _videoPlayerController!.initialize().then((_) {
+      setState(() {});
+      _videoPlayerController!.play();
+    });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
+          maxChildSize: 0.8,
+          expand: false,
+          builder: (_, scrollController) {
+            return SafeArea(
+              top: false,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Video Preview',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _videoPlayerController?.pause();
+                            _videoPlayerController?.dispose();
+                            Navigator.pop(context);
+                          },
+                          child: Icon(Icons.close, color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    _videoPlayerController != null &&
+                            _videoPlayerController!.value.isInitialized
+                        ? AspectRatio(
+                            aspectRatio:
+                                _videoPlayerController!.value.aspectRatio,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                VideoPlayer(_videoPlayerController!),
+                                IconButton(
+                                  icon: Icon(
+                                    _videoPlayerController!.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow,
+                                    size: 50,
+                                    color: Colors.white.withOpacity(0.8),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _videoPlayerController!.value.isPlaying
+                                          ? _videoPlayerController!.pause()
+                                          : _videoPlayerController!.play();
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            height: 200,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator(
+                              color: AppColor.primaryColor,
+                            ),
+                          ),
+                    Expanded(child: SizedBox()),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          _videoPlayerController?.pause();
+                          _videoPlayerController?.dispose();
                           Navigator.pop(context);
                           onDelete();
                         },
@@ -409,7 +529,34 @@ class MyMediaListViewState extends State<MyMediaListView> {
                                               ? video.fileLink!.split('/').last
                                               : 'No file name',
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          showVideoPreviewPopup(
+                                            context: context,
+                                            videoUrl: video.fileLink ?? '',
+                                            onDelete: () async {
+                                              final result = await widget
+                                                  .mySectionCubit
+                                                  .removeMusaMediaFile(
+                                                fileId: video.id ?? '',
+                                              );
+                                              if (result == true) {
+                                                setState(() {
+                                                  videos.remove(video);
+                                                });
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Failed to delete video. Please try again.'),
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          );
+                                        },
                                       ),
                                       CommonDottedDivider(
                                         color: AppColor.greyDividerColor,
@@ -789,5 +936,11 @@ class MyMediaListViewState extends State<MyMediaListView> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
   }
 }
