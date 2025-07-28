@@ -48,7 +48,7 @@ class _DashboardSearchState extends State<DashboardSearch> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     _debounce = Timer(Duration(milliseconds: 500), () {
-      if (query.length >= 2) {
+      if (query.length >= 1) {
         cubit.getSearchMusaList(query, 0); // Always use index 0 for MUSA
       } else {
         // Clear search and load initial data when query is too short
