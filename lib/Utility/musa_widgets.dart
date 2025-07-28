@@ -1339,26 +1339,12 @@ abstract class MusaWidgets {
                                             : Utilities.isVideoUrl(
                                                     images[index].fileLink ??
                                                         '')
-                                                ? thumbnailView(
-                                                    images[index].fileLink ??
+                                                ? MusaWidgets.autoPlayVideoView(
+                                                    images[index]
+                                                            ?.previewLink ??
                                                         '',
-                                                    imageHeight: itemHeight,
-                                                    imageWidth: itemWidth,
-                                                    customRadius:
-                                                        BorderRadius.only(
-                                                      topLeft: index == 0
-                                                          ? Radius.circular(10)
-                                                          : Radius.zero,
-                                                      topRight: index == 1
-                                                          ? Radius.circular(10)
-                                                          : Radius.zero,
-                                                      bottomLeft: index == 2
-                                                          ? Radius.circular(10)
-                                                          : Radius.zero,
-                                                      bottomRight: index == 3
-                                                          ? Radius.circular(10)
-                                                          : Radius.zero,
-                                                    ),
+                                                    width: double.infinity,
+                                                    height: double.infinity,
                                                   )
                                                 : CachedNetworkImage(
                                                     imageUrl: images[index]
