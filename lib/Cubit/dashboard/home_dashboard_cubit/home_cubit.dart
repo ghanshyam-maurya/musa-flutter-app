@@ -269,10 +269,11 @@ class HomeCubit extends Cubit<HomeSocialState> {
         try {
           emit(HomeMusaSearchLoading());
           final token = Prefs.getString(PrefKeys.token);
+          final encodedSearchItem = Uri.encodeComponent(searchItem);
           final response = await _apiClient.post(
               selectedIndex == 0
-                  ? "${ApiUrl.searchSocial}$searchItem"
-                  : "${ApiUrl.userListSearch}$searchItem",
+                  ? "${ApiUrl.searchSocial}$encodedSearchItem"
+                  : "${ApiUrl.userListSearch}$encodedSearchItem",
               headers: {'Authorization': 'Bearer $token'});
           if (response['status'] == 200) {
             if (selectedIndex == 0) {
