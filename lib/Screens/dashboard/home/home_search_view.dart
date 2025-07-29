@@ -85,11 +85,15 @@ class _DashboardSearchState extends State<DashboardSearch> {
                 children: [
                   AppBarMusa3(
                     leading: SizedBox(
-                      width: 80,
+                      width: 200,
                       height: 110,
-                      child: Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            // border: Border.all(
+                            //     color: Colors.red, width: 2), // Debug border
+                            ),
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
+                          padding: const EdgeInsets.only(top: 50),
                           child: Text(
                             "Search",
                             style: const TextStyle(
