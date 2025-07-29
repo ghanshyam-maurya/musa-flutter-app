@@ -3,7 +3,7 @@ abstract class StringConst {
   static const String welcomeBack = 'Welcome back!';
   static const String pleaseSignIn = 'Sign in to Your Account';
   static const String pleaseSignInMusa = 'Sign in to your MUSA account';
-  static const String signIn = 'Sign In';
+  static const String signIn = 'Sign in';
   static const String signInVia = 'Sign In Via';
   static const String enterYourRegisteredAccountDetail =
       'Sign in to your account using your registered email address and password.';
@@ -57,7 +57,7 @@ abstract class StringConst {
   static const String dontHaveAcc = 'Don\'t have an account? ';
   static const String alreadyHaveAcc = 'Already have an account? ';
   static const String send = 'Send';
-  static const String signUp = 'Sign Up';
+  static const String signUp = 'Sign up';
   static const String noInternetConnection = 'No Internet Connection';
   static const String changePassword = 'Change Password';
   static const String updateProfile = 'Update Profile';
