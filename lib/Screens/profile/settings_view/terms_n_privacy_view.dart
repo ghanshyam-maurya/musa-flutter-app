@@ -1,4 +1,6 @@
 import '../../../Utility/packages.dart';
+import 'terms_content_widget.dart';
+import 'privacy_content_widget.dart';
 
 class TermsAndPrivacyView extends StatefulWidget {
   final String? flowType;
@@ -31,34 +33,63 @@ class TermsAndPrivacyViewState extends State<TermsAndPrivacyView> {
                   ),
                   SizedBox(width: 26.sp),
                   Expanded(
-                    child: Text(
-                      (widget.flowType.toString() == "Terms")
-                          ? StringConst.termsText
-                          : (widget.flowType.toString() == "Privacy")
-                              ? "Privacy & Policy"
-                              : StringConst.aboutText,
-                      style: AppTextStyle.semiMediumTextStyleNew(
-                          color: Color(0xFF222222), size: 19.sp),
-                    ),
+                    child: TermsPrivacyHeader(flowType: widget.flowType),
                   ),
                 ],
               ),
               SizedBox(height: 20.sp),
               Expanded(
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: MusaPadding.horizontalPadding,
-                    child: Text(
-                      StringConst.dummyTermsText,
-                      style: AppTextStyle.normalTextStyle1,
-                    ),
-                  ),
-                ),
+                child: TermsPrivacyContent(flowType: widget.flowType),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// Widget for the header/title
+class TermsPrivacyHeader extends StatelessWidget {
+  final String? flowType;
+  const TermsPrivacyHeader({Key? key, this.flowType}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      (flowType.toString() == "Terms")
+          ? StringConst.termsText
+          : (flowType.toString() == "Privacy")
+              ? "Privacy & Policy"
+              : StringConst.aboutText,
+      style: AppTextStyle.semiMediumTextStyleNew(
+        color: Color(0xFF222222),
+        size: 19.sp,
+      ),
+    );
+  }
+}
+
+// Widget for the content/body
+class TermsPrivacyContent extends StatelessWidget {
+  final String? flowType;
+  const TermsPrivacyContent({Key? key, this.flowType}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // You can add logic here to show different content for terms/privacy/about if needed
+    return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
+      child: Padding(
+        padding: MusaPadding.horizontalPadding,
+        child: (flowType.toString() == "Terms")
+            ? const TermsContentWidget()
+            : (flowType.toString() == "Privacy")
+                ? const PrivacyContentWidget()
+                : Text(
+                    StringConst.dummyTermsText,
+                    style: AppTextStyle.normalTextStyle1,
+                  ),
       ),
     );
   }
