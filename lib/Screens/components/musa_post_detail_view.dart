@@ -339,7 +339,9 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
                         ),
                       ),
                       Padding(
-                        padding: MusaPadding.horizontalPadding,
+                        padding: MusaPadding.horizontalPadding.copyWith(
+                            bottom:
+                                80.0), // Add bottom padding to avoid overlap
                         child: Column(
                           children: [
                             GridView.builder(
@@ -408,405 +410,127 @@ class _MusaPostDetailViewState extends State<MusaPostDetailView> {
           ),
           Positioned(
             bottom: 0,
-            child: SafeArea(
-              child: Container(
-                color: AppColor.white,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if ((musaData.audioComments?.isNotEmpty ?? false) &&
-                          musaData.audioComments!.first != '') ...[
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8),
-                          child: AudioPlayerPopup(
-                            filePath: musaData.audioComments!.first,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: AppColor.white, // Solid background to hide scroll content
+              child: SafeArea(
+                child: Container(
+                  color: AppColor.white,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if ((musaData.audioComments?.isNotEmpty ?? false) &&
+                            musaData.audioComments!.first != '') ...[
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            child: AudioPlayerPopup(
+                              filePath: musaData.audioComments!.first,
+                            ),
                           ),
+                        ],
+                        Divider(color: Color(0xFFE9E9E9)),
+                        //=============uncomment for previous view==========
+                        // (widget.flowType.toString() == "Album")
+                        //     ? Container()
+                        //     : Row(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: [
+                        //           MusaWidgets.userProfileAvatar(
+                        //             imageUrl: userProfile,
+                        //             radius: 18.sp,
+                        //             borderWidth: 3.sp,
+                        //           ),
+                        //           Text(
+                        //             userName,
+                        //             style: AppTextStyle.normalBoldTextStyle
+                        //                 .copyWith(fontSize: 13),
+                        //           ),
+                        //         ],
+                        //       ),
+
+                        SizedBox(
+                          height: 5.h,
                         ),
-                      ],
-                      Divider(color: Color(0xFFE9E9E9)),
-                      //=============uncomment for previous view==========
-                      // (widget.flowType.toString() == "Album")
-                      //     ? Container()
-                      //     : Row(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [
-                      //           MusaWidgets.userProfileAvatar(
-                      //             imageUrl: userProfile,
-                      //             radius: 18.sp,
-                      //             borderWidth: 3.sp,
-                      //           ),
-                      //           Text(
-                      //             userName,
-                      //             style: AppTextStyle.normalBoldTextStyle
-                      //                 .copyWith(fontSize: 13),
-                      //           ),
-                      //         ],
-                      //       ),
 
-                      SizedBox(
-                        height: 5.h,
-                      ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (musaData.amIContributorInThisMusa == true)
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              height: 28,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  backgroundColor: AppColor.white,
-                                  padding: EdgeInsets.all(1),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6.sp),
-                                    side: BorderSide(
-                                      color: AppColor.white,
-                                      width: 1.sp,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (musaData.amIContributorInThisMusa == true)
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                height: 28,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: AppColor.white,
+                                    padding: EdgeInsets.all(1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6.sp),
+                                      side: BorderSide(
+                                        color: AppColor.white,
+                                        width: 1.sp,
+                                      ),
                                     ),
+                                    minimumSize: Size(0, 28), // height: 28
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                  minimumSize: Size(0, 28), // height: 28
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditMusa(
-                                        musaData: musaData,
-                                        isComeFromCarosel:
-                                            widget.isComeFromCarosel,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/svgs/edit_icon.svg',
-                                        width: 14,
-                                        height: 14,
-                                      ),
-                                      SizedBox(width: 6.sp),
-                                      Text(
-                                        'Edit MUSA',
-                                        style: AppTextStyle.normalTextStyle1
-                                            .copyWith(
-                                          fontSize: 14,
-                                          color: AppColor.greenDark,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditMusa(
+                                          musaData: musaData,
+                                          isComeFromCarosel:
+                                              widget.isComeFromCarosel,
                                         ),
                                       ),
-                                    ],
+                                    );
+                                  },
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svgs/edit_icon.svg',
+                                          width: 14,
+                                          height: 14,
+                                        ),
+                                        SizedBox(width: 6.sp),
+                                        Text(
+                                          'Edit MUSA',
+                                          style: AppTextStyle.normalTextStyle1
+                                              .copyWith(
+                                            fontSize: 14,
+                                            color: AppColor.greenDark,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
+                            Spacer(),
+                            DisplayCastModeWidget(
+                              padding: EdgeInsets.only(right: 10.sp),
+                              fileList: musaData.file ?? [],
+                              musaData: musaData,
+                              onPressed: () async {
+                                // Your onPressed logic here
+                              },
+                              height: 30.sp,
+                              fontSize: 14.sp,
                             ),
-                          Spacer(),
-                          DisplayCastModeWidget(
-                            padding: EdgeInsets.only(right: 10.sp),
-                            fileList: musaData.file ?? [],
-                            musaData: musaData,
-                            onPressed: () async {
-                              // Your onPressed logic here
-                            },
-                            height: 30.sp,
-                            fontSize: 14.sp,
-                          ),
-                          // (widget.isMyMusa != null && widget.isMyMusa!)
-                          //     ? Row(
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         children: [
-                          //           Container(
-                          //               padding: MusaPadding.horizontalPadding,
-                          //               height: 30.sp,
-                          //               // width: 4.sp,
-                          //               child: Row(
-                          //                 mainAxisSize: MainAxisSize.min,
-                          //                 children: [
-                          //                   Text("Display Mode",
-                          //                       style: TextStyle(
-                          //                         color: AppColor.greenDark,
-                          //                         fontSize: 14.sp,
-                          //                       )),
-                          //                   Transform.scale(
-                          //                     scale:
-                          //                         0.65, // Adjust the scale factor to change the height and width proportionally
-                          //                     child: Switch(
-                          //                       value: isSwitched,
-                          //                       onChanged: (value) {
-                          //                         setState(() {
-                          //                           //isSwitched = value;
-                          //                           if (value) {
-                          //                             Utilities
-                          //                                 .navigateToLandscapeScreen(
-                          //                               context,
-                          //                               displayViewItems:
-                          //                                   musaData,
-                          //                             );
-                          //                           }
-                          //                         });
-                          //                       },
-                          //                       activeTrackColor:
-                          //                           AppColor.greenDark,
-                          //                       activeColor: Color(0xFFE6F6EE),
-                          //                       inactiveTrackColor:
-                          //                           Color(0xFFE6F6EE),
-                          //                       inactiveThumbColor:
-                          //                           AppColor.greenDark,
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ))
-                          //         ],
-                          //       )
-                          //     : Row(
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         children: [
-                          //           (musaData.isDisplayLoading != null &&
-                          //                   musaData.isDisplayLoading!)
-                          //               ? Container(
-                          //                   margin: EdgeInsets.only(right: 30),
-                          //                   height: 15,
-                          //                   width: 15,
-                          //                   child: CircularProgressIndicator(
-                          //                     color: AppColor.primaryColor,
-                          //                   ),
-                          //                 )
-                          //               : Container(
-                          //                   padding:
-                          //                       MusaPadding.horizontalPadding,
-                          //                   height: 30.sp,
-                          //                   // width: MediaQuery.of(context)
-                          //                   //         .size
-                          //                   //         .width /
-                          //                   //     3,
-                          //                   child: musaData.displayStatus !=
-                          //                               null &&
-                          //                           musaData.displayStatus
-                          //                                   ?.status ==
-                          //                               "Accept"
-                          //                       ? Row(
-                          //                           mainAxisSize:
-                          //                               MainAxisSize.min,
-                          //                           children: [
-                          //                             Text("Display Mode",
-                          //                                 style: TextStyle(
-                          //                                   color: AppColor
-                          //                                       .greenDark,
-                          //                                   fontSize: 14.sp,
-                          //                                 )),
-                          //                             Transform.scale(
-                          //                               scale:
-                          //                                   0.65, // Adjust the scale factor to change the height and width proportionally
-                          //                               child: Switch(
-                          //                                 value: isSwitched,
-                          //                                 onChanged: (value) {
-                          //                                   setState(() {
-                          //                                     //isSwitched = value;
-                          //                                     if (value) {
-                          //                                       Utilities
-                          //                                           .navigateToLandscapeScreen(
-                          //                                         context,
-                          //                                         displayViewItems:
-                          //                                             musaData,
-                          //                                       );
-                          //                                     }
-                          //                                   });
-                          //                                 },
-                          //                                 activeTrackColor:
-                          //                                     AppColor
-                          //                                         .greenDark,
-                          //                                 activeColor:
-                          //                                     Color(0xFFE6F6EE),
-                          //                                 inactiveTrackColor:
-                          //                                     Color(0xFFE6F6EE),
-                          //                                 inactiveThumbColor:
-                          //                                     AppColor
-                          //                                         .greenDark,
-                          //                               ),
-                          //                             ),
-                          //                           ],
-                          //                         )
-                          //                       :
-                          //                       //  MusaWidgets.borderTextButton(
-                          //                       //     title: musaData
-                          //                       //                 .displayStatus !=
-                          //                       //             null
-                          //                       //         ? musaData.displayStatus
-                          //                       //                     ?.status ==
-                          //                       //                 "NotInitiated"
-                          //                       //             ? StringConst
-                          //                       //                 .requested
-                          //                       //             : musaData.displayStatus
-                          //                       //                         ?.status ==
-                          //                       //                     "Accept"
-                          //                       //                 ? StringConst
-                          //                       //                     .displayText
-                          //                       //                 : StringConst
-                          //                       //                     .buttonDisplay
-                          //                       //         : StringConst
-                          //                       //             .buttonDisplay,
-                          //                       //     onPressed: () async {
-                          //                       //       if (musaData.displayStatus
-                          //                       //               ?.status ==
-                          //                       //           "Accept") {
-                          //                       //         Utilities
-                          //                       //             .navigateToLandscapeScreen(
-                          //                       //           context,
-                          //                       //           displayViewItems:
-                          //                       //               musaData,
-                          //                       //         );
-                          //                       //       } else if (musaData
-                          //                       //                   .displayStatus ==
-                          //                       //               null ||
-                          //                       //           musaData.displayStatus
-                          //                       //                   ?.status ==
-                          //                       //               "Reject") {
-                          //                       //         setState(() {
-                          //                       //           musaData.isDisplayLoading =
-                          //                       //               true;
-                          //                       //         });
-                          //                       //         await HomeCubit()
-                          //                       //             .displayRequest(
-                          //                       //                 musaId:
-                          //                       //                     musaData.id ??
-                          //                       //                         '',
-                          //                       //                 context: context)
-                          //                       //             .then((value) {
-                          //                       //           musaData.isDisplayLoading =
-                          //                       //               false;
-                          //                       //           setState(() {
-                          //                       //             musaData.displayStatus =
-                          //                       //                 DisplayStatus(
-                          //                       //                     status:
-                          //                       //                         "NotInitiated",
-                          //                       //                     id: musaData
-                          //                       //                         .id);
-                          //                       //           });
-                          //                       //         });
-                          //                       //       }
-                          //                       //     },
-                          //                       //     borderColor:
-                          //                       //         AppColor.greenDark,
-                          //                       //     borderWidth: 1,
-                          //                       //     fontSize: 12,
-                          //                       //     textcolor: AppColor.greenDark,
-                          //                       //   ),
-                          //                       Container(
-                          //                           height: 26,
-                          //                           child: Material(
-                          //                             elevation: 0,
-                          //                             child: InkWell(
-                          //                               onTap: () async {
-                          //                                 if (musaData
-                          //                                         .displayStatus
-                          //                                         ?.status ==
-                          //                                     "Accept") {
-                          //                                   Utilities
-                          //                                       .navigateToLandscapeScreen(
-                          //                                     context,
-                          //                                     displayViewItems:
-                          //                                         musaData,
-                          //                                   );
-                          //                                 } else if (musaData
-                          //                                             .displayStatus ==
-                          //                                         null ||
-                          //                                     musaData.displayStatus
-                          //                                             ?.status ==
-                          //                                         "Reject") {
-                          //                                   setState(() {
-                          //                                     musaData.isDisplayLoading =
-                          //                                         true;
-                          //                                   });
-                          //                                   await HomeCubit()
-                          //                                       .displayRequest(
-                          //                                           musaId:
-                          //                                               musaData.id ??
-                          //                                                   '',
-                          //                                           context:
-                          //                                               context)
-                          //                                       .then((value) {
-                          //                                     musaData.isDisplayLoading =
-                          //                                         false;
-                          //                                     setState(() {
-                          //                                       musaData.displayStatus =
-                          //                                           DisplayStatus(
-                          //                                               status:
-                          //                                                   "NotInitiated",
-                          //                                               id: musaData
-                          //                                                   .id);
-                          //                                     });
-                          //                                   });
-                          //                                 }
-                          //                               },
-                          //                               child: Container(
-                          //                                 decoration:
-                          //                                     BoxDecoration(
-                          //                                   color: Color(
-                          //                                       0xFFE6F6EE),
-                          //                                   borderRadius:
-                          //                                       BorderRadius
-                          //                                           .circular(
-                          //                                               6.sp),
-                          //                                   border: Border.all(
-                          //                                     color: AppColor
-                          //                                         .greenDark,
-                          //                                     width: 1.sp,
-                          //                                   ),
-                          //                                 ),
-                          //                                 padding: EdgeInsets
-                          //                                     .symmetric(
-                          //                                         horizontal:
-                          //                                             2.sp,
-                          //                                         vertical:
-                          //                                             2.sp),
-                          //                                 child: Center(
-                          //                                   child: Text(
-                          //                                     musaData.displayStatus !=
-                          //                                             null
-                          //                                         ? musaData.displayStatus
-                          //                                                     ?.status ==
-                          //                                                 "NotInitiated"
-                          //                                             ? StringConst
-                          //                                                 .requested
-                          //                                             : musaData.displayStatus?.status ==
-                          //                                                     "Accept"
-                          //                                                 ? StringConst
-                          //                                                     .displayText
-                          //                                                 : StringConst
-                          //                                                     .buttonDisplay
-                          //                                         : StringConst
-                          //                                             .buttonDisplay,
-                          //                                     style: TextStyle(
-                          //                                       color: AppColor
-                          //                                           .greenDark,
-                          //                                       fontSize: 12.sp,
-                          //                                       fontFamily:
-                          //                                           'Manrope',
-                          //                                       fontWeight:
-                          //                                           FontWeight
-                          //                                               .w500,
-                          //                                     ),
-                          //                                   ),
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ),
-                          //                         ))
-                          //         ],
-                          //       ),
-                        ],
-                      ),
+                          ],
+                        ),
 
-                      SizedBox(
-                        height: 30.h,
-                      ),
-                    ]),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                      ]),
+                ),
               ),
             ),
           ),

@@ -284,7 +284,7 @@ class _MyAlbumsState extends State<MyAlbums> {
 
   Widget addAlbumContainer(BuildContext context) {
     return Container(
-      height: 150.sp,
+      height: 148.sp,
       margin: EdgeInsets.only(top: 10.h),
       width: MediaQuery.of(context).size.width * 0.5 - 30,
       child: Padding(
@@ -359,7 +359,7 @@ class _MyAlbumsState extends State<MyAlbums> {
               borderRadius: BorderRadius.circular(15.sp),
             ),
             child: Container(
-              height: 150.sp,
+              height: 148.sp,
               width: MediaQuery.of(context).size.width * 0.5 - 30,
               decoration: BoxDecoration(
                 color: Color(0xFFF8FDFA),
