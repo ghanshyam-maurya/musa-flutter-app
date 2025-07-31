@@ -1,4 +1,5 @@
 import 'package:musa_app/Utility/packages.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class CommonDropdownWidgets {
   static Widget commonDropdownField<T>({
@@ -56,6 +57,86 @@ class CommonDropdownWidgets {
           ),
         ),
       );
+
+  /// Advanced dropdown using dropdown_button2 for custom width, padding, etc.
+  static Widget commonDropdownFieldAdvanced<T>({
+    Color? bgColor,
+    String? hint,
+    required List<T> items,
+    required T? selectedValue,
+    ValueChanged<T?>? onChanged,
+    bool? isLoading = false,
+    String Function(T)? displayItem,
+    Widget? prefixIcon,
+    double? dropdownWidth,
+    EdgeInsetsGeometry? dropdownPadding,
+    EdgeInsetsGeometry? dropdownMargin,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Container(
+        color: bgColor ?? Colors.white,
+        child: DropdownButtonFormField2<T>(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: AppColor.grey)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(width: 2, color: AppColor.green)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: AppColor.grey),
+            ),
+            prefixIcon: prefixIcon ??
+                Icon(Icons.grid_view_rounded, color: AppColor.grey),
+          ),
+          isExpanded: true,
+          hint: Text(hint ?? 'Select'),
+          value: selectedValue,
+          items: items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(
+                  displayItem != null ? displayItem(item) : item.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          iconStyleData: IconStyleData(
+            icon: isLoading == true
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: AppColor.primaryColor),
+                    ),
+                  )
+                : Icon(Icons.arrow_drop_down, color: AppColor.primaryTextColor),
+          ),
+          dropdownStyleData: DropdownStyleData(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            width: 40, // null makes dropdown match the button/parent width
+            padding: dropdownPadding,
+            elevation: 8,
+            offset: dropdownMargin is EdgeInsets
+                ? Offset(dropdownMargin.left, dropdownMargin.top)
+                : Offset.zero,
+          ),
+        ),
+      ),
+    );
+  }
 
   static Widget textFieldChat(
           {int? inputMaxLine,
