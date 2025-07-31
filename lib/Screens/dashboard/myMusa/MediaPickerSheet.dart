@@ -816,8 +816,9 @@ class MediaPickerBottomSheetState extends State<MediaPickerBottomSheet> {
                                     title: Text("Capture Photo"),
                                     onTap: () {
                                       print("Capture Photo");
-                                      Navigator.pop(context);
+                                      //Navigator.pop(context);
                                       cubit?.pickAndUploadMedia(
+                                        context: context,
                                         source: ImageSource.camera,
                                         multiple: false,
                                         isVideo: false,
@@ -828,8 +829,9 @@ class MediaPickerBottomSheetState extends State<MediaPickerBottomSheet> {
                                     leading: Icon(Icons.videocam),
                                     title: Text("Capture Video"),
                                     onTap: () {
-                                      Navigator.pop(context);
+                                      //Navigator.pop(context);
                                       cubit?.pickAndUploadMedia(
+                                          context: context,
                                           source: ImageSource.camera,
                                           isVideo: true,
                                           multiple: true);

@@ -123,6 +123,7 @@ class _CreateMusaState extends State<CreateMusa> {
   }
 
   pickMedia() async {
+    print('pickMedia called');
     final selectedAssets = await showModalBottomSheet<List<String>>(
       context: context,
       isScrollControlled: true,

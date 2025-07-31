@@ -28,6 +28,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   void initState() {
+    print('BottomNavBar initState called');
     if (widget.passIndex != 4) {
       _selectedIndex = widget.passIndex;
     }
@@ -52,6 +53,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    print('BottomNavBar build called');
     return WillPopScope(
       onWillPop: () {
         if (lastPressed == null ||
@@ -68,29 +70,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
         return Future.value(true);
       },
       child: Scaffold(
-        body: Center(
-          child: (widget.customPage != null && showCustomPage)
-              ? widget.customPage!
-              : (widget.passIndex == null || tap
-                  ? _widgetOptions[_selectedIndex ?? 0]
-                  : _widgetOptions[widget.passIndex ?? 0]),
-        ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     //context.push(RouteTo.createMusa);
-        //     uploadPopUp(context);
-        //   },
-        //   backgroundColor: AppColor.greenDark,
-        //   shape: CircleBorder(),
-        //   elevation: 0,
-        //   child: Icon(Icons.add, color: AppColor.white),
-        // ),
+        body: (widget.customPage != null && showCustomPage)
+            ? widget.customPage!
+            : (widget.passIndex == null || tap
+                ? _widgetOptions[_selectedIndex ?? 0]
+                : _widgetOptions[widget.passIndex ?? 0]),
         floatingActionButton: Container(
-          width: 60, // you can adjust size as needed
+          width: 60,
           height: 60,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3), // white border
+            border: Border.all(color: Colors.white, width: 3),
           ),
           child: FloatingActionButton(
             onPressed: () {
@@ -102,7 +92,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             child: Icon(Icons.add, color: AppColor.white),
           ),
         ),
-
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex ?? 0,

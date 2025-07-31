@@ -6,6 +6,7 @@ import 'package:musa_app/Screens/dashboard/my_section/my_musa_collection.dart';
 import 'package:musa_app/Screens/profile/edit_profile.dart';
 import 'package:musa_app/Screens/profile/my_profile.dart';
 import 'package:musa_app/Utility/packages.dart';
+import 'package:musa_app/Resources/CommonWidgets/bottom_nav_bar.dart'; 
 
 import '../Screens/notification_view/notification_view.dart';
 import '../Screens/profile/settings_view/choose_plan_view.dart';
@@ -14,6 +15,9 @@ import '../Screens/profile/settings_view/settings_view.dart';
 import '../Screens/profile/settings_view/terms_n_privacy_view.dart';
 import '../Screens/profile/my_musa_contributors.dart';
 import 'package:musa_app/Screens/display_musa/display_musa.dart';
+
+import 'package:musa_app/Screens/dashboard/home/home.dart';
+
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -185,7 +189,12 @@ final GoRouter router = GoRouter(
         return MyMusaCollection();
       },
     ),
-
+    GoRoute(
+      path: RouteTo.dashboardHome,
+      builder: (BuildContext context, GoRouterState state) {
+        return BottomNavBar(passIndex: 0); // Show BottomNavBar with Home tab
+      },
+    ),
     // GoRoute(
     //   path: RouteTo.bottomNavBar,
     //   builder: (BuildContext context, GoRouterState state) {
@@ -226,4 +235,5 @@ abstract class RouteTo {
   static const String myMusaContributorList = '/my_musa_contributor_list';
   static const String myMusaCollection = '/myMusaCollection';
   static const String displayMusa = '/displayMusa';
+  static const String dashboardHome = '/dashboardHome';
 }

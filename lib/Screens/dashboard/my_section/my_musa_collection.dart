@@ -20,16 +20,17 @@ class _MyMusaCollectionState extends State<MyMusaCollection> {
   bool isUploading = false;
 
   @override
-  void initState() {
-    mySectionCubit.getAlbumList();
-    if (bottomNavBarKey.currentState!.pageIndex == 1 || widget.pageIndex == 1) {
-      mySectionCubit.changeTab(1);
-    }
-    if (widget.musa == true) {
-      isUploading = true;
-    }
-    super.initState();
+void initState() {
+  mySectionCubit.getAlbumList();
+  if ((bottomNavBarKey.currentState != null && bottomNavBarKey.currentState!.pageIndex == 1)
+      || widget.pageIndex == 1) {
+    mySectionCubit.changeTab(1);
   }
+  if (widget.musa == true) {
+    isUploading = true;
+  }
+  super.initState();
+}
 
   Future<void> onRefresh() async {
     await mySectionCubit.getAlbumList();

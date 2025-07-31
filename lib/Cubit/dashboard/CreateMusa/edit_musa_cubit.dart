@@ -447,6 +447,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
       );
       if (response.statusCode == 200) {
         isNewMusaCreated = true;
+        print("Musa updated successfully: ${response.data}");
         emit(EditMusaLoaded());
       } else {
         emit(EditMusaError(
@@ -572,6 +573,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
   }
 
   Future<void> pickAndUploadMedia({
+    required BuildContext context,
     required ImageSource source,
     required bool multiple,
     required bool isVideo,
@@ -704,6 +706,7 @@ class EditMusaCubit extends Cubit<EditMusaState> {
                 int count = 0;
                 Navigator.of(context).popUntil((_) => count++ >= 2);
                 await pickAndUploadMedia(
+                  context: context,
                   source: ImageSource.gallery,
                   multiple: true, // image_picker does not support multi-video
                   isVideo: true,

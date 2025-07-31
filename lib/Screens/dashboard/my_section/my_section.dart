@@ -66,7 +66,8 @@ class _MyScreenState extends State<MyScreen> {
     //   },
     // ];
     mySectionCubit.getAlbumList();
-    if (bottomNavBarKey.currentState!.pageIndex == 1 || widget.pageIndex == 1) {
+    if ((bottomNavBarKey.currentState != null && bottomNavBarKey.currentState!.pageIndex == 1) 
+        || widget.pageIndex == 1) {
       mySectionCubit.changeTab(1);
     }
     if (widget.musa == true) {

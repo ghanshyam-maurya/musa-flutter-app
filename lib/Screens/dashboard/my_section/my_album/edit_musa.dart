@@ -8,6 +8,7 @@ import 'package:musa_app/Repository/AppResponse/social_musa_list_response.dart';
 // import 'package:musa_app/Repository/AppResponse/my_section_sub_album_list.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_preview_screen.dart';
 import 'package:musa_app/Resources/CommonWidgets/audio_recoder.dart';
+//import 'package:musa_app/Screens/dashboard/home/home-07Jun25.dart';
 import 'package:musa_app/Utility/musa_widgets.dart';
 import 'package:musa_app/Utility/packages.dart';
 import 'package:intl/intl.dart';
@@ -270,17 +271,29 @@ class _EditMusaState extends State<EditMusa> {
               //         builder: (_) => BottomNavBar(passIndex: 0)));
               // Pop the current EditMusa screen and the screen before it
               // so the user returns to the page they were on before opening the editor.
-              Navigator.of(context).pop(); // pop EditMusa
-              Navigator.of(context).pop();
-              if (!widget.isComeFromCarosel) {
-                Navigator.of(context).pop();
-              }
+              // Navigator.of(context).pop(); // pop EditMusa
+              // Navigator.of(context).pop();
+              // if (!widget.isComeFromCarosel) {
+              //   Navigator.of(context).pop();
+              // }
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text('Musa updated successfully'),
+              //     backgroundColor: AppColor.greenDark,
+              //   ),
+              // );
+              // Reload the complete page by navigating to BottomNavBar and removing all previous routes
+              // Navigator.of(context).pushAndRemoveUntil(
+              //   MaterialPageRoute(builder: (_) => BottomNavBar(passIndex: 0)),
+              //   (route) => false,
+              // );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Musa updated successfully'),
                   backgroundColor: AppColor.greenDark,
                 ),
               );
+              context.push(RouteTo.dashboardHome); // Navigate to Home with parameters
             }
             if (state is EditMusaError) {
               MusaPopup.popUpDialouge(
