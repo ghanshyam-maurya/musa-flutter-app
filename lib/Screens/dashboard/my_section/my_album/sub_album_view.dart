@@ -1,5 +1,5 @@
 import 'package:musa_app/Cubit/dashboard/my_section_cubit/my_section_state.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:musa_app/Repository/AppResponse/my_section_album_list.dart';
 import 'package:musa_app/Screens/dashboard/my_section/my_album/sub_album_musa_list.dart';
 import '../../../../Cubit/dashboard/my_section_cubit/my_section_cubit.dart';
@@ -396,7 +396,7 @@ class _MyScreenSubAlbumViewState extends State<MyScreenSubAlbumView> {
                 );
               },
               child: Container(
-                height: 150.sp,
+                height: 148.sp,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Color(0xFFF8FDFA),
@@ -467,7 +467,7 @@ class _MyScreenSubAlbumViewState extends State<MyScreenSubAlbumView> {
 
   Widget addAlbumContainer(BuildContext context) {
     return Container(
-      height: 150.sp,
+      height: 148.sp,
       margin: EdgeInsets.only(top: 10.h),
       width: MediaQuery.of(context).size.width * 0.5 - 30,
       child: Padding(
