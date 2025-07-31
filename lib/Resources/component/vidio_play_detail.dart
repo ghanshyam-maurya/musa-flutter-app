@@ -65,7 +65,10 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
                       aspectRatio: _controller.value.aspectRatio,
                       child: VideoPlayer(_controller),
                     )
-                  : Center(child: CircularProgressIndicator()),
+                  : Center(
+                      child: CircularProgressIndicator(
+                      color: AppColor.primaryColor,
+                    )),
               Align(
                 alignment: Alignment.center,
                 child: FloatingActionButton(
@@ -91,7 +94,7 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 42),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                   child: ValueListenableBuilder<double>(
                     valueListenable: _progressNotifier,
                     builder: (context, progress, child) {
