@@ -18,31 +18,65 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
   late VideoPlayerController _controller;
   late ValueNotifier<double> _progressNotifier;
   bool isFromDetailView = false;
+  bool _isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url ?? ""))
       ..initialize().then((_) {
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+          // Auto-play the video once initialized
+          _controller.play().then((_) {
+            if (mounted) {
+              setState(() {
+                _isPlaying = true;
+              });
+            }
+          });
+        }
       });
 
     _progressNotifier = ValueNotifier(0.0);
 
-    _controller.addListener(() {
-      if (_controller.value.isInitialized) {
-        final position = _controller.value.position.inSeconds;
-        final duration = _controller.value.duration.inSeconds;
-        if (position < duration) {
-          _progressNotifier.value = position / duration;
-        }
-        _controller.play();
+    // Separate listener for progress updates only
+    _controller.addListener(_updateProgress);
+  }
+
+  void _updateProgress() {
+    if (_controller.value.isInitialized && mounted) {
+      final position = _controller.value.position.inSeconds;
+      final duration = _controller.value.duration.inSeconds;
+      if (duration > 0) {
+        _progressNotifier.value = position / duration;
       }
-    });
+    }
+  }
+
+  void _togglePlayPause() async {
+    if (!_controller.value.isInitialized) return;
+
+    if (_controller.value.isPlaying) {
+      await _controller.pause();
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    } else {
+      await _controller.play();
+      if (mounted) {
+        setState(() {
+          _isPlaying = true;
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_updateProgress);
     _controller.dispose();
     _progressNotifier.dispose();
     super.dispose();
@@ -72,20 +106,10 @@ class _VideoPlayDetailViewState extends State<VideoPlayDetailView> {
               Align(
                 alignment: Alignment.center,
                 child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      if (_controller.value.isPlaying) {
-                        _controller.pause();
-                      } else {
-                        _controller.play();
-                      }
-                    });
-                  },
+                  onPressed: _togglePlayPause,
                   backgroundColor: Colors.black45,
                   child: Icon(
-                    _controller.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
+                    _isPlaying ? Icons.pause : Icons.play_arrow,
                     color: Colors.white,
                   ),
                 ),
