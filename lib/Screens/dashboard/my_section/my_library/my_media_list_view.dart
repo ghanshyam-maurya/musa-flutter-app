@@ -77,9 +77,9 @@ class MyMediaListViewState extends State<MyMediaListView> {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.45,
-          minChildSize: 0.3,
-          maxChildSize: 0.6,
+          initialChildSize: 0.6, // Increased height
+          minChildSize: 0.4,
+          maxChildSize: 0.8, // Increased max height
           expand: false,
           builder: (_, scrollController) {
             return SafeArea(
@@ -91,6 +91,7 @@ class MyMediaListViewState extends State<MyMediaListView> {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
@@ -109,16 +110,14 @@ class MyMediaListViewState extends State<MyMediaListView> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 12),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
                         imageUrl,
                         fit: BoxFit.contain,
-                        // width: double.infinity,
-                        // height: 250,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: 540.w,
+                        height: 300.h,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
@@ -133,7 +132,7 @@ class MyMediaListViewState extends State<MyMediaListView> {
                             Icon(Icons.broken_image, size: 80),
                       ),
                     ),
-                    Expanded(child: SizedBox()),
+                    SizedBox(height: 12),
                     Center(
                       child: TextButton(
                         onPressed: () {
