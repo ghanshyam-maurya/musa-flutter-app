@@ -41,117 +41,117 @@ class _DisplayCastModeWidgetState extends State<DisplayCastModeWidget> {
               minWidth: 10.sp,
               title: StringConst.displayText,
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return ListView.builder(
-                      itemCount: widget.fileList.length,
-                      itemBuilder: (context, index) {
-                        final file = widget.fileList[index];
-                        final dynamic url =
-                            file is Map ? file['file_link'] : file.fileLink;
-                        final fileName =
-                            url.toString().split('/').last.toLowerCase();
+                // showModalBottomSheet(
+                //   context: context,
+                //   builder: (context) {
+                //     return ListView.builder(
+                //       itemCount: widget.fileList.length,
+                //       itemBuilder: (context, index) {
+                //         final file = widget.fileList[index];
+                //         final dynamic url =
+                //             file is Map ? file['file_link'] : file.fileLink;
+                //         final fileName =
+                //             url.toString().split('/').last.toLowerCase();
 
-                        final isImage = fileName.endsWith('.jpg') ||
-                            fileName.endsWith('.jpeg') ||
-                            fileName.endsWith('.png') ||
-                            fileName.endsWith('.gif') ||
-                            fileName.endsWith('.webp');
+                //         final isImage = fileName.endsWith('.jpg') ||
+                //             fileName.endsWith('.jpeg') ||
+                //             fileName.endsWith('.png') ||
+                //             fileName.endsWith('.gif') ||
+                //             fileName.endsWith('.webp');
 
-                        final isVideo = fileName.endsWith('.mp4') ||
-                            fileName.endsWith('.mov') ||
-                            fileName.endsWith('.mkv') ||
-                            fileName.endsWith('.avi');
+                //         final isVideo = fileName.endsWith('.mp4') ||
+                //             fileName.endsWith('.mov') ||
+                //             fileName.endsWith('.mkv') ||
+                //             fileName.endsWith('.avi');
 
-                        return ListTile(
-                          leading: isImage
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Image.network(
-                                    url,
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Icon(Icons.broken_image, size: 40),
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return SizedBox(
-                                        width: 60,
-                                        height: 60,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                              strokeWidth: 2),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : Icon(
-                                  isVideo
-                                      ? Icons.ondemand_video
-                                      : Icons.insert_drive_file,
-                                  size: 40,
-                                ),
-                          title: Text(
-                            fileName,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(isImage
-                              ? 'Image'
-                              : isVideo
-                                  ? 'Video'
-                                  : 'Media'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            showDialog(
-                              context: context,
-                              // builder: (_) => CastMediaDialog(
-                              //   url: url.toString(),
-                              //   title: 'Cast $fileName',
-                              // ),
-                              builder: (_) => CastDialog(
-                                url: url.toString(),
-                                title: 'Cast $fileName',
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
+                //         return ListTile(
+                //           leading: isImage
+                //               ? ClipRRect(
+                //                   borderRadius: BorderRadius.circular(6),
+                //                   child: Image.network(
+                //                     url,
+                //                     width: 60,
+                //                     height: 60,
+                //                     fit: BoxFit.cover,
+                //                     errorBuilder:
+                //                         (context, error, stackTrace) =>
+                //                             Icon(Icons.broken_image, size: 40),
+                //                     loadingBuilder:
+                //                         (context, child, loadingProgress) {
+                //                       if (loadingProgress == null) return child;
+                //                       return SizedBox(
+                //                         width: 60,
+                //                         height: 60,
+                //                         child: Center(
+                //                           child: CircularProgressIndicator(
+                //                               strokeWidth: 2),
+                //                         ),
+                //                       );
+                //                     },
+                //                   ),
+                //                 )
+                //               : Icon(
+                //                   isVideo
+                //                       ? Icons.ondemand_video
+                //                       : Icons.insert_drive_file,
+                //                   size: 40,
+                //                 ),
+                //           title: Text(
+                //             fileName,
+                //             overflow: TextOverflow.ellipsis,
+                //           ),
+                //           subtitle: Text(isImage
+                //               ? 'Image'
+                //               : isVideo
+                //                   ? 'Video'
+                //                   : 'Media'),
+                //           onTap: () {
+                //             Navigator.pop(context);
+                //             showDialog(
+                //               context: context,
+                //               // builder: (_) => CastMediaDialog(
+                //               //   url: url.toString(),
+                //               //   title: 'Cast $fileName',
+                //               // ),
+                //               builder: (_) => CastDialog(
+                //                 url: url.toString(),
+                //                 title: 'Cast $fileName',
+                //               ),
+                //             );
+                //           },
+                //         );
+                //       },
+                //     );
+                //   },
+                // );
                 print(
                     "Display Mode Button Pressed inside display cast mode widget");
                 print("Musa Data: ${widget.musaData}");
-                // Utilities.navigateToLandscapeScreen(
-                //   context,
-                //   displayViewItems: widget.musaData,
-                //   commentBtn: () {
-                //     print("Comment button tapped22233");
-                //     // showModalBottomSheet(
-                //     //     context: context,
-                //     //     isScrollControlled: true,
-                //     //     backgroundColor: Colors.transparent,
-                //     //     builder: (_) => DisplayModeCommentView(
-                //     //           musaId: widget.musaData.id ?? "",
-                //     //           commentCountBtn: (count) {
-                //     //             // Optional: Update comment count in parent
-                //     //           },
-                //     //         ));
-                //     showRightSidePanel(
-                //         context,
-                //         (ctx) => DisplayModeCommentView(
-                //               musaId: widget.musaData.id ?? "",
-                //               commentCountBtn: (count) {
-                //                 // update logic
-                //               },
-                //             ));
-                //   },
-                // );
+                Utilities.navigateToLandscapeScreen(
+                  context,
+                  displayViewItems: widget.musaData,
+                  commentBtn: () {
+                    print("Comment button tapped22233");
+                    // showModalBottomSheet(
+                    //     context: context,
+                    //     isScrollControlled: true,
+                    //     backgroundColor: Colors.transparent,
+                    //     builder: (_) => DisplayModeCommentView(
+                    //           musaId: widget.musaData.id ?? "",
+                    //           commentCountBtn: (count) {
+                    //             // Optional: Update comment count in parent
+                    //           },
+                    //         ));
+                    showRightSidePanel(
+                        context,
+                        (ctx) => DisplayModeCommentView(
+                              musaId: widget.musaData.id ?? "",
+                              commentCountBtn: (count) {
+                                // update logic
+                              },
+                            ));
+                  },
+                );
               },
               borderColor: AppColor.primaryColor,
               borderWidth: 1.sp,
