@@ -50,6 +50,7 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
           "a": Style(
             color: Colors.blue,
             textDecoration: TextDecoration.underline,
+            textDecorationColor: Colors.blue,
           ),
           ".last-updated": Style(
             fontSize: FontSize(12.0),
