@@ -9,7 +9,7 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(6.0),
       child: Html(
         data: _getPrivacyPolicyHtml(),
         extensions: [
@@ -75,15 +75,17 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
             } else if (url.startsWith('mailto:')) {
               // Handle email links
               final Uri emailUri = Uri.parse(url);
-              if (await canLaunchUrl(emailUri)) {
+              //if (await canLaunchUrl(emailUri)) {
                 await launchUrl(emailUri);
-              }
+              //}
             } else {
               // Handle external links
               final Uri uri = Uri.parse(url);
-              if (await canLaunchUrl(uri)) {
+              print('External link: $url');
+              //if (await canLaunchUrl(uri)) {
+                print('Launching URL: $url');
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
+              //}
             }
           }
         },
@@ -103,7 +105,7 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
         <h1>PRIVACY POLICY</h1>
         <p class="last-updated">Last updated January 01, 2025</p>
 
-        <p>This Privacy Notice for Never Ending Memory LLC (doing business as MUSA.ART) ("we," "us," or "our"), describes how and why we might access, collect, store, use, and/or share ("process") your personal information when you use our services ("Services"), including when you:</p>
+        <p>This Privacy Notice for Never Ending Memory LLC (doing business as MUSA.ART) ("<strong>we</strong>," "<strong>us</strong>," or "<strong>our</strong>"), describes how and why we might access, collect, store, use, and/or share ("<strong>process</strong>") your personal information when you use our services ("<strong>Services</strong>"), including when you:</p>
 
         <ul>
             <li>Visit our website at MUSA.art or any website of ours that links to this Privacy Notice</li>
@@ -117,7 +119,7 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
 
         <p class="summary-intro">This summary provides key points from our Privacy Notice, but you can find out more details about any of these topics by clicking the link following each key point or by using our <a href="#table-of-contents">table of contents</a> below to find the section you are looking for.</p>
 
-        <p><strong>What personal information do we process?</strong> When you visit, use, or navigate our Services, we may process personal information depending on how you interact with us and the Services, the choices you make, and the products and features you use. Learn more about <a href="#personal-information">personal information you disclose to us</a>.</p>
+        <p><strong>What personal information do we process?</strong> When you visit, use, or navigate our Services, we may process personal information depending on how you interact with us and the Services, the choices you make, and the products and features you use. Learn more about <a href="#what-information">personal information you disclose to us</a>.</p>
 
         <p><strong>Do we process any sensitive personal information?</strong> Some of the information may be considered "special" or "sensitive" in certain jurisdictions, for example your racial or ethnic origins, sexual orientation, and religious beliefs. We do not process sensitive personal information.</p>
 
@@ -362,69 +364,69 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
         <p>The table below shows the categories of personal information we have collected in the past twelve (12) months. The table includes illustrative examples of each category and does not reflect the personal information we collect from you. For a comprehensive inventory of all personal information we process, please refer to the section '<a href="#info-collect">WHAT INFORMATION DO WE COLLECT?</a>'.</p>
         <table style="border-collapse:collapse;margin-bottom:16px;">
           <tr>
-            <th style="border:1px solid #888;padding:4px;">Category</th>
-            <th style="border:1px solid #888;padding:4px;">Examples</th>
-            <th style="border:1px solid #888;padding:4px;">Collected</th>
+            <th style="border:1px solid #888;padding:1px;">Category</th>
+            <th style="border:1px solid #888;padding:1px;">Examples</th>
+            <th style="border:1px solid #888;padding:1px;">Collected</th>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">A. Identifiers</td>
-            <td style="border:1px solid #888;padding:4px;">Contact details, such as real name, alias, postal address, telephone or mobile contact number, unique personal identifier, online identifier, Internet Protocol address, email address, and account name</td>
-            <td style="border:1px solid #888;padding:4px;">YES</td>
+            <td style="border:1px solid #888;padding:1px;">A. Identifiers</td>
+            <td style="border:1px solid #888;padding:1px;">Contact details, such as real name, alias, postal address, telephone or mobile contact number, unique personal identifier, online identifier, Internet Protocol address, email address, and account name</td>
+            <td style="border:1px solid #888;padding:1px;">YES</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">B. Personal information as defined in the California Customer Records statute</td>
-            <td style="border:1px solid #888;padding:4px;">Name, contact information, education, employment, employment history, and financial information</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">B. Personal information as defined in the California Customer Records statute</td>
+            <td style="border:1px solid #888;padding:1px;">Name, contact information, education, employment, employment history, and financial information</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">C. Protected classification characteristics under state or federal law</td>
-            <td style="border:1px solid #888;padding:4px;">Gender, age, date of birth, race and ethnicity, national origin, marital status, and other demographic data</td>
-            <td style="border:1px solid #888;padding:4px;">YES</td>
+            <td style="border:1px solid #888;padding:1px;">C. Protected classification characteristics under state or federal law</td>
+            <td style="border:1px solid #888;padding:1px;">Gender, age, date of birth, race and ethnicity, national origin, marital status, and other demographic data</td>
+            <td style="border:1px solid #888;padding:1px;">YES</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">D. Commercial information</td>
-            <td style="border:1px solid #888;padding:4px;">Transaction information, purchase history, financial details, and payment information</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">D. Commercial information</td>
+            <td style="border:1px solid #888;padding:1px;">Transaction information, purchase history, financial details, and payment information</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">E. Biometric information</td>
-            <td style="border:1px solid #888;padding:4px;">Fingerprints and voiceprints</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">E. Biometric information</td>
+            <td style="border:1px solid #888;padding:1px;">Fingerprints and voiceprints</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">F. Internet or other similar network activity</td>
-            <td style="border:1px solid #888;padding:4px;">Browsing history, search history, online behavior, interest data, and interactions with our and other websites, applications, systems, and advertisements</td>
-            <td style="border:1px solid #888;padding:4px;">YES</td>
+            <td style="border:1px solid #888;padding:1px;">F. Internet or other similar network activity</td>
+            <td style="border:1px solid #888;padding:1px;">Browsing history, search history, online behavior, interest data, and interactions with our and other websites, applications, systems, and advertisements</td>
+            <td style="border:1px solid #888;padding:1px;">YES</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">G. Geolocation data</td>
-            <td style="border:1px solid #888;padding:4px;">Device location</td>
-            <td style="border:1px solid #888;padding:4px;">YES</td>
+            <td style="border:1px solid #888;padding:1px;">G. Geolocation data</td>
+            <td style="border:1px solid #888;padding:1px;">Device location</td>
+            <td style="border:1px solid #888;padding:1px;">YES</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">H. Audio, electronic, sensory, or similar information</td>
-            <td style="border:1px solid #888;padding:4px;">Images and audio, video or call recordings created in connection with our business activities</td>
-            <td style="border:1px solid #888;padding:4px;">YES</td>
+            <td style="border:1px solid #888;padding:1px;">H. Audio, electronic, sensory, or similar information</td>
+            <td style="border:1px solid #888;padding:1px;">Images and audio, video or call recordings created in connection with our business activities</td>
+            <td style="border:1px solid #888;padding:1px;">YES</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">I. Professional or employment-related information</td>
-            <td style="border:1px solid #888;padding:4px;">Business contact details in order to provide you our Services at a business level or job title, work history, and professional qualifications if you apply for a job with us</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">I. Professional or employment-related information</td>
+            <td style="border:1px solid #888;padding:1px;">Business contact details in order to provide you our Services at a business level or job title, work history, and professional qualifications if you apply for a job with us</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">J. Education Information</td>
-            <td style="border:1px solid #888;padding:4px;">Student records and directory information</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">J. Education Information</td>
+            <td style="border:1px solid #888;padding:1px;">Student records and directory information</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">K. Inferences drawn from collected personal information</td>
-            <td style="border:1px solid #888;padding:4px;">Inferences drawn from any of the collected personal information listed above to create a profile or summary about, for example, an individual's preferences and characteristics</td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">K. Inferences drawn from collected personal information</td>
+            <td style="border:1px solid #888;padding:1px;">Inferences drawn from any of the collected personal information listed above to create a profile or summary about, for example, an individual's preferences and characteristics</td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #888;padding:4px;">L. Sensitive personal Information</td>
-            <td style="border:1px solid #888;padding:4px;"></td>
-            <td style="border:1px solid #888;padding:4px;">NO</td>
+            <td style="border:1px solid #888;padding:1px;">L. Sensitive personal Information</td>
+            <td style="border:1px solid #888;padding:1px;"></td>
+            <td style="border:1px solid #888;padding:1px;">NO</td>
           </tr>
         </table>
         <p>We may also collect other personal information outside of these categories through instances where you interact with us in person, online, or by phone or mail in the context of:</p>
