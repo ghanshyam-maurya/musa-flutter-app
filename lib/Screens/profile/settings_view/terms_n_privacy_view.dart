@@ -1,4 +1,5 @@
 import 'package:musa_app/Screens/profile/settings_view/privacy_content_html_widget.dart';
+import 'package:musa_app/Screens/profile/settings_view/terms_content_html_widget.dart';
 
 import '../../../Utility/packages.dart';
 import 'terms_content_widget.dart';
@@ -85,7 +86,7 @@ class TermsPrivacyContent extends StatelessWidget {
       child: Padding(
         padding: MusaPadding.horizontalPadding,
         child: (flowType.toString() == "Terms")
-            ? const TermsContentWidget()
+            ? const TermsContentHTMLWidget()
             : (flowType.toString() == "Privacy")
                 ? const PrivacyContentHTMLWidget()
                 : Text(
