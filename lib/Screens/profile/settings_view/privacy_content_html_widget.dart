@@ -77,15 +77,15 @@ class PrivacyContentHTMLWidget extends StatelessWidget {
               // Handle email links
               final Uri emailUri = Uri.parse(url);
               //if (await canLaunchUrl(emailUri)) {
-                await launchUrl(emailUri);
+              await launchUrl(emailUri);
               //}
             } else {
               // Handle external links
               final Uri uri = Uri.parse(url);
               print('External link: $url');
               //if (await canLaunchUrl(uri)) {
-                print('Launching URL: $url');
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              print('Launching URL: $url');
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
               //}
             }
           }
