@@ -45,7 +45,8 @@ class _SignupState extends State<Signup> {
         leading: IconButton(
           icon: const Icon(Icons.close), // Cross icon
           onPressed: () {
-            Navigator.pop(context); // <- Navigate to Get Started screen
+            // Navigator.pop(context); // <- Navigate to Get Started screen
+            context.go(RouteTo.getStartSignUp);
           },
         ),
         title: Text(
