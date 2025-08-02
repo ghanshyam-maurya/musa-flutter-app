@@ -226,7 +226,8 @@ class _GetStartSignUpState extends State<GetStartSignUp>
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // context.push(RouteTo.terms);
+                                  context.push(RouteTo.termsAndPrivacy
+                                      .replaceFirst(':flowType', 'Terms'));
                                 },
                             ),
                             TextSpan(
@@ -247,7 +248,8 @@ class _GetStartSignUpState extends State<GetStartSignUp>
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // context.push(RouteTo.privacy);
+                                  context.push(RouteTo.termsAndPrivacy
+                                      .replaceFirst(':flowType', 'Privacy'));
                                 },
                             ),
                           ],
