@@ -344,7 +344,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           textAlign: TextAlign.center,
                           (eventName == "Logout")
-                              ? "Are you sure you want to $eventName?"
+                              ? "Are you sure you want to log out?"
                               : "Are you sure you want to $eventName the account permanently?",
                           style: AppTextStyle.appBarTitleStyle,
                         ),
