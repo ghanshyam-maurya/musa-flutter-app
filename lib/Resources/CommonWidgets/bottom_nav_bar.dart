@@ -100,7 +100,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 Assets.inActiveHome_1,
-                color: AppColor.primaryColor,
+                // color: AppColor.primaryColor,
               ),
               activeIcon: SvgPicture.asset(Assets.activeHome_1),
               label: StringConst.homeText,
