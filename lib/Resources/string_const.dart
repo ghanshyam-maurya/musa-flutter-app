@@ -20,7 +20,7 @@ abstract class StringConst {
   static const String complete = "Complete Your Profile";
   static const String completeMusa =
       "Complete your MUSA profile for personalised experience.";
-  static const String otpVerification = 'Otp Verification';
+  static const String otpVerification = 'OTP Verification';
   static const String weSentSmsWith6Digit =
       'We sent an OTP with a 6-digit code to your';
   static const String changeEmail = 'Change Email';

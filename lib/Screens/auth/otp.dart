@@ -45,7 +45,7 @@ class _OtpState extends State<Otp> {
                 context: context,
                 onPressed: () => context.pop(true),
                 buttonText: 'Okay',
-                title: 'Successful',
+                title: 'Successfull',
                 description: state.message);
           }
           if (state is OtpFailureState) {
@@ -108,40 +108,41 @@ class _OtpState extends State<Otp> {
                   const SizedBox(height: 10),
                   RichText(
                     text: TextSpan(
-                      text: StringConst.weSentSmsWith6Digit,
+                      text:
+                          "We've sent a 6-digit OTP to your registered email address. Please enter the code below to verify your email.",
                       style: AppTextStyle.normalTextStyleNew(
                         size: 14,
                         color: AppColor.greyNew,
                         fontweight: FontWeight.w600,
                       ),
-                      children: [
-                        TextSpan(
-                          text: ' ${widget.email}. ',
-                          style: AppTextStyle.normalTextStyleNew(
-                            size: 14,
-                            color: AppColor.greyNew,
-                            fontweight: FontWeight.w600,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '${StringConst.changeEmail}\n',
-                          style: AppTextStyle.normalTextStyleNew(
-                            color: AppColor.primaryColor,
-                            size: 14,
-                            fontweight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
-                        ),
-                        TextSpan(
-                          text: StringConst.pleaseEnterItSoWeCanBeSure,
-                          style: AppTextStyle.normalTextStyleNew(
-                            color: AppColor.greyNew,
-                            size: 14,
-                            fontweight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                      // children: [
+                      //   TextSpan(
+                      //     text: ' ${widget.email}. ',
+                      //     style: AppTextStyle.normalTextStyleNew(
+                      //       size: 14,
+                      //       color: AppColor.greyNew,
+                      //       fontweight: FontWeight.w600,
+                      //     ),
+                      //   ),
+                      //   TextSpan(
+                      //     text: '${StringConst.changeEmail}\n',
+                      //     style: AppTextStyle.normalTextStyleNew(
+                      //       color: AppColor.primaryColor,
+                      //       size: 14,
+                      //       fontweight: FontWeight.w600,
+                      //       decoration: TextDecoration.underline,
+                      //     ),
+                      //     recognizer: TapGestureRecognizer()..onTap = () {},
+                      //   ),
+                      //   TextSpan(
+                      //     text: StringConst.pleaseEnterItSoWeCanBeSure,
+                      //     style: AppTextStyle.normalTextStyleNew(
+                      //       color: AppColor.greyNew,
+                      //       size: 14,
+                      //       fontweight: FontWeight.w600,
+                      //     ),
+                      //   ),
+                      // ],
                     ),
                   ),
                   const SizedBox(height: 25),
