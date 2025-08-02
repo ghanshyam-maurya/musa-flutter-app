@@ -139,7 +139,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     // validator: MusaValidator.validatorPassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Password is required";
+                        return "Current password is required";
                       }
                       if (value.length < 8) {
                         return "Password must be at least 8 characters";
@@ -159,7 +159,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     isPassword: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Password is required";
+                        return "New password is required";
                       }
                       if (value.length < 8) {
                         return "Password must be at least 8 characters";
