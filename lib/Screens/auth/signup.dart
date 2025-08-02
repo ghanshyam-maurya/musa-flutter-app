@@ -157,6 +157,8 @@ class _SignupState extends State<Signup> {
                     controller: signupCubit.mobileController,
                     hintText: StringConst.mobileNumber,
                     prefixIconPath: Assets.phone1,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(height: 20),
                   CommonTextField(

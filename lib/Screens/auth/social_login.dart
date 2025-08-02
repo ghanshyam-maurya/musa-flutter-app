@@ -142,6 +142,8 @@ class _SocialLoginState extends State<SocialLogin> {
                     controller: loginCubit.mobileController,
                     hintText: StringConst.mobileNumber,
                     prefixIconPath: Assets.phone1,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   SizedBox(height: 20),
                   CommonTextField(

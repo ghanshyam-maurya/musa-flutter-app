@@ -56,10 +56,10 @@ abstract class MusaValidator {
 
   static String? Function(String?)? validatorName({String? data}) => (value) {
         if (value!.isEmpty) {
-          return '${data ?? 'First Name'} is required';
+          return '${data ?? 'First name'} is required';
         }
         if (value.length < 2) {
-          return '${data ?? 'First Name'} must be at least 2 characters long';
+          return '${data ?? 'First name'} must be at least 2 characters long';
         }
 
         // String pattern = r'^[a-z A-Z]+$';
@@ -74,10 +74,10 @@ abstract class MusaValidator {
 
   static String? Function(String?)? validatorLName({String? data}) => (value) {
         if (value!.isEmpty) {
-          return '${data ?? 'Last Name'} is required';
+          return '${data ?? 'Last name'} is required';
         }
         if (value.length < 2) {
-          return '${data ?? 'Last Name'} must be at least 2 characters long';
+          return '${data ?? 'Last name'} must be at least 2 characters long';
         }
 
         // String pattern = r'^[a-z A-Z]+$';
@@ -92,7 +92,7 @@ abstract class MusaValidator {
 
   static String? Function(String?)? validatorUserName = (value) {
     if (value!.isEmpty) {
-      return 'First Name is required';
+      return 'First name is required';
     }
     return null; // Return null if the username is valid
   };
@@ -119,7 +119,7 @@ abstract class MusaValidator {
 
   static String? Function(String?)? validatorDOB = (value) {
     if (value!.isEmpty) {
-      return 'Date of Birth is required';
+      return 'Date of birth is required';
     }
     // final dobRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
     // if (!dobRegExp.hasMatch(value)) {
