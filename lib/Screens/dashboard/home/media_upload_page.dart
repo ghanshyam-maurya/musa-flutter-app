@@ -18,6 +18,7 @@ class MediaUploadPage extends StatefulWidget {
 
 class _MediaUploadPageState extends State<MediaUploadPage> {
   MySectionCubit mySectionCubit = MySectionCubit();
+  bool _hasShownSuccessSnackbar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +31,19 @@ class _MediaUploadPageState extends State<MediaUploadPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.errorMessage)),
                 );
+                _hasShownSuccessSnackbar = false;
               }
-              if (state is MyLibrarySuccess) {
+              if (state is MyLibraryLoading) {
+                _hasShownSuccessSnackbar = false;
+              }
+              if (state is MyLibrarySuccess && !_hasShownSuccessSnackbar) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('File Uploaded Successfully!!')),
+                  SnackBar(
+                    content: Text('File Uploaded Successfully!'),
+                    backgroundColor: AppColor.greenDark,
+                  ),
                 );
+                _hasShownSuccessSnackbar = true;
               }
             },
             builder: (context, state) {
